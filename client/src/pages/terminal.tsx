@@ -11,7 +11,7 @@ import { BarChart3, Wallet } from "lucide-react";
 
 export default function Terminal() {
   const [activeTab, setActiveTab] = useState("terminal");
-  const { isLoading } = useAuth();
+  const { user, signOut } = useAuth();
 
   // WebSocket connection for real-time updates (with fallback for Vercel)
   useEffect(() => {

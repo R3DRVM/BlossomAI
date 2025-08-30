@@ -125,21 +125,32 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
             <Moon className="h-4 w-4" />
           )}
         </Button>
+        {/* User Profile */}
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-br from-primary to-chart-2 rounded-full flex items-center justify-center">
-            {user?.firstName ? user.firstName.charAt(0) : "U"}
+            {user?.full_name ? user.full_name.charAt(0).toUpperCase() : user?.email?.charAt(0).toUpperCase() || "U"}
           </div>
-          <span className="text-sm font-medium" data-testid="text-user-name">
-            {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.email || "User"}
-          </span>
+          <div className="text-left">
+            <span className="text-sm font-medium block" data-testid="text-user-name">
+              {user?.full_name || user?.email || "User"}
+            </span>
+            {user?.company && (
+              <span className="text-xs text-muted-foreground block">
+                {user.company}
+              </span>
+            )}
+          </div>
         </div>
+        
+        {/* Sign Out Button */}
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => window.location.href = '/api/logout'}
-          data-testid="button-logout"
+          onClick={signOut}
+          data-testid="button-signout"
+          className="text-muted-foreground hover:text-destructive"
         >
-          Logout
+          Sign Out
         </Button>
       </div>
     </header>
