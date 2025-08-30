@@ -213,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
 
     // Send welcome message
-    ws.send(JSON.stringify({ type: 'connected', data: 'YieldLayer Terminal' }));
+    ws.send(JSON.stringify({ type: 'connected', data: 'Blossom Terminal' }));
   });
 
   // Simulate real-time yield updates

@@ -104,7 +104,7 @@ export function ChatSidebar() {
   useEffect(() => {
     if (messages.length === 0 && !isLoading) {
       aiResponseMutation.mutate(
-        "Welcome to YieldLayer! I can help you optimize yields, analyze risks, and build custom strategies. What would you like to explore?"
+        "Welcome to Blossom! I can help you optimize yields, analyze risks, and build custom strategies. What would you like to explore?"
       );
     }
   }, [messages.length, isLoading]);
@@ -118,7 +118,7 @@ export function ChatSidebar() {
             <Bot className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
-            <h3 className="font-semibold">YieldBot</h3>
+            <h3 className="font-semibold">BlossomBot</h3>
             <p className="text-xs text-muted-foreground">AI Strategy Assistant</p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export function ChatSidebar() {
                   {msg.isBot && (
                     <div className="flex items-center space-x-2 mb-2">
                       <Bot className="h-3 w-3 text-primary" />
-                      <span className="text-xs font-medium">YieldBot</span>
+                      <span className="text-xs font-medium">BlossomBot</span>
                       <span className="text-xs text-muted-foreground">
                         {formatTime(msg.createdAt)}
                       </span>
@@ -168,7 +168,7 @@ export function ChatSidebar() {
                 <div className="bg-muted rounded-lg p-3">
                   <div className="flex items-center space-x-2 mb-2">
                     <Bot className="h-3 w-3 text-primary" />
-                    <span className="text-xs font-medium">YieldBot</span>
+                    <span className="text-xs font-medium">BlossomBot</span>
                     <span className="text-xs text-muted-foreground">typing...</span>
                   </div>
                   <div className="flex space-x-1">

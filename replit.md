@@ -1,8 +1,8 @@
-# YieldLayer - DeFi Yield Optimization Terminal
+# Blossom - DeFi Yield Optimization Terminal
 
 ## Overview
 
-YieldLayer is a sophisticated DeFi yield optimization platform that provides institutional-grade trading terminal interface for yield farming strategies. The application combines real-time yield opportunity aggregation, AI-powered strategy building, portfolio risk assessment, and conversational AI assistance to help users maximize returns across 100+ DeFi protocols.
+Blossom is a sophisticated DeFi yield optimization platform that provides institutional-grade trading terminal interface for yield farming strategies. The application combines real-time yield opportunity aggregation, AI-powered strategy building, portfolio risk assessment, and conversational AI assistance to help users maximize returns across 100+ DeFi protocols.
 
 The platform features a terminal-style interface inspired by institutional trading platforms, with multiple panels displaying yield opportunities, performance charts, risk metrics, and an interactive chat assistant. Users can build custom yield strategies through a visual node-based builder and monitor their portfolio performance in real-time.
 

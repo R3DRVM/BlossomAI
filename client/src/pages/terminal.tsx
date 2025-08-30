@@ -39,7 +39,7 @@ export default function Terminal() {
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
-      console.log('Connected to YieldLayer Terminal');
+      console.log('Connected to Blossom Terminal');
       socket.send(JSON.stringify({ type: 'subscribe_yields' }));
     };
 
@@ -67,7 +67,7 @@ export default function Terminal() {
     };
 
     socket.onclose = () => {
-      console.log('Disconnected from YieldLayer Terminal');
+      console.log('Disconnected from Blossom Terminal');
     };
 
     socket.onerror = (error) => {
@@ -84,7 +84,7 @@ export default function Terminal() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 bg-gradient-to-br from-primary to-chart-2 rounded-lg mx-auto mb-4 animate-pulse"></div>
-          <p className="text-muted-foreground">Loading YieldLayer Terminal...</p>
+          <p className="text-muted-foreground">Loading Blossom Terminal...</p>
         </div>
       </div>
     );

@@ -29,7 +29,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="yieldlayer-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="blossom-ui-theme">
         <TooltipProvider>
           <Toaster />
           <Router />

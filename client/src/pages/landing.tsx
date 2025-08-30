@@ -55,7 +55,7 @@ export default function Landing() {
                 <BarChart3 className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-                YieldLayer
+                Blossom
               </span>
             </div>
             <Button onClick={() => window.location.href = '/api/login'} data-testid="button-login">
@@ -157,7 +157,7 @@ export default function Landing() {
             Ready to Optimize Your DeFi Yields?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join institutional investors who trust YieldLayer for professional-grade 
+            Join institutional investors who trust Blossom for professional-grade 
             DeFi yield aggregation and risk management.
           </p>
           <Button 
@@ -179,10 +179,10 @@ export default function Landing() {
               <div className="w-6 h-6 bg-gradient-to-br from-primary to-chart-2 rounded">
                 <BarChart3 className="h-4 w-4 text-primary-foreground m-1" />
               </div>
-              <span className="font-medium">YieldLayer</span>
+              <span className="font-medium">Blossom</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2025 YieldLayer. All rights reserved.
+              © 2025 Blossom. All rights reserved.
             </p>
           </div>
         </div>
