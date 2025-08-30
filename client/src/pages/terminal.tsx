@@ -13,55 +13,7 @@ export default function Terminal() {
   const [activeTab, setActiveTab] = useState("terminal");
   const { isLoading } = useAuth();
 
-  // WebSocket connection for real-time updates
-  useEffect(() => {
-    // Always connect to WebSocket for real-time data
-
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    
-    const socket = new WebSocket(wsUrl);
-
-    socket.onopen = () => {
-      console.log('Connected to Blossom Terminal');
-      socket.send(JSON.stringify({ type: 'subscribe_yields' }));
-    };
-
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log('WebSocket message:', data);
-        
-        switch (data.type) {
-          case 'yield_update':
-            // Handle real-time yield updates
-            break;
-          case 'chat_message':
-            // Handle new chat messages
-            break;
-          case 'connected':
-            console.log('WebSocket connected:', data.data);
-            break;
-          default:
-            break;
-        }
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
-      }
-    };
-
-    socket.onclose = () => {
-      console.log('Disconnected from Blossom Terminal');
-    };
-
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    return () => {
-      socket.close();
-    };
-  }, []);
+  // WebSocket removed for Vercel deployment - will add back with SSE/polling later
 
   if (isLoading) {
     return (

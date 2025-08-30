@@ -1,14 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-
 export function useAuth() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["/api/auth/user"],
-    retry: false,
-  });
-
+  // For now, return immediately without API calls to avoid loading issues
   return {
-    user,
-    isLoading,
+    user: { id: 'anonymous', email: null, walletConnected: false },
+    isLoading: false,
     isAuthenticated: true, // Always allow access for now
   };
 }
