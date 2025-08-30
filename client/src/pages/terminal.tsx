@@ -6,6 +6,8 @@ import { StrategyBuilder } from "@/components/terminal/StrategyBuilder";
 import { PerformanceChart } from "@/components/terminal/PerformanceChart";
 import { RiskMetrics } from "@/components/terminal/RiskMetrics";
 import { ChatSidebar } from "@/components/terminal/ChatSidebar";
+import { Strategies } from "./strategies";
+import { BarChart3, Wallet } from "lucide-react";
 
 export default function Terminal() {
   const [activeTab, setActiveTab] = useState("terminal");
@@ -80,17 +82,47 @@ export default function Terminal() {
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
         
         <main className="main-content">
-          {/* Yield Overview Panel */}
-          <YieldOverview />
+          {activeTab === "terminal" && (
+            <>
+              {/* Yield Overview Panel */}
+              <YieldOverview />
 
-          {/* Strategy Builder Panel */}
-          <StrategyBuilder />
+              {/* Strategy Builder Panel */}
+              <StrategyBuilder />
 
-          {/* Bottom Analytics Panels */}
-          <div className="bottom-panels">
-            <PerformanceChart />
-            <RiskMetrics />
-          </div>
+              {/* Bottom Analytics Panels */}
+              <div className="bottom-panels">
+                <PerformanceChart />
+                <RiskMetrics />
+              </div>
+            </>
+          )}
+
+          {activeTab === "strategies" && (
+            <div className="col-span-2">
+              <Strategies />
+            </div>
+          )}
+
+          {activeTab === "analytics" && (
+            <div className="col-span-2 p-6">
+              <div className="text-center py-12">
+                <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">Analytics Dashboard</h3>
+                <p className="text-muted-foreground">Advanced analytics and insights coming soon...</p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "portfolio" && (
+            <div className="col-span-2 p-6">
+              <div className="text-center py-12">
+                <Wallet className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">Portfolio Management</h3>
+                <p className="text-muted-foreground">Portfolio tracking and management coming soon...</p>
+              </div>
+            </div>
+          )}
         </main>
 
         {/* Chat Sidebar */}
