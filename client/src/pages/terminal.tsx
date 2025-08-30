@@ -1,37 +1,19 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/terminal/Header";
 import { YieldOverview } from "@/components/terminal/YieldOverview";
 import { StrategyBuilder } from "@/components/terminal/StrategyBuilder";
 import { PerformanceChart } from "@/components/terminal/PerformanceChart";
 import { RiskMetrics } from "@/components/terminal/RiskMetrics";
 import { ChatSidebar } from "@/components/terminal/ChatSidebar";
-import { isUnauthorizedError } from "@/lib/authUtils";
 
 export default function Terminal() {
   const [activeTab, setActiveTab] = useState("terminal");
-  const { isAuthenticated, isLoading } = useAuth();
-  const { toast } = useToast();
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
+  const { isLoading } = useAuth();
 
   // WebSocket connection for real-time updates
   useEffect(() => {
-    if (!isAuthenticated) return;
+    // Always connect to WebSocket for real-time data
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
@@ -77,7 +59,7 @@ export default function Terminal() {
     return () => {
       socket.close();
     };
-  }, [isAuthenticated]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -90,9 +72,7 @@ export default function Terminal() {
     );
   }
 
-  if (!isAuthenticated) {
-    return null; // Will redirect via useEffect
-  }
+  // Always show terminal - no authentication required
 
   return (
     <div className="min-h-screen bg-background">

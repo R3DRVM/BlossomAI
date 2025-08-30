@@ -2,37 +2,76 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertYieldOpportunitySchema, insertStrategySchema, insertChatMessageSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
+  // Auth routes - simplified for wallet-based auth later
+  app.get('/api/auth/user', async (req: any, res) => {
+    // For now, return a placeholder user
+    // Later this will check wallet connection
+    res.json({ 
+      id: 'anonymous',
+      email: null,
+      walletConnected: false,
+      message: 'Wallet not connected - connect wallet for full access'
+    });
   });
 
-  // Yield opportunities routes
-  app.get('/api/yield-opportunities', isAuthenticated, async (req, res) => {
+  // Yield opportunities routes - public access with mock data
+  app.get('/api/yield-opportunities', async (req, res) => {
     try {
-      const opportunities = await storage.getYieldOpportunities();
-      res.json(opportunities);
+      // Return mock data for now - later this will come from database
+      const mockOpportunities = [
+        {
+          id: '1',
+          name: 'Aave V3 USDC',
+          apy: '4.85',
+          tvl: '1250.5',
+          riskScore: 7,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Compound USDT',
+          apy: '3.92',
+          tvl: '890.2',
+          riskScore: 6,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: '3',
+          name: 'Yearn Finance ETH',
+          apy: '8.45',
+          tvl: '567.8',
+          riskScore: 8,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: '4',
+          name: 'Curve 3pool',
+          apy: '2.15',
+          tvl: '2340.1',
+          riskScore: 5,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ];
+      res.json(mockOpportunities);
     } catch (error) {
       console.error("Error fetching yield opportunities:", error);
       res.status(500).json({ message: "Failed to fetch yield opportunities" });
     }
   });
 
-  app.get('/api/yield-opportunities/:id', isAuthenticated, async (req, res) => {
+  app.get('/api/yield-opportunities/:id', async (req, res) => {
     try {
       const { id } = req.params;
       const opportunity = await storage.getYieldOpportunityById(id);
@@ -46,132 +85,150 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Strategy routes
-  app.get('/api/strategies', isAuthenticated, async (req: any, res) => {
+  // Strategy routes - require wallet connection later
+  app.get('/api/strategies', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const strategies = await storage.getUserStrategies(userId);
-      res.json(strategies);
+      // For now, return empty array
+      // Later this will check wallet connection and return user strategies
+      res.json([]);
     } catch (error) {
       console.error("Error fetching strategies:", error);
       res.status(500).json({ message: "Failed to fetch strategies" });
     }
   });
 
-  app.post('/api/strategies', isAuthenticated, async (req: any, res) => {
+  app.post('/api/strategies', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const strategyData = insertStrategySchema.parse({ ...req.body, userId });
-      const strategy = await storage.createStrategy(strategyData);
-      res.status(201).json(strategy);
+      // For now, return error - requires wallet connection
+      res.status(401).json({ message: "Wallet connection required to create strategies" });
     } catch (error) {
       console.error("Error creating strategy:", error);
       res.status(400).json({ message: "Failed to create strategy" });
     }
   });
 
-  app.get('/api/strategies/:id', isAuthenticated, async (req, res) => {
+  app.get('/api/strategies/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      const strategy = await storage.getStrategyById(id);
-      if (!strategy) {
-        return res.status(404).json({ message: "Strategy not found" });
-      }
-      res.json(strategy);
+      // For now, return error - requires wallet connection
+      res.status(401).json({ message: "Wallet connection required to access strategies" });
     } catch (error) {
       console.error("Error fetching strategy:", error);
       res.status(500).json({ message: "Failed to fetch strategy" });
     }
   });
 
-  app.put('/api/strategies/:id', isAuthenticated, async (req, res) => {
+  app.put('/api/strategies/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      const updates = req.body;
-      const strategy = await storage.updateStrategy(id, updates);
-      res.json(strategy);
+      // For now, return error - requires wallet connection
+      res.status(401).json({ message: "Wallet connection required to update strategies" });
     } catch (error) {
       console.error("Error updating strategy:", error);
       res.status(400).json({ message: "Failed to update strategy" });
     }
   });
 
-  app.delete('/api/strategies/:id', isAuthenticated, async (req, res) => {
+  app.delete('/api/strategies/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      await storage.deleteStrategy(id);
-      res.status(204).send();
+      // For now, return error - requires wallet connection
+      res.status(500).json({ message: "Wallet connection required to delete strategies" });
     } catch (error) {
       console.error("Error deleting strategy:", error);
       res.status(500).json({ message: "Failed to delete strategy" });
     }
   });
 
-  // Portfolio routes
-  app.get('/api/portfolio', isAuthenticated, async (req: any, res) => {
+  // Portfolio routes - require wallet connection later
+  app.get('/api/portfolio', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const portfolio = await storage.getUserPortfolio(userId);
-      res.json(portfolio);
+      // For now, return empty portfolio - requires wallet connection
+      res.json({ 
+        totalValue: 0,
+        assets: [],
+        message: 'Connect wallet to view your portfolio'
+      });
     } catch (error) {
       console.error("Error fetching portfolio:", error);
       res.status(500).json({ message: "Failed to fetch portfolio" });
     }
   });
 
-  // Chat routes
-  app.get('/api/chat/messages', isAuthenticated, async (req: any, res) => {
+  // Chat routes - require wallet connection later
+  app.get('/api/chat/messages', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
-      const messages = await storage.getUserChatMessages(userId, limit);
-      res.json(messages.reverse()); // Return in chronological order
+      // For now, return empty messages - requires wallet connection
+      res.json([]);
     } catch (error) {
       console.error("Error fetching chat messages:", error);
       res.status(500).json({ message: "Failed to fetch chat messages" });
     }
   });
 
-  app.post('/api/chat/messages', isAuthenticated, async (req: any, res) => {
+  app.post('/api/chat/messages', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const messageData = insertChatMessageSchema.parse({ ...req.body, userId });
-      const message = await storage.createChatMessage(messageData);
-      
-      // Broadcast to WebSocket clients
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({ type: 'chat_message', data: message }));
-        }
-      });
-      
-      res.status(201).json(message);
+      // For now, return error - requires wallet connection
+      res.status(401).json({ message: "Wallet connection required to send messages" });
     } catch (error) {
       console.error("Error creating chat message:", error);
       res.status(400).json({ message: "Failed to create chat message" });
     }
   });
 
-  // Risk assessment routes
-  app.get('/api/risk-assessment/:opportunityId', isAuthenticated, async (req, res) => {
+  // Risk assessment routes - public access for basic info
+  app.get('/api/risk-assessment/:opportunityId', async (req, res) => {
     try {
       const { opportunityId } = req.params;
-      const assessment = await storage.getRiskAssessment(opportunityId);
-      if (!assessment) {
-        return res.status(404).json({ message: "Risk assessment not found" });
-      }
-      res.json(assessment);
+      // For now, return basic risk info - detailed assessment requires wallet connection
+      res.json({
+        opportunityId,
+        basicRisk: 'Medium',
+        message: 'Connect wallet for detailed risk assessment'
+      });
     } catch (error) {
       console.error("Error fetching risk assessment:", error);
       res.status(500).json({ message: "Failed to fetch risk assessment" });
     }
   });
 
-  // Protocols routes
-  app.get('/api/protocols', isAuthenticated, async (req, res) => {
+  // Protocols routes - public access with mock data
+  app.get('/api/protocols', async (req, res) => {
     try {
-      const protocols = await storage.getProtocols();
-      res.json(protocols);
+      // Return mock data for now - later this will come from database
+      const mockProtocols = [
+        {
+          id: '1',
+          name: 'Aave',
+          description: 'Decentralized lending protocol',
+          tvl: '1250000000',
+          apy: '4.2',
+          riskScore: 7,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Compound',
+          description: 'Algorithmic interest rate protocol',
+          tvl: '890000000',
+          apy: '3.8',
+          riskScore: 6,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: '3',
+          name: 'Yearn Finance',
+          description: 'Yield optimization protocol',
+          tvl: '567000000',
+          apy: '8.1',
+          riskScore: 8,
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ];
+      res.json(mockProtocols);
     } catch (error) {
       console.error("Error fetching protocols:", error);
       res.status(500).json({ message: "Failed to fetch protocols" });

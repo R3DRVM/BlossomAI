@@ -32,10 +32,10 @@ export function YieldOverview() {
     return (
       <section className="terminal-panel p-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-muted rounded w-48 mb-4"></div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="h-6 bg-muted rounded w-48 mb-3"></div>
+          <div className="grid grid-cols-4 gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-muted rounded-lg"></div>
+              <div key={i} className="h-28 bg-muted rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -44,8 +44,8 @@ export function YieldOverview() {
   }
 
   return (
-    <section className="terminal-panel p-6">
-      <div className="flex items-center justify-between mb-4">
+    <section className="terminal-panel p-4">
+      <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold">Yield Opportunities</h2>
         <div className="flex items-center space-x-2">
           <Button
@@ -72,37 +72,34 @@ export function YieldOverview() {
           <p>No yield opportunities available</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           {opportunities.slice(0, 8).map((opportunity) => (
             <Card
               key={opportunity.id}
-              className="hover:bg-muted/50 transition-colors cursor-pointer group"
+              className="hover:bg-muted/50 transition-colors cursor-pointer group h-28"
               data-testid={`card-opportunity-${opportunity.id}`}
             >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium truncate" title={opportunity.name}>
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium truncate flex-1 mr-2" title={opportunity.name}>
                     {opportunity.name}
                   </span>
-                  <div className={`w-6 h-6 rounded-full ${getProtocolColor(opportunity.name.split(' ')[0])}`}></div>
+                  <div className={`w-4 h-4 rounded-full flex-shrink-0 ${getProtocolColor(opportunity.name.split(' ')[0])}`}></div>
                 </div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent font-mono">
+                <div className="text-xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent font-mono mb-1">
                   {opportunity.apy}%
                 </div>
-                <div className="text-xs text-muted-foreground flex items-center justify-between">
-                  <span>APY • ${opportunity.tvl ? parseFloat(opportunity.tvl).toFixed(1) : '0'}M TVL</span>
+                <div className="text-xs text-muted-foreground mb-1">
+                  APY • ${opportunity.tvl ? parseFloat(opportunity.tvl).toFixed(1) : '0'}M TVL
+                </div>
+                <div className="flex items-center justify-between">
                   {opportunity.riskScore && (
-                    <Badge variant="outline" className={`text-xs ${getRiskColor(opportunity.riskScore)}`}>
+                    <Badge variant="outline" className={`text-xs px-2 py-0.5 ${getRiskColor(opportunity.riskScore)}`}>
                       Risk: {opportunity.riskScore}/10
                     </Badge>
                   )}
-                </div>
-                <div className="mt-2 flex items-center space-x-1">
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs px-2 py-0.5">
                     {opportunity.category || 'DeFi'}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {opportunity.asset}
                   </Badge>
                 </div>
               </CardContent>

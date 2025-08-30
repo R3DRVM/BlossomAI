@@ -58,7 +58,7 @@ export default function Landing() {
                 Blossom
               </span>
             </div>
-            <Button onClick={() => window.location.href = '/api/login'} data-testid="button-login">
+            <Button onClick={() => window.location.href = '/terminal'} data-testid="button-login">
               Access Terminal
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -86,7 +86,7 @@ export default function Landing() {
           <div className="flex items-center justify-center space-x-4">
             <Button 
               size="lg" 
-              onClick={() => window.location.href = '/api/login'}
+              onClick={() => window.location.href = '/terminal'}
               data-testid="button-get-started"
             >
               Get Started
@@ -162,7 +162,7 @@ export default function Landing() {
           </p>
           <Button 
             size="lg" 
-            onClick={() => window.location.href = '/api/login'}
+            onClick={() => window.location.href = '/terminal'}
             data-testid="button-start-terminal"
           >
             Access Terminal Now

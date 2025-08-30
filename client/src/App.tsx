@@ -12,15 +12,15 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  console.log('Router Debug:', { isAuthenticated, isLoading, pathname: window.location.pathname });
+
+  // Start with landing page, then allow access to terminal
+  // Later we'll add wallet connection requirements for certain features
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/" component={Terminal} />
-        </>
-      )}
+      <Route path="/" component={Landing} />
+      <Route path="/terminal" component={Terminal} />
+      <Route path="/landing" component={Landing} />
       <Route component={NotFound} />
     </Switch>
   );
