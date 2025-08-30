@@ -72,6 +72,12 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Skip OAuth setup for local development
+  if (process.env.NODE_ENV === "development" && process.env.REPLIT_DOMAINS === "localhost:3000") {
+    console.log("Running in local development mode - skipping OAuth setup");
+    return;
+  }
+
   const config = await getOidcConfig();
 
   const verify: VerifyFunction = async (
