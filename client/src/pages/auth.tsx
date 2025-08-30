@@ -3,21 +3,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Building2, Shield, Users, Sparkles, ArrowRight, Mail, Lock, User, Building } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Sparkles, ArrowRight, User, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Auth() {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [company, setCompany] = useState('');
+  const [username, setUsername] = useState('');
+  const [acknowledged, setAcknowledged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signUp } = useAuth();
+  const { signIn } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,16 +21,9 @@ export default function Auth() {
     setIsLoading(true);
 
     try {
-      if (isSignUp) {
-        const result = await signUp(email, password, fullName, company);
-        if (result.success) {
-          // Form will be reset by the auth hook
-        }
-      } else {
-        const result = await signIn(email, password);
-        if (result.success) {
-          // Redirect will be handled by the auth hook
-        }
+      const result = await signIn(username, acknowledged);
+      if (result.success) {
+        // Redirect will be handled by the auth hook
       }
     } catch (error) {
       console.error('Auth error:', error);
@@ -66,88 +55,45 @@ export default function Auth() {
         <Card className="border-border/50 shadow-xl">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl text-center">
-              {isSignUp ? 'Create Account' : 'Sign In'}
+              Demo Access
             </CardTitle>
             <CardDescription className="text-center">
-              {isSignUp 
-                ? 'Join the future of institutional DeFi' 
-                : 'Welcome back to your terminal'
-              }
+              Enter your username to access the BlossomAI terminal
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {isSignUp && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName">Full Name</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="fullName"
-                        type="text"
-                        placeholder="John Smith"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="company">Company (Optional)</Label>
-                    <div className="relative">
-                      <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="company"
-                        type="text"
-                        placeholder="Acme Capital"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="john@company.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="username"
+                    type="text"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="pl-10"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="acknowledged"
+                  checked={acknowledged}
+                  onCheckedChange={(checked) => setAcknowledged(checked as boolean)}
+                />
+                <Label htmlFor="acknowledged" className="text-sm">
+                  I acknowledge this is a demo environment for demonstration purposes
+                </Label>
               </div>
 
               <Button 
                 type="submit" 
                 className="w-full bg-gradient-to-r from-primary to-chart-2 hover:from-primary/90 hover:to-chart-2/90"
-                disabled={isLoading}
+                disabled={isLoading || !username.trim() || !acknowledged}
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
@@ -156,27 +102,12 @@ export default function Auth() {
                   </div>
                 ) : (
                   <div className="flex items-center space-x-2">
-                    <span>{isSignUp ? 'Create Account' : 'Sign In'}</span>
+                    <span>Access Terminal</span>
                     <ArrowRight className="h-4 w-4" />
                   </div>
                 )}
               </Button>
             </form>
-
-            <Separator className="my-6" />
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                {isSignUp 
-                  ? 'Already have an account? Sign in' 
-                  : "Don't have an account? Create one"
-                }
-              </button>
-            </div>
           </CardContent>
         </Card>
 

@@ -128,17 +128,25 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
         {/* User Profile */}
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-br from-primary to-chart-2 rounded-full flex items-center justify-center">
-            {user?.full_name ? user.full_name.charAt(0).toUpperCase() : user?.email?.charAt(0).toUpperCase() || "U"}
+            {'username' in user && user.username 
+              ? user.username.charAt(0).toUpperCase() 
+              : 'email' in user && user.email 
+                ? user.email.charAt(0).toUpperCase() 
+                : "U"
+            }
           </div>
           <div className="text-left">
             <span className="text-sm font-medium block" data-testid="text-user-name">
-              {user?.full_name || user?.email || "User"}
+              {'username' in user && user.username 
+                ? user.username 
+                : 'email' in user && user.email 
+                  ? user.email 
+                  : "User"
+              }
             </span>
-            {user?.company && (
-              <span className="text-xs text-muted-foreground block">
-                {user.company}
-              </span>
-            )}
+            <span className="text-xs text-muted-foreground block">
+              {'username' in user ? "Demo Session" : "Production User"}
+            </span>
           </div>
         </div>
         
