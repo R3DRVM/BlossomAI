@@ -99,8 +99,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/strategies', async (req: any, res) => {
     try {
-      // For now, return error - requires wallet connection
-      res.status(401).json({ message: "Wallet connection required to create strategies" });
+      // For demo purposes, create a mock strategy
+      const mockStrategy = {
+        id: Date.now().toString(),
+        name: req.body.name || 'Demo Strategy',
+        description: req.body.description || 'A demo strategy for testing',
+        apy: '12.5',
+        riskScore: 6,
+        tvl: '1000000',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.status(201).json(mockStrategy);
     } catch (error) {
       console.error("Error creating strategy:", error);
       res.status(400).json({ message: "Failed to create strategy" });
@@ -109,8 +121,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/strategies/:id', async (req, res) => {
     try {
-      // For now, return error - requires wallet connection
-      res.status(401).json({ message: "Wallet connection required to access strategies" });
+      // For demo purposes, return a mock strategy
+      const mockStrategy = {
+        id: req.params.id,
+        name: 'Demo Strategy',
+        description: 'A demo strategy for testing purposes',
+        apy: '12.5',
+        riskScore: 6,
+        tvl: '1000000',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.json(mockStrategy);
     } catch (error) {
       console.error("Error fetching strategy:", error);
       res.status(500).json({ message: "Failed to fetch strategy" });
@@ -119,8 +143,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/strategies/:id', async (req, res) => {
     try {
-      // For now, return error - requires wallet connection
-      res.status(401).json({ message: "Wallet connection required to update strategies" });
+      // For demo purposes, return updated mock strategy
+      const mockStrategy = {
+        id: req.params.id,
+        name: req.body.name || 'Updated Demo Strategy',
+        description: req.body.description || 'An updated demo strategy',
+        apy: '13.2',
+        riskScore: 6,
+        tvl: '1100000',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.json(mockStrategy);
     } catch (error) {
       console.error("Error updating strategy:", error);
       res.status(400).json({ message: "Failed to update strategy" });
@@ -129,8 +165,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/strategies/:id', async (req, res) => {
     try {
-      // For now, return error - requires wallet connection
-      res.status(500).json({ message: "Wallet connection required to delete strategies" });
+      // For demo purposes, return success
+      res.json({ message: "Strategy deleted successfully", id: req.params.id });
     } catch (error) {
       console.error("Error deleting strategy:", error);
       res.status(500).json({ message: "Failed to delete strategy" });
@@ -155,8 +191,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat routes - require wallet connection later
   app.get('/api/chat/messages', async (req: any, res) => {
     try {
-      // For now, return empty messages - requires wallet connection
-      res.json([]);
+      // Return initial welcome message for demo
+      const initialMessages = [
+        {
+          id: '1',
+          userId: 'blossom-ai',
+          content: "Hello! I'm your DeFi strategy assistant. I can help you optimize yields, manage risk, and build strategies. What would you like to accomplish today?",
+          isBot: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ];
+      
+      res.json(initialMessages);
     } catch (error) {
       console.error("Error fetching chat messages:", error);
       res.status(500).json({ message: "Failed to fetch chat messages" });
@@ -165,8 +212,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/chat/messages', async (req: any, res) => {
     try {
-      // For now, return error - requires wallet connection
-      res.status(401).json({ message: "Wallet connection required to send messages" });
+      const { content, isBot } = req.body;
+      
+      if (!content) {
+        return res.status(400).json({ message: "Message content is required" });
+      }
+
+      // For now, create a mock message response
+      // Later this will be stored in database and can integrate with AI APIs
+      const mockMessage = {
+        id: Date.now().toString(),
+        userId: 'demo-user',
+        content: isBot ? content : `Echo: ${content}`,
+        isBot: isBot || false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      res.status(201).json(mockMessage);
     } catch (error) {
       console.error("Error creating chat message:", error);
       res.status(400).json({ message: "Failed to create chat message" });
@@ -237,58 +300,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
 
-  // WebSocket server for real-time updates
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
-
-  wss.on('connection', (ws) => {
-    console.log('WebSocket client connected');
-
-    ws.on('message', (message) => {
-      try {
-        const data = JSON.parse(message.toString());
-        console.log('Received WebSocket message:', data);
-        
-        // Handle different message types
-        switch (data.type) {
-          case 'ping':
-            ws.send(JSON.stringify({ type: 'pong' }));
-            break;
-          case 'subscribe_yields':
-            // Subscribe to yield updates
-            ws.send(JSON.stringify({ type: 'subscribed', data: 'yield_updates' }));
-            break;
-          default:
-            console.log('Unknown message type:', data.type);
-        }
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
-      }
-    });
-
-    ws.on('close', () => {
-      console.log('WebSocket client disconnected');
-    });
-
-    // Send welcome message
-    ws.send(JSON.stringify({ type: 'connected', data: 'Blossom Terminal' }));
-  });
-
-  // Simulate real-time yield updates
-  setInterval(() => {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        const updateData = {
-          type: 'yield_update',
-          data: {
-            id: Math.random().toString(36).substr(2, 9),
-            apy: (Math.random() * 20 + 5).toFixed(2), // Random APY between 5-25%
-            timestamp: new Date().toISOString(),
-          }
-        };
-        client.send(JSON.stringify(updateData));
-      }
-    });
-  }, 10000); // Update every 10 seconds
+  // WebSocket server temporarily disabled to fix refresh issues
+  // TODO: Re-enable WebSocket once the refresh issue is resolved
+  console.log('WebSocket server temporarily disabled for stability');
+  
+  // const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  // ... WebSocket logic here
 
   return httpServer;
 }

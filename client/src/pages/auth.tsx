@@ -1,36 +1,64 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Sparkles, ArrowRight, User, Shield } from 'lucide-react';
+import { Logo } from '@/components/ui/logo';
+
+import { Sparkles, ArrowRight, User, Shield, Building2, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Terminal from './terminal';
 
 export default function Auth() {
   const [username, setUsername] = useState('');
-  const [acknowledged, setAcknowledged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   
   const { signIn } = useAuth();
   const { toast } = useToast();
+
+  // Listen for sign-out events to reset local state
+  useEffect(() => {
+    const handleSignOut = () => {
+      setIsSignedIn(false);
+    };
+
+    window.addEventListener('blossomai-signout', handleSignOut);
+    return () => window.removeEventListener('blossomai-signout', handleSignOut);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      const result = await signIn(username, acknowledged);
-      if (result.success) {
-        // Redirect will be handled by the auth hook
+                try {
+              const result = await signIn(username);
+              if (result.success) {
+                // Set local state to trigger re-render
+                setIsSignedIn(true);
+              } else {
+        toast({
+          title: "Sign In Failed",
+          description: result.error || "Please try again.",
+          variant: "destructive",
+        });
       }
-    } catch (error) {
-      console.error('Auth error:', error);
+    } catch (error: any) {
+      toast({
+        title: "Sign In Failed",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
+
+  // If signed in, show the terminal
+  if (isSignedIn) {
+    return <Terminal />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
@@ -38,9 +66,7 @@ export default function Auth() {
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-chart-2 rounded-lg flex items-center justify-center">
-              <Sparkles className="h-6 w-6 text-white" />
-            </div>
+            <Logo size={56} className="flex-shrink-0" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
               BlossomAI
             </h1>
@@ -79,21 +105,12 @@ export default function Auth() {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="acknowledged"
-                  checked={acknowledged}
-                  onCheckedChange={(checked) => setAcknowledged(checked as boolean)}
-                />
-                <Label htmlFor="acknowledged" className="text-sm">
-                  I acknowledge this is a demo environment for demonstration purposes
-                </Label>
-              </div>
+
 
               <Button 
                 type="submit" 
                 className="w-full bg-gradient-to-r from-primary to-chart-2 hover:from-primary/90 hover:to-chart-2/90"
-                disabled={isLoading || !username.trim() || !acknowledged}
+                disabled={isLoading || !username.trim()}
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">

@@ -1,3 +1,4 @@
+
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -12,7 +13,10 @@ import Auth from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, hasLocalAuth } = useAuth();
+  
+  // Use the computed value from useAuth to avoid race conditions
+  const isActuallyAuthenticated = isAuthenticated || hasLocalAuth;
 
   // Show loading screen while checking authentication
   if (isLoading) {
@@ -32,14 +36,14 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/landing" component={Landing} />
       
-      {/* Protected routes - require authentication */}
-      <Route path="/terminal">
-        {isAuthenticated ? <Terminal /> : <Auth />}
-      </Route>
+                    {/* Protected routes - require authentication */}
+              <Route path="/terminal">
+                {isActuallyAuthenticated ? <Terminal /> : <Auth />}
+              </Route>
       
-      <Route path="/strategies">
-        {isAuthenticated ? <Strategies /> : <Auth />}
-      </Route>
+                    <Route path="/strategies">
+                {isActuallyAuthenticated ? <Strategies /> : <Auth />}
+              </Route>
       
       {/* Auth page */}
       <Route path="/auth" component={Auth} />

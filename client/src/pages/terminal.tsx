@@ -11,83 +11,7 @@ import { BarChart3, Wallet } from "lucide-react";
 
 export default function Terminal() {
   const [activeTab, setActiveTab] = useState("terminal");
-  const { user, signOut } = useAuth();
-
-  // WebSocket connection for real-time updates (with fallback for Vercel)
-  useEffect(() => {
-    // Try WebSocket first, fallback to polling if it fails
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    
-    let socket: WebSocket | null = null;
-    let fallbackInterval: NodeJS.Timeout | null = null;
-
-    try {
-      socket = new WebSocket(wsUrl);
-
-      socket.onopen = () => {
-        console.log('Connected to Blossom Terminal via WebSocket');
-        socket?.send(JSON.stringify({ type: 'subscribe_yields' }));
-      };
-
-      socket.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log('WebSocket message:', data);
-          
-          switch (data.type) {
-            case 'yield_update':
-              // Handle real-time yield updates
-              break;
-            case 'chat_message':
-              // Handle new chat messages
-              break;
-            case 'connected':
-              console.log('WebSocket connected:', data.data);
-              break;
-            default:
-              break;
-          }
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      };
-
-      socket.onclose = () => {
-        console.log('WebSocket disconnected, falling back to polling');
-        // Fallback to polling if WebSocket fails
-        fallbackInterval = setInterval(() => {
-          // Simulate real-time updates
-          console.log('Polling for updates...');
-        }, 30000); // Poll every 30 seconds
-      };
-
-      socket.onerror = (error) => {
-        console.log('WebSocket error, falling back to polling:', error);
-        // Fallback to polling if WebSocket fails
-        fallbackInterval = setInterval(() => {
-          // Simulate real-time updates
-          console.log('Polling for updates...');
-        }, 30000); // Poll every 30 seconds
-      };
-    } catch (error) {
-      console.log('WebSocket not available, using polling fallback');
-      // Fallback to polling if WebSocket fails
-      fallbackInterval = setInterval(() => {
-        // Simulate real-time updates
-        console.log('Polling for updates...');
-      }, 30000); // Poll every 30 seconds
-    }
-
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-      if (fallbackInterval) {
-        clearInterval(fallbackInterval);
-      }
-    };
-  }, []);
+  const { user, signOut, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -100,8 +24,7 @@ export default function Terminal() {
     );
   }
 
-  // Always show terminal - no authentication required
-
+  // Full terminal interface with all components
   return (
     <div className="min-h-screen bg-background">
       <div className="terminal-grid">
@@ -116,43 +39,37 @@ export default function Terminal() {
               {/* Strategy Builder Panel */}
               <StrategyBuilder />
 
-              {/* Bottom Analytics Panels */}
-              <div className="bottom-panels">
-                <PerformanceChart />
-                <RiskMetrics />
-              </div>
+                                    {/* Bottom Analytics Panels */}
+                      <div className="bottom-panels">
+                        <PerformanceChart />
+                        <RiskMetrics />
+                      </div>
             </>
           )}
 
-          {activeTab === "strategies" && (
-            <div className="col-span-2">
-              <Strategies />
-            </div>
-          )}
+                            {activeTab === "strategies" && (
+                    <div className="col-span-2">
+                      <Strategies />
+                    </div>
+                  )}
 
           {activeTab === "analytics" && (
             <div className="col-span-2 p-6">
-              <div className="text-center py-12">
-                <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">Analytics Dashboard</h3>
-                <p className="text-muted-foreground">Advanced analytics and insights coming soon...</p>
-              </div>
+              <h2 className="text-2xl font-bold mb-4">Analytics Dashboard</h2>
+              <p className="text-muted-foreground">Advanced analytics and insights will be displayed here.</p>
             </div>
           )}
 
           {activeTab === "portfolio" && (
             <div className="col-span-2 p-6">
-              <div className="text-center py-12">
-                <Wallet className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">Portfolio Management</h3>
-                <p className="text-muted-foreground">Portfolio tracking and management coming soon...</p>
-              </div>
+              <h2 className="text-2xl font-bold mb-4">Portfolio Management</h2>
+              <p className="text-muted-foreground">Portfolio tracking and management will be displayed here.</p>
             </div>
           )}
         </main>
 
-        {/* Chat Sidebar */}
-        <ChatSidebar />
+                        {/* Persistent Chat Sidebar */}
+                <ChatSidebar />
       </div>
     </div>
   );

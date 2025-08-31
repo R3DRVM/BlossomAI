@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/ui/logo";
 import { ArrowRight, BarChart3, Shield, Zap, TrendingUp, Users, Globe } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
+  const [, setLocation] = useLocation();
   const features = [
     {
       icon: <BarChart3 className="h-6 w-6" />,
@@ -51,14 +54,12 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-chart-2 rounded-lg flex items-center justify-center">
-                <BarChart3 className="h-5 w-5 text-primary-foreground" />
-              </div>
+              <Logo size={48} className="flex-shrink-0" />
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
                 Blossom
               </span>
             </div>
-            <Button onClick={() => window.location.href = '/terminal'} data-testid="button-login">
+            <Button onClick={() => setLocation('/terminal')} data-testid="button-login">
               Access Terminal
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -86,7 +87,7 @@ export default function Landing() {
           <div className="flex items-center justify-center space-x-4">
             <Button 
               size="lg" 
-              onClick={() => window.location.href = '/terminal'}
+              onClick={() => setLocation('/terminal')}
               data-testid="button-get-started"
             >
               Get Started
@@ -162,7 +163,7 @@ export default function Landing() {
           </p>
           <Button 
             size="lg" 
-            onClick={() => window.location.href = '/terminal'}
+            onClick={() => setLocation('/terminal')}
             data-testid="button-start-terminal"
           >
             Access Terminal Now

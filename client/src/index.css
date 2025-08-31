@@ -93,6 +93,36 @@
   gap: 1px;
 }
 
+/* Persistent chat sidebar - Fixed and non-scrolling */
+.chat-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  overflow: hidden;
+  border-left: 1px solid var(--border);
+  z-index: 50;
+}
+
+/* Adjust main content to account for fixed chat sidebar */
+.terminal-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  grid-template-rows: 60px 1fr;
+  gap: 1px;
+  height: 100vh;
+  background: var(--border);
+}
+
+.main-content {
+  display: grid;
+  grid-template-rows: 200px 1fr 250px;
+  gap: 1px;
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+}
+
 .bottom-panels {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -150,18 +180,83 @@
 
 /* Custom scrollbar for WebKit browsers */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--muted);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
-  border-radius: 4px;
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Custom minimalistic scrollbar class */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.4);
+}
+
+/* Enhanced Chat Styling */
+.chat-message {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.chat-message .whitespace-pre-wrap {
+  line-height: 1.6;
+}
+
+.chat-message strong {
+  font-weight: 600;
+  color: hsl(var(--primary));
+}
+
+.chat-message em {
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Workflow Cards Hover Effects */
+.workflow-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.workflow-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }

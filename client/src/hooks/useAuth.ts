@@ -1,115 +1,101 @@
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { AUTH_MODE, DEMO_CONFIG, SUPABASE_CONFIG } from '@/lib/auth-config';
 
-// Import Supabase only when needed
-let supabase: any = null;
-if (AUTH_MODE === 'supabase') {
-  import('@supabase/supabase-js').then(({ createClient }) => {
-    supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-  });
-}
-
-// User interfaces
+// Simple demo user interface
 interface DemoUser {
   username: string;
-  acknowledged: boolean;
   createdAt: string;
 }
 
-interface SupabaseUser {
-  id: string;
-  email: string;
-  full_name?: string;
-  company?: string;
-  role?: 'institutional' | 'individual' | 'admin';
-  created_at: string;
-  updated_at: string;
-}
-
-type User = DemoUser | SupabaseUser;
-
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (AUTH_MODE === 'demo') {
-      checkDemoSession();
-    } else if (AUTH_MODE === 'supabase' && supabase) {
-      checkSupabaseSession();
-    }
-  }, []);
-
-  const checkDemoSession = () => {
+  
+  // Initialize state from localStorage immediately to prevent flash
+  const [user, setUser] = useState<DemoUser | null>(() => {
     try {
-      const storedUser = localStorage.getItem(DEMO_CONFIG.sessionKey);
+      const storedUser = localStorage.getItem('blossomai-demo-user');
       if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        // Check if session is still valid
-        const sessionAge = Date.now() - new Date(userData.createdAt).getTime();
-        if (sessionAge < DEMO_CONFIG.sessionDuration) {
+        return JSON.parse(storedUser);
+      }
+    } catch (error) {
+      localStorage.removeItem('blossomai-demo-user');
+    }
+    return null;
+  });
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      return localStorage.getItem('blossomai-demo-user') !== null;
+    } catch {
+      return false;
+    }
+  });
+  
+  // Add a computed value for hasLocalAuth to avoid accessing localStorage in App.tsx
+  const hasLocalAuth = isAuthenticated || (user !== null);
+
+  // Sync state with localStorage changes
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const storedUser = localStorage.getItem('blossomai-demo-user');
+        if (storedUser && !user) {
+          const userData = JSON.parse(storedUser);
           setUser(userData);
           setIsAuthenticated(true);
-        } else {
-          // Session expired, clear it
-          localStorage.removeItem(DEMO_CONFIG.sessionKey);
+        } else if (!storedUser && user) {
+          setUser(null);
+          setIsAuthenticated(false);
         }
+      } catch (error) {
+        localStorage.removeItem('blossomai-demo-user');
+        setUser(null);
+        setIsAuthenticated(false);
       }
-    } catch (error) {
-      console.error('Error checking demo session:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
-  const checkSupabaseSession = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUser(session.user as SupabaseUser);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error('Error checking Supabase session:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // Check on mount
+    checkAuth();
 
-  const signIn = async (username: string, acknowledged: boolean) => {
-    if (AUTH_MODE === 'demo') {
-      return signInDemo(username, acknowledged);
-    } else if (AUTH_MODE === 'supabase') {
-      // This would be email/password for Supabase
-      return { success: false, error: "Supabase auth not implemented yet" };
-    }
-  };
+    // Listen for storage events
+    window.addEventListener('storage', checkAuth);
+    
+    // Add a custom event listener for sign-out to ensure all components update
+    const handleSignOut = () => {
+      setUser(null);
+      setIsAuthenticated(false);
+    };
 
-  const signInDemo = async (username: string, acknowledged: boolean) => {
+    window.addEventListener('blossomai-signout', handleSignOut);
+    
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('blossomai-signout', handleSignOut);
+    };
+  }, [user]);
+
+  const signIn = async (username: string) => {
     try {
       setIsLoading(true);
       
-      if (!acknowledged) {
+      if (!username.trim()) {
         toast({
-          title: "Acknowledgement Required",
-          description: "Please check the acknowledgment box to continue.",
+          title: "Username Required",
+          description: "Please enter a username to continue.",
           variant: "destructive",
         });
-        return { success: false, error: "Acknowledgement required" };
+        return { success: false, error: "Username required" };
       }
 
       // Create demo user
       const demoUser: DemoUser = {
-        username,
-        acknowledged,
+        username: username.trim(),
         createdAt: new Date().toISOString(),
       };
 
       // Store in localStorage
-      localStorage.setItem(DEMO_CONFIG.sessionKey, JSON.stringify(demoUser));
+      localStorage.setItem('blossomai-demo-user', JSON.stringify(demoUser));
       
       // Update state
       setUser(demoUser);
@@ -135,23 +121,33 @@ export function useAuth() {
 
   const signOut = async () => {
     try {
-      if (AUTH_MODE === 'demo') {
-        localStorage.removeItem(DEMO_CONFIG.sessionKey);
-      } else if (AUTH_MODE === 'supabase' && supabase) {
-        await supabase.auth.signOut();
-      }
+      // Clear all user data and session
+      localStorage.removeItem('blossomai-demo-user');
       
+      // Clear any other session-related data
+      sessionStorage.clear();
+      
+      // Reset state
       setUser(null);
       setIsAuthenticated(false);
       
+      // Dispatch custom event to notify all components about sign-out
+      window.dispatchEvent(new CustomEvent('blossomai-signout'));
+      
+      // Show success message
       toast({
-        title: "Signed Out",
-        description: "You've been signed out of your session.",
+        title: "Signed Out Successfully",
+        description: "You've been signed out. Please sign in again to continue.",
       });
+      
+      // No need to manually redirect - React Router will handle this automatically
+      // The App.tsx will detect isAuthenticated: false and show the Auth component
+      
     } catch (error: any) {
+      console.error('Sign out error:', error);
       toast({
         title: "Sign Out Failed",
-        description: "Please try again.",
+        description: "Please try again or refresh the page.",
         variant: "destructive",
       });
     }
@@ -161,8 +157,9 @@ export function useAuth() {
     user,
     isLoading,
     isAuthenticated,
+    hasLocalAuth,
     signIn,
     signOut,
-    authMode: AUTH_MODE,
+    authMode: 'demo',
   };
 }

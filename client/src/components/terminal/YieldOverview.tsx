@@ -86,7 +86,7 @@ export function YieldOverview() {
   }
 
   return (
-    <section className="terminal-panel p-4">
+    <section className="terminal-panel p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold">Yield Opportunities</h2>
         <div className="flex items-center space-x-2">
@@ -114,13 +114,14 @@ export function YieldOverview() {
           <p>No yield opportunities available</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          {opportunities.slice(0, 8).map((opportunity) => (
-            <Card
-              key={opportunity.id}
-              className="hover:bg-muted/50 transition-colors cursor-pointer group h-28"
-              data-testid={`card-opportunity-${opportunity.id}`}
-            >
+        <div className="overflow-x-auto w-full custom-scrollbar">
+          <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content', maxWidth: 'none' }}>
+            {opportunities.slice(0, 8).map((opportunity) => (
+              <Card
+                key={opportunity.id}
+                className="hover:bg-muted/50 transition-colors cursor-pointer group h-28 w-48 flex-shrink-0"
+                data-testid={`card-opportunity-${opportunity.id}`}
+              >
               <CardContent className="p-3">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-medium truncate flex-1 mr-2" title={opportunity.name}>
@@ -147,6 +148,7 @@ export function YieldOverview() {
               </CardContent>
             </Card>
           ))}
+          </div>
         </div>
       )}
     </section>

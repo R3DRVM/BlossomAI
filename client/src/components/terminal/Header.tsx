@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +14,7 @@ interface HeaderProps {
 
 export function Header({ activeTab, onTabChange }: HeaderProps) {
   const { theme, setTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
@@ -58,9 +59,7 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
     <header className="terminal-panel col-span-2 flex items-center justify-between px-6 border-b border-border">
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-chart-2 rounded-lg flex items-center justify-center">
-            <BarChart3 className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <Logo size={48} className="flex-shrink-0" />
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
             Blossom
           </span>
@@ -128,24 +127,14 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
         {/* User Profile */}
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-br from-primary to-chart-2 rounded-full flex items-center justify-center">
-            {'username' in user && user.username 
-              ? user.username.charAt(0).toUpperCase() 
-              : 'email' in user && user.email 
-                ? user.email.charAt(0).toUpperCase() 
-                : "U"
-            }
+            {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
           </div>
           <div className="text-left">
             <span className="text-sm font-medium block" data-testid="text-user-name">
-              {'username' in user && user.username 
-                ? user.username 
-                : 'email' in user && user.email 
-                  ? user.email 
-                  : "User"
-              }
+              {user?.username || "Demo User"}
             </span>
             <span className="text-xs text-muted-foreground block">
-              {'username' in user ? "Demo Session" : "Production User"}
+              Demo Session
             </span>
           </div>
         </div>
