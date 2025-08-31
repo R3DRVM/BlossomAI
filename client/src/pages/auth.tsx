@@ -1,36 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/ui/logo';
+import { useLocation } from 'wouter';
 
 import { Sparkles, ArrowRight, User, Shield, Building2, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import Terminal from './terminal';
 
-interface AuthProps {
-  onAuthSuccess?: () => void;
-}
-
-export default function Auth({ onAuthSuccess }: AuthProps) {
+export default function Auth() {
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  
   const { signIn } = useAuth();
   const { toast } = useToast();
-
-  // Listen for sign-out events to reset local state
-  useEffect(() => {
-    const handleSignOut = () => {
-      setIsSignedIn(false);
-    };
-
-    window.addEventListener('blossomai-signout', handleSignOut);
-    return () => window.removeEventListener('blossomai-signout', handleSignOut);
-  }, []);
+  const [, setLocation] = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,13 +24,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     try {
       const result = await signIn(username);
       if (result.success) {
-        // Set local state to trigger re-render
-        setIsSignedIn(true);
-        
-        // Call onAuthSuccess callback if provided
-        if (onAuthSuccess) {
-          onAuthSuccess();
-        }
+        // Redirect to terminal after successful sign-in
+        setLocation('/terminal');
       } else {
         toast({
           title: "Sign In Failed",
@@ -63,11 +43,6 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       setIsLoading(false);
     }
   };
-
-  // If signed in and no callback, show the terminal
-  if (isSignedIn && !onAuthSuccess) {
-    return <Terminal />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">

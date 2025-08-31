@@ -13,11 +13,8 @@ import Auth from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading, hasLocalAuth } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [, setLocation] = useLocation();
-  
-  // Use the computed value from useAuth to avoid race conditions
-  const isActuallyAuthenticated = isAuthenticated || hasLocalAuth;
 
   // Show loading screen while checking authentication
   if (isLoading) {
@@ -39,18 +36,18 @@ function Router() {
       
       {/* Protected routes - redirect to auth if not authenticated */}
       <Route path="/terminal">
-        {isActuallyAuthenticated ? (
+        {isAuthenticated ? (
           <Terminal />
         ) : (
-          <Auth onAuthSuccess={() => setLocation('/terminal')} />
+          <Auth />
         )}
       </Route>
       
       <Route path="/strategies">
-        {isActuallyAuthenticated ? (
+        {isAuthenticated ? (
           <Strategies />
         ) : (
-          <Auth onAuthSuccess={() => setLocation('/strategies')} />
+          <Auth />
         )}
       </Route>
       

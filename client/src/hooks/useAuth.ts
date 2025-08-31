@@ -31,9 +31,6 @@ export function useAuth() {
       return false;
     }
   });
-  
-  // Add a computed value for hasLocalAuth to avoid accessing localStorage in App.tsx
-  const hasLocalAuth = isAuthenticated || (user !== null);
 
   // Sync state with localStorage changes
   useEffect(() => {
@@ -127,7 +124,7 @@ export function useAuth() {
       // Clear any other session-related data
       sessionStorage.clear();
       
-      // Reset state
+      // Reset state immediately
       setUser(null);
       setIsAuthenticated(false);
       
@@ -139,9 +136,6 @@ export function useAuth() {
         title: "Signed Out Successfully",
         description: "You've been signed out. Please sign in again to continue.",
       });
-      
-      // No need to manually redirect - React Router will handle this automatically
-      // The App.tsx will detect isAuthenticated: false and show the Auth component
       
     } catch (error: any) {
       console.error('Sign out error:', error);
@@ -157,7 +151,6 @@ export function useAuth() {
     user,
     isLoading,
     isAuthenticated,
-    hasLocalAuth,
     signIn,
     signOut,
     authMode: 'demo',
