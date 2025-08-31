@@ -24,8 +24,8 @@ export default function Auth() {
     try {
       const result = await signIn(username);
       if (result.success) {
-        // Redirect to terminal after successful sign-in
-        setLocation('/terminal');
+        // Use window.location.href for a clean redirect to prevent CSP issues
+        window.location.href = '/terminal';
       } else {
         toast({
           title: "Sign In Failed",

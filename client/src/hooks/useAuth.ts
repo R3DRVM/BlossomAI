@@ -70,7 +70,7 @@ export function useAuth() {
       window.removeEventListener('storage', checkAuth);
       window.removeEventListener('blossomai-signout', handleSignOut);
     };
-  }, [user]);
+  }, []); // Remove user dependency to prevent infinite loop
 
   const signIn = async (username: string) => {
     try {
