@@ -10,7 +10,11 @@ import { Sparkles, ArrowRight, User, Shield, Building2, Users } from 'lucide-rea
 import { useToast } from '@/hooks/use-toast';
 import Terminal from './terminal';
 
-export default function Auth() {
+interface AuthProps {
+  onAuthSuccess?: () => void;
+}
+
+export default function Auth({ onAuthSuccess }: AuthProps) {
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -32,12 +36,17 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
 
-                try {
-              const result = await signIn(username);
-              if (result.success) {
-                // Set local state to trigger re-render
-                setIsSignedIn(true);
-              } else {
+    try {
+      const result = await signIn(username);
+      if (result.success) {
+        // Set local state to trigger re-render
+        setIsSignedIn(true);
+        
+        // Call onAuthSuccess callback if provided
+        if (onAuthSuccess) {
+          onAuthSuccess();
+        }
+      } else {
         toast({
           title: "Sign In Failed",
           description: result.error || "Please try again.",
@@ -55,8 +64,8 @@ export default function Auth() {
     }
   };
 
-  // If signed in, show the terminal
-  if (isSignedIn) {
+  // If signed in and no callback, show the terminal
+  if (isSignedIn && !onAuthSuccess) {
     return <Terminal />;
   }
 
