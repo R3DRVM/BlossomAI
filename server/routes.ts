@@ -298,6 +298,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // DEBUG_403: Add debug endpoint for CSRF testing
+  if (process.env.DEBUG_403 === '1') {
+    app.get('/__debug/csrf', (req, res) => {
+      try { 
+        res.json({ csrfToken: null, message: 'No CSRF protection enabled' }); 
+      } catch (error: any) { 
+        res.json({ csrfToken: null, error: error.message }); 
+      }
+    });
+    
+    app.get('/__debug/ping', (req, res) => {
+      const cookies: Record<string, boolean> = {};
+      if (req.headers.cookie) {
+        req.headers.cookie.split(';').forEach(cookie => {
+          const [key] = cookie.trim().split('=');
+          if (key) cookies[key] = true;
+        });
+      }
+      
+      res.json({ 
+        ok: true, 
+        cookies: Object.keys(cookies),
+        headers: {
+          origin: req.headers.origin,
+          referer: req.headers.referer,
+          userAgent: req.headers['user-agent']
+        }
+      });
+    });
+  }
+
   const httpServer = createServer(app);
 
   // WebSocket server temporarily disabled to fix refresh issues

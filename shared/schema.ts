@@ -99,6 +99,7 @@ export const chatMessages = pgTable("chat_messages", {
   isBot: boolean("is_bot").default(false),
   metadata: jsonb("metadata"), // For storing additional context
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Risk assessments table

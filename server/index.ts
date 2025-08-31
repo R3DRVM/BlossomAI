@@ -5,6 +5,37 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// DEBUG_403: Add trust proxy and diagnostic headers
+if (process.env.DEBUG_403 === '1') {
+  app.set('trust proxy', 1);
+  
+  // Add diagnostic header to all responses
+  app.use((req, res, next) => {
+    res.set('x-app-layer', 'api');
+    next();
+  });
+  
+  // 403 diagnostic logging
+  app.use((req, res, next) => {
+    res.on('finish', () => {
+      if (res.statusCode === 403) {
+        console.error(JSON.stringify({
+          at: new Date().toISOString(),
+          method: req.method,
+          path: req.originalUrl,
+          status: res.statusCode,
+          origin: req.headers.origin,
+          referer: req.headers.referer,
+          hasCookie: Boolean(req.headers.cookie),
+          ua: req.headers['user-agent'],
+          ip: req.ip,
+        }));
+      }
+    });
+    next();
+  });
+}
+
 // Enable CORS for all routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

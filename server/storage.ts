@@ -53,6 +53,7 @@ export interface IStorage {
   
   // Chat operations
   getUserChatMessages(userId: string, limit?: number): Promise<ChatMessage[]>;
+  getChatMessages(): Promise<ChatMessage[]>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   
   // Risk assessment operations
@@ -196,6 +197,10 @@ export class DatabaseStorage implements IStorage {
       .where(eq(chatMessages.userId, userId))
       .orderBy(desc(chatMessages.createdAt))
       .limit(limit);
+  }
+
+  async getChatMessages(): Promise<ChatMessage[]> {
+    return await db.select().from(chatMessages).orderBy(desc(chatMessages.createdAt));
   }
 
   async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
