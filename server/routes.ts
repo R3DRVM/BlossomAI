@@ -300,7 +300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // DEBUG_403: Add debug endpoint for CSRF testing
   if (process.env.DEBUG_403 === '1') {
-    app.get('/__debug/csrf', (req, res) => {
+    app.get('/api/__debug/csrf', (req, res) => {
       try { 
         res.json({ csrfToken: null, message: 'No CSRF protection enabled' }); 
       } catch (error: any) { 
@@ -308,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
     
-    app.get('/__debug/ping', (req, res) => {
+    app.get('/api/__debug/ping', (req, res) => {
       const cookies: Record<string, boolean> = {};
       if (req.headers.cookie) {
         req.headers.cookie.split(';').forEach(cookie => {
