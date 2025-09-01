@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { env } from "./env";
 
 const app = express();
 
@@ -36,24 +37,53 @@ if (process.env.DEBUG_403 === '1') {
   });
 }
 
-// Enable CORS for all routes
+// Universal CORS + Preflight middleware
 app.use((req, res, next) => {
-  // Use origin reflection for credentials support instead of wildcard
   const origin = req.headers.origin;
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    res.header('Access-Control-Allow-Origin', '*');
-  }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+  // Helper to check if origin is allowed
+  const isOriginAllowed = (origin: string): boolean => {
+    // Exact match in ALLOWED_ORIGINS
+    if (env.allowedOrigins.includes(origin)) {
+      return true;
+    }
+    
+    // Regex match for preview deployments (*.vercel.app)
+    if (env.allowedOriginRegexPreview) {
+      const regex = new RegExp(env.allowedOriginRegexPreview);
+      return regex.test(origin);
+    }
+    
+    return false;
+  };
+  
+  if (origin) {
+    if (isOriginAllowed(origin)) {
+      // Origin is allowed - set CORS headers
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Vary', 'Origin');
+    } else {
+      // Origin not allowed - return 403
+      return res.status(403).json({ 
+        error: "origin_not_allowed", 
+        origin,
+        allowed: env.allowedOrigins 
+      });
+    }
   }
+  // If no Origin header (curl, same-origin), allow without ACAO
+  
+  // Set common CORS headers for all allowed requests
+  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'content-type, authorization, x-requested-with, x-app-layer, x-client-version');
+  
+  // Handle preflight OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  
+  next();
 });
 
 app.use(express.json());
@@ -90,6 +120,16 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Validate environment on startup
+  try {
+    const { logEnvConfig } = await import("./env");
+    logEnvConfig();
+  } catch (error) {
+    console.error("❌ Environment validation failed:");
+    console.error(error);
+    process.exit(1);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -107,15 +147,14 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Use the port from environment or default to 5000
-  const port = parseInt(process.env.PORT || '5000', 10);
-  
+  // Use the port from environment
+  const PORT = Number(process.env.PORT) || 5050;
   server.listen({
-    port,
+    port: PORT,
     host: "localhost",
   }, () => {
-    log(`🚀 Server running on http://localhost:${port}`);
-    log(`📱 Development mode: ${app.get("env")}`);
-    log(`🔧 API endpoints available at http://localhost:${port}/api/*`);
+    log(`🚀 Server running on http://localhost:${PORT}`);
+    log(`📱 Development mode: ${env.nodeEnv}`);
+    log(`🔧 API endpoints available at http://localhost:${PORT}/api/*`);
   });
 })();

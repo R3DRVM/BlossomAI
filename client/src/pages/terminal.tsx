@@ -5,7 +5,7 @@ import { YieldOverview } from "@/components/terminal/YieldOverview";
 import { StrategyBuilder } from "@/components/terminal/StrategyBuilder";
 import { PerformanceChart } from "@/components/terminal/PerformanceChart";
 import { RiskMetrics } from "@/components/terminal/RiskMetrics";
-import { ChatSidebar } from "@/components/terminal/ChatSidebar";
+import { LazyChat } from "@/components/chat/LazyChat";
 import { Strategies } from "./strategies";
 import { BarChart3, Wallet } from "lucide-react";
 
@@ -69,7 +69,7 @@ export default function Terminal() {
         </main>
 
                         {/* Persistent Chat Sidebar */}
-                <ChatSidebar />
+                <LazyChat />
       </div>
     </div>
   );

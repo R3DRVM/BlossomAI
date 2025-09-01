@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertYieldOpportunitySchema, insertStrategySchema, insertChatMessageSchema } from "@shared/schema";
+import { dataFacade } from "./data/facade.ts";
+import { env } from "./env.ts";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -296,6 +298,225 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching protocols:", error);
       res.status(500).json({ message: "Failed to fetch protocols" });
     }
+  });
+
+  // Data API endpoints
+  app.get('/api/data/prices', async (req, res) => {
+    try {
+      const symbols = req.query.symbols?.toString().split(',') || ['USDC', 'WETH', 'SOL'];
+      const response = await dataFacade.getPrices(symbols);
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching prices:", error);
+      res.status(500).json({ message: "Failed to fetch prices" });
+    }
+  });
+
+  app.get('/api/data/yields', async (req, res) => {
+    try {
+      const params = {
+        chain: req.query.chain?.toString(),
+        assets: req.query.assets?.toString().split(','),
+        limit: req.query.limit ? parseInt(req.query.limit.toString()) : 25,
+        sort: req.query.sort as "apy" | "tvl" | "risk",
+      };
+      const response = await dataFacade.getYields(params);
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching yields:", error);
+      res.status(500).json({ message: "Failed to fetch yields" });
+    }
+  });
+
+  app.get('/api/data/tvl', async (req, res) => {
+    try {
+      const params = {
+        chain: req.query.chain?.toString(),
+        protocols: req.query.protocols?.toString().split(','),
+      };
+      const response = await dataFacade.getTVL(params);
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching TVL:", error);
+      res.status(500).json({ message: "Failed to fetch TVL" });
+    }
+  });
+
+  app.get('/api/data/risk', async (req, res) => {
+    try {
+      const params = {
+        protocols: req.query.protocols?.toString().split(','),
+      };
+      const response = await dataFacade.getRiskScores(params);
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching risk scores:", error);
+      res.status(500).json({ message: "Failed to fetch risk scores" });
+    }
+  });
+
+  // Chat endpoints
+  app.post('/api/demo/chat', async (req, res) => {
+    const startTime = Date.now();
+    try {
+      const { sessionId, message } = req.body;
+      
+      if (env.debugChat) {
+        console.log('[DEBUG_CHAT] POST /api/demo/chat request received', {
+          sessionId: sessionId ? 'provided' : 'missing',
+          messageLength: message?.length || 0,
+          mode: 'JSON'
+        });
+      }
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message parameter required" });
+      }
+      
+      // Import here to avoid circular dependencies
+      const { parseIntent } = await import('./data/ai/intent-parser.ts');
+      const { generateResponse } = await import('./data/ai/response-generator.ts');
+      
+      const intent = parseIntent(message);
+      const response = await generateResponse(intent, message);
+      
+      const finalResponse = {
+        schemaVersion: "v1",
+        provenance: "live",
+        timestamp: new Date().toISOString(),
+        ...response,
+      };
+      
+      const responseSize = JSON.stringify(finalResponse).length;
+      const duration = Date.now() - startTime;
+      
+      if (env.debugChat) {
+        console.log('[DEBUG_CHAT] JSON response ready', {
+          responseSize,
+          duration: `${duration}ms`,
+          hasAllocations: !!response.allocations?.length,
+          hasStrategy: !!response.strategy
+        });
+      }
+      
+      res.json(finalResponse);
+    } catch (error) {
+      console.error("Error processing chat:", error);
+      res.status(500).json({ message: "Failed to process chat request" });
+    }
+  });
+
+  app.get('/api/demo/chat/stream', async (req, res) => {
+    const startTime = Date.now();
+    let bytesWritten = 0;
+    
+    try {
+      const { sessionId, message } = req.query;
+      
+      if (env.debugChat) {
+        console.log('[DEBUG_CHAT] GET /api/demo/chat/stream request received', {
+          sessionId: sessionId ? 'provided' : 'missing',
+          messageLength: message?.toString().length || 0,
+          mode: 'SSE'
+        });
+      }
+      
+      // Check if streaming is disabled
+      if (!env.aiStream) {
+        if (env.debugChat) {
+          console.log('[DEBUG_CHAT] SSE disabled, returning fallback response');
+        }
+        return res.json({ disabled: true });
+      }
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message parameter required" });
+      }
+      
+      // Set SSE headers (CORS headers are already set by middleware)
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      });
+      
+      const writeData = (data: any) => {
+        const line = `data: ${JSON.stringify(data)}\n\n`;
+        bytesWritten += line.length;
+        res.write(line);
+      };
+      
+      // Import here to avoid circular dependencies
+      const { parseIntent } = await import('./data/ai/intent-parser.ts');
+      const { generateResponse } = await import('./data/ai/response-generator.ts');
+      
+      const intent = parseIntent(message.toString());
+      
+      if (env.debugChat) {
+        console.log('[DEBUG_CHAT] Starting SSE stream');
+      }
+      
+      // Generate response (this takes time, so we get the full payload)
+      const response = await generateResponse(intent, message.toString());
+      
+      // Simulate token streaming by splitting the plan summary
+      const tokens = response.planSummary?.split(' ') || ['Response', 'generated'];
+      
+      for (let i = 0; i < tokens.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 50)); // Simulate typing
+        writeData({ token: tokens[i] + (i < tokens.length - 1 ? ' ' : '') });
+        
+        if (env.debugChat && i === 0) {
+          console.log('[DEBUG_CHAT] First SSE chunk sent');
+        }
+      }
+      
+      // Send final payload
+      const finalPayload = {
+        schemaVersion: "v1",
+        provenance: "live",
+        timestamp: new Date().toISOString(),
+        ...response,
+      };
+      
+      writeData({ final: finalPayload });
+      writeData('[DONE]');
+      
+      const duration = Date.now() - startTime;
+      
+      if (env.debugChat) {
+        console.log('[DEBUG_CHAT] SSE stream completed', {
+          duration: `${duration}ms`,
+          bytesWritten,
+          tokensStreamed: tokens.length,
+          endSignal: 'sent'
+        });
+      }
+      
+      res.end();
+    } catch (error) {
+      console.error("Error in chat stream:", error);
+      const errorData = `data: ${JSON.stringify({ error: 'Failed to process request' })}\n\n`;
+      bytesWritten += errorData.length;
+      res.write(errorData);
+      res.end();
+      
+      if (env.debugChat) {
+        console.log('[DEBUG_CHAT] SSE stream error', {
+          duration: `${Date.now() - startTime}ms`,
+          bytesWritten,
+          error: error instanceof Error ? error.message : 'unknown'
+        });
+      }
+    }
+  });
+
+  app.get('/api/demo/health', async (req, res) => {
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      providers: dataFacade.getProviderStatus(),
+    });
   });
 
   // DEBUG_403: Add debug endpoint for CSRF testing

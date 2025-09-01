@@ -5,11 +5,19 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
-if (!process.env.DATABASE_URL) {
+// For demo mode, make database optional
+let pool: Pool | null = null;
+let db: any = null;
+
+if (process.env.DATABASE_URL) {
+  pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  db = drizzle({ client: pool, schema });
+} else if (process.env.NODE_ENV === 'development') {
+  console.warn('⚠️  No DATABASE_URL set - running in demo mode without database');
+} else {
   throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
+    "DATABASE_URL must be set for production. Did you forget to provision a database?",
   );
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+export { pool, db };

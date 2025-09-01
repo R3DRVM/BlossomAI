@@ -7,12 +7,20 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Get API base from environment
+const getApiBase = () => {
+  return import.meta.env.VITE_API_BASE || `http://localhost:${import.meta.env.VITE_PORT || 5050}`;
+};
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  // Ensure URL is absolute
+  const fullUrl = url.startsWith('http') ? url : `${getApiBase()}${url.startsWith('/') ? '' : '/'}${url}`;
+  
+  const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -29,7 +37,10 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const url = queryKey.join("/") as string;
+    const fullUrl = url.startsWith('http') ? url : `${getApiBase()}${url.startsWith('/') ? '' : '/'}${url}`;
+    
+    const res = await fetch(fullUrl, {
       credentials: "include",
     });
 

@@ -20,12 +20,14 @@ export default defineConfig({
   },
   server: {
     port: 5000,
-    host: 'localhost',
     strictPort: true,
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
-    },
+    cors: true,
+    proxy: {
+      '/api': { 
+        target: 'http://localhost:5050', 
+        changeOrigin: true 
+      }
+    }
   },
   preview: {
     port: 5000,
