@@ -1,4 +1,6 @@
 import { useTheme } from "@/components/ui/theme-provider";
+import blossomDark from "@/assets/logos/blossom-dark.svg";
+import blossomLight from "@/assets/logos/blossom-light.svg";
 
 interface LogoProps {
   className?: string;
@@ -8,10 +10,8 @@ interface LogoProps {
 export function Logo({ className = "", size = 32 }: LogoProps) {
   const { theme } = useTheme();
   
-  // Import logos dynamically based on theme
-  const logoSrc = theme === "dark" 
-    ? "/src/assets/logos/blossom-dark.svg"
-    : "/src/assets/logos/blossom-light.svg";
+  // Use imported logos based on theme
+  const logoSrc = theme === "dark" ? blossomDark : blossomLight;
 
   return (
     <img 
