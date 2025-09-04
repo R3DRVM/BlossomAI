@@ -41,7 +41,12 @@ async function processIntentBasedMessage(content: string, userId: string): Promi
     if (/^y(es)?$/i.test(userText)) {
       // User confirmed - apply the plan
       const plan = getProposedPlan(userId);
-      console.log('[chat:deploy:check]', { userId, plan: plan ? { id: plan.id, status: plan.status, capitalUSD: plan.capitalUSD } : null, sessionPlanId: session.pendingPlanId });
+      console.log('[chat:deploy:check]', { 
+        userId, 
+        plan: plan ? { id: plan.id, status: plan.status, capitalUSD: plan.capitalUSD } : null, 
+        sessionPlanId: session.pendingPlanId,
+        sessionStage: session.stage
+      });
       
       if (!plan) {
         return { response: '❌ **No plan found!** Please create a new deployment plan.', shouldContinue: false };
@@ -286,7 +291,10 @@ function createDeployPlan(session: any, userId: string): { response: string; sho
     status: 'pending' as const,
   };
   
+  console.log('[createDeployPlan:beforeSave]', { planId: plan.id, status: plan.status, userId });
   saveProposedPlan(plan, userId);
+  console.log('[createDeployPlan:afterSave]', { planId: plan.id, status: plan.status, userId });
+  
   session.stage = 'waitingConfirm';
   session.pendingPlanId = plan.id;
   saveSession(userId, session);

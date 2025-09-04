@@ -295,11 +295,24 @@ export async function applyPlanById(userId: string, plan: ProposedPlan) {
   
   // Re-fetch the plan to ensure we have the latest status
   const freshPlan = getProposedPlan(userId);
+  console.log('[applyPlanById:freshPlan]', { 
+    exists: !!freshPlan, 
+    id: freshPlan?.id, 
+    status: freshPlan?.status,
+    originalId: plan.id,
+    originalStatus: plan.status
+  });
+  
   if (!freshPlan || freshPlan.id !== plan.id) {
     throw new Error('Plan not found or ID mismatch');
   }
   
   if (freshPlan.status !== 'pending') {
+    console.error('[applyPlanById:statusError]', { 
+      freshStatus: freshPlan.status, 
+      originalStatus: plan.status,
+      planId: freshPlan.id 
+    });
     throw new Error(`Plan status is "${freshPlan.status}" but should be "pending"`);
   }
   
