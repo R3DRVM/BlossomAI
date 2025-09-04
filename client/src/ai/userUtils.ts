@@ -21,6 +21,19 @@ export function getActiveUserId(): string {
   }
   
   try {
+    // Check for blossomai-demo-user (current auth system)
+    const blossomaiUser = localStorage.getItem('blossomai-demo-user');
+    if (blossomaiUser) {
+      const parsed = JSON.parse(blossomaiUser);
+      if (parsed.username) {
+        return parsed.username;
+      }
+    }
+  } catch (e) {
+    // Ignore parsing errors
+  }
+  
+  try {
     // Fallback to blossom user storage
     const blossomUser = localStorage.getItem('blossom.user');
     if (blossomUser) {
@@ -50,7 +63,7 @@ export function onUserChange(callback: (userId: string) => void): () => void {
   }
   
   const handleStorageChange = (e: StorageEvent) => {
-    if (e.key === 'demo.auth.user' || e.key === 'blossom.user') {
+    if (e.key === 'demo.auth.user' || e.key === 'blossom.user' || e.key === 'blossomai-demo-user') {
       callback(getActiveUserId());
     }
   };

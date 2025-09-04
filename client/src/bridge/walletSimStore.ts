@@ -66,7 +66,8 @@ class WalletSimStore {
   private ensureWalletExists(): DemoWallet {
     let wallet = this.getWalletFromStorage();
     
-    if (!wallet && import.meta.env.VITE_DEMO_FUNDS === '1') {
+    // Always seed demo funds if no wallet exists (both dev and prod)
+    if (!wallet) {
       const userId = getActiveUserId();
       const seededKey = this.getSeededKey();
       
@@ -272,7 +273,7 @@ class WalletSimStore {
     };
   }
 
-  // Idempotent seeding function
+  // Idempotent seeding function - always seeds demo funds
   ensureSeed(userId: string, force = false): DemoWallet {
     const key = this.storageKey(userId);
     
