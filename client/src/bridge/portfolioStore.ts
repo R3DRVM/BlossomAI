@@ -291,6 +291,8 @@ export const downloadSnapshotCSV = (snapshot: PlanSnapshot): void => {
 
 // Plan application helper
 export async function applyPlanById(userId: string, plan: ProposedPlan) {
+  console.log('[applyPlanById:start]', { userId, planId: plan.id, status: plan.status, capitalUSD: plan.capitalUSD });
+  
   if (plan.status !== 'pending') throw new Error('Plan not pending');
   if (plan.capitalUSD <= 0) throw new Error('Invalid size');
   
@@ -301,10 +303,13 @@ export async function applyPlanById(userId: string, plan: ProposedPlan) {
   }
   
   // Debit cash
+  console.log('[applyPlanById:debit]', { userId, asset: plan.asset, amount: plan.capitalUSD });
   const debitResult = debit(userId, plan.asset, plan.capitalUSD);
   if (!debitResult.ok) {
+    console.error('[applyPlanById:debit:failed]', { reason: debitResult.reason });
     throw new Error(debitResult.reason || 'Failed to debit funds');
   }
+  console.log('[applyPlanById:debit:success]', { userId, asset: plan.asset, amount: plan.capitalUSD });
   
   if (import.meta.env.VITE_DEBUG_CHAT === '1') {
     console.log('[paper:debit]', { userId, asset: plan.asset, amount: plan.capitalUSD });
@@ -312,7 +317,7 @@ export async function applyPlanById(userId: string, plan: ProposedPlan) {
   
   // Create concrete positions per allocation
   const items: PositionSnapshot[] = plan.allocations.map(a => ({
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID ? crypto.randomUUID() : `pos-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     protocol: a.protocol,
     chain: a.chain,
     asset: a.asset,
@@ -322,7 +327,9 @@ export async function applyPlanById(userId: string, plan: ProposedPlan) {
     entryTime: new Date().toISOString(),
   }));
   
+  console.log('[applyPlanById:positions]', { userId, count: items.length, totalUSD: plan.capitalUSD });
   addPositions(userId, items);
+  console.log('[applyPlanById:positions:success]', { userId, count: items.length });
   
   if (import.meta.env.VITE_DEBUG_CHAT === '1') {
     console.log('[positions:created]', { userId, count: items.length, totalUSD: plan.capitalUSD });
@@ -338,6 +345,8 @@ export async function applyPlanById(userId: string, plan: ProposedPlan) {
   // Mark plan as applied
   plan.status = 'applied';
   localStorage.setItem(`blossom.proposedPlan.${userId}`, JSON.stringify(plan));
+  
+  console.log('[applyPlanById:complete]', { userId, planId: plan.id, count: items.length, totalUSD: plan.capitalUSD });
 }
 
 // Positions functions are now imported directly from positionsStore.ts

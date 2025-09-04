@@ -41,9 +41,32 @@ async function processIntentBasedMessage(content: string, userId: string): Promi
     if (/^y(es)?$/i.test(userText)) {
       // User confirmed - apply the plan
       const plan = getProposedPlan(userId);
+      console.log('[chat:deploy:check]', { userId, plan: plan ? { id: plan.id, status: plan.status, capitalUSD: plan.capitalUSD } : null, sessionPlanId: session.pendingPlanId });
+      
+      if (!plan) {
+        return { response: '❌ **No plan found!** Please create a new deployment plan.', shouldContinue: false };
+      }
+      
+      if (plan.id !== session.pendingPlanId) {
+        return { response: '❌ **Plan mismatch!** Please create a new deployment plan.', shouldContinue: false };
+      }
+      
+      if (plan.status !== 'pending') {
+        return { response: `❌ **Plan status error!** Plan status is "${plan.status}" but should be "pending".`, shouldContinue: false };
+      }
+      
       if (plan && plan.id === session.pendingPlanId) {
         try {
+          console.log('[chat:deploy:start]', { userId, planId: plan.id, capitalUSD: plan.capitalUSD });
+          
+          // Check current wallet balance before deployment
+          if (typeof window !== 'undefined' && (window as any).__paper) {
+            const walletInfo = (window as any).__paper(userId);
+            console.log('[chat:deploy:wallet]', walletInfo);
+          }
+          
           await applyPlanById(userId, plan);
+          console.log('[chat:deploy:success]', { userId, planId: plan.id });
           clearProposedPlan(userId);
           session.stage = 'idle';
           session.pendingPlanId = undefined;
@@ -64,8 +87,9 @@ async function processIntentBasedMessage(content: string, userId: string): Promi
           
           return { response: `🎉 **Deployment successful!**\n\nYour ${fmtUSD(plan.capitalUSD)} has been allocated across ${plan.allocations.length} protocols. You can now:\n\n• Check your **Portfolio** to see all positions\n• View **Analytics** for detailed performance metrics\n• Deploy more strategies or try different approaches\n\nWhat would you like to explore next?`, shouldContinue: false };
         } catch (error) {
-          console.error('Failed to apply plan:', error);
-          return { response: '❌ **Deployment failed!** Please try again or contact support if the issue persists.', shouldContinue: false };
+          console.error('[chat:deploy:error]', error);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          return { response: `❌ **Deployment failed!** ${errorMessage}\n\nPlease try again or contact support if the issue persists.`, shouldContinue: false };
         }
       }
     }
@@ -227,7 +251,7 @@ function createDeployPlan(session: any, userId: string): { response: string; sho
       apy: 0.12,
       tvl: 1000000,
       risk: risk || 'medium',
-      amountUSD: (sizeUSD * 0.4)
+      amountUSD: Math.round(sizeUSD * 0.4)
     },
     { 
       protocol: 'Orca', 
@@ -236,7 +260,7 @@ function createDeployPlan(session: any, userId: string): { response: string; sho
       apy: 0.10,
       tvl: 800000,
       risk: risk || 'medium',
-      amountUSD: (sizeUSD * 0.3)
+      amountUSD: Math.round(sizeUSD * 0.3)
     },
     { 
       protocol: 'Jupiter', 
@@ -245,12 +269,12 @@ function createDeployPlan(session: any, userId: string): { response: string; sho
       apy: 0.08,
       tvl: 600000,
       risk: risk || 'medium',
-      amountUSD: (sizeUSD * 0.3)
+      amountUSD: Math.round(sizeUSD * 0.3)
     },
   ];
   
   const plan = {
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID ? crypto.randomUUID() : `plan-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     userId,
     capitalUSD: sizeUSD,
     asset: (asset || 'USDC') as 'USDC'|'SOL',
@@ -262,7 +286,7 @@ function createDeployPlan(session: any, userId: string): { response: string; sho
     status: 'pending' as const,
   };
   
-  saveProposedPlan(plan);
+  saveProposedPlan(plan, userId);
   session.stage = 'waitingConfirm';
   session.pendingPlanId = plan.id;
   saveSession(userId, session);

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Chat Bot Deployment</title>
+</head>
+<body>
+    <h1>Test Chat Bot Deployment</h1>
+    <div id="output"></div>
+    
+    <script>
+        // Test the deployment flow
+        console.log('Testing chat bot deployment...');
+        
+        // Mock the required functions
+        const mockUserId = 'guest';
+        const mockPlan = {
+            id: 'test-plan-123',
+            userId: mockUserId,
+            capitalUSD: 250000,
+            asset: 'USDC',
+            chain: 'solana',
+            risk: 'medium',
+            autoRebalance: false,
+            allocations: [
+                { 
+                    protocol: 'Raydium', 
+                    chain: 'solana',
+                    asset: 'USDC',
+                    apy: 0.12,
+                    tvl: 1000000,
+                    risk: 'medium',
+                    amountUSD: 100000
+                },
+                { 
+                    protocol: 'Orca', 
+                    chain: 'solana',
+                    asset: 'USDC',
+                    apy: 0.10,
+                    tvl: 800000,
+                    risk: 'medium',
+                    amountUSD: 75000
+                },
+                { 
+                    protocol: 'Jupiter', 
+                    chain: 'solana',
+                    asset: 'USDC',
+                    apy: 0.08,
+                    tvl: 600000,
+                    risk: 'medium',
+                    amountUSD: 75000
+                },
+            ],
+            createdAt: new Date().toISOString(),
+            status: 'pending'
+        };
+        
+        console.log('Mock plan created:', mockPlan);
+        
+        // Test if we can access the required functions
+        if (typeof window !== 'undefined') {
+            console.log('Window available, testing deployment...');
+            
+            // Check if the functions are available
+            if (window.__paper) {
+                console.log('Paper custody available');
+                const wallet = window.__paper(mockUserId);
+                console.log('Current wallet:', wallet);
+            } else {
+                console.log('Paper custody not available');
+            }
+        } else {
+            console.log('Window not available (Node.js environment)');
+        }
+        
+        document.getElementById('output').innerHTML = 'Check console for test results';
+    </script>
+</body>
+</html>
