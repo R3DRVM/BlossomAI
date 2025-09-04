@@ -9,7 +9,7 @@ import { createSnapshotFromPlan } from './planBridge';
 import { getPositions, setPositions, addPositions, onPositionsChanged, clearPositions, PositionSnapshot } from './positionsStore';
 import { debit, getTotalUSD } from './paperCustody';
 import { demoWallet } from './walletSimStore';
-import { ProposedPlan } from './proposedPlanStore';
+import { ProposedPlan, getProposedPlan } from './proposedPlanStore';
 
 const PORTFOLIO_STORAGE_KEY = 'blossom.bridge.portfolio';
 
@@ -293,7 +293,16 @@ export const downloadSnapshotCSV = (snapshot: PlanSnapshot): void => {
 export async function applyPlanById(userId: string, plan: ProposedPlan) {
   console.log('[applyPlanById:start]', { userId, planId: plan.id, status: plan.status, capitalUSD: plan.capitalUSD });
   
-  if (plan.status !== 'pending') throw new Error('Plan not pending');
+  // Re-fetch the plan to ensure we have the latest status
+  const freshPlan = getProposedPlan(userId);
+  if (!freshPlan || freshPlan.id !== plan.id) {
+    throw new Error('Plan not found or ID mismatch');
+  }
+  
+  if (freshPlan.status !== 'pending') {
+    throw new Error(`Plan status is "${freshPlan.status}" but should be "pending"`);
+  }
+  
   if (plan.capitalUSD <= 0) throw new Error('Invalid size');
   
   // Check if user has sufficient cash

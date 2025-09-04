@@ -311,8 +311,87 @@ function handleOtherIntent(intent: Intent, session: any, userId: string): { resp
       return { response: 'Here are your current positions. [View detailed breakdown in Portfolio]', shouldContinue: false };
     case 'RESET_BALANCES':
       return { response: 'You can reset your wallet and clear all positions using the menu (⋮) in the top-right corner. This will restore your balances to the original seed amounts and clear all active positions.', shouldContinue: false };
+    case 'YIELD_SOURCES':
+      return handleYieldSourcesIntent(session, userId);
+    case 'ALERT_THRESHOLD':
+      return handleAlertIntent(session, userId);
     default:
       return { response: '', shouldContinue: true };
+  }
+}
+
+// Handle yield sources intent - show actual yield sources instead of deployment plans
+function handleYieldSourcesIntent(session: any, userId: string): { response: string; shouldContinue: boolean } {
+  const { asset } = session.slots;
+  
+  // Mock yield sources data - in a real app, this would fetch from an API
+  const yieldSources = [
+    { protocol: 'Raydium', apy: 12.5, tvl: 1200000000, chain: 'Solana', asset: 'USDC' },
+    { protocol: 'Orca', apy: 10.8, tvl: 800000000, chain: 'Solana', asset: 'USDC' },
+    { protocol: 'Jupiter', apy: 9.2, tvl: 600000000, chain: 'Solana', asset: 'USDC' },
+    { protocol: 'Meteora', apy: 11.3, tvl: 400000000, chain: 'Solana', asset: 'USDC' },
+    { protocol: 'Lido', apy: 4.2, tvl: 15000000000, chain: 'Ethereum', asset: 'WETH' },
+    { protocol: 'Aave', apy: 3.8, tvl: 8000000000, chain: 'Ethereum', asset: 'WETH' },
+    { protocol: 'Compound', apy: 3.5, tvl: 2000000000, chain: 'Ethereum', asset: 'WETH' },
+    { protocol: 'Marinade', apy: 6.8, tvl: 2000000000, chain: 'Solana', asset: 'SOL' },
+    { protocol: 'Jito', apy: 7.2, tvl: 1500000000, chain: 'Solana', asset: 'SOL' },
+    { protocol: 'BlazeStake', apy: 6.5, tvl: 800000000, chain: 'Solana', asset: 'SOL' },
+  ];
+  
+  // Filter by asset if specified (handle multiple assets like "WETH,SOL")
+  let filteredSources = yieldSources;
+  if (asset) {
+    const requestedAssets = asset.split(',').map(a => a.trim().toUpperCase());
+    filteredSources = yieldSources.filter(source => 
+      requestedAssets.includes(source.asset.toUpperCase())
+    );
+  }
+  
+  // Sort by TVL descending
+  const sortedSources = filteredSources.sort((a, b) => b.tvl - a.tvl);
+  
+  const response = `📊 **Top Yield Sources by TVL**\n\n${sortedSources.slice(0, 5).map((source, index) => 
+    `${index + 1}. **${source.protocol}** (${source.chain})\n   • APY: ${fmtPct(source.apy)}\n   • TVL: $${(source.tvl / 1000000).toFixed(0)}M\n   • Asset: ${source.asset}`
+  ).join('\n\n')}\n\n💡 **Want to deploy?** Say "Deploy USDC for highest APY" to create a deployment plan!`;
+  
+  return { response, shouldContinue: false };
+}
+
+// Handle alert intent - create alert rules
+function handleAlertIntent(session: any, userId: string): { response: string; shouldContinue: boolean } {
+  const { asset, minAPY } = session.slots;
+  
+  if (!asset || !minAPY) {
+    return { response: 'Please specify both asset and minimum APY for the alert (e.g., "Notify me if USDC APR < 7%")', shouldContinue: false };
+  }
+  
+  // Create alert rule
+  const alertRule = {
+    id: crypto.randomUUID ? crypto.randomUUID() : `alert-${Date.now()}`,
+    userId,
+    name: `${asset} APR Alert`,
+    type: 'apy_below' as const,
+    asset,
+    value: minAPY,
+    cadence: '1h' as const,
+    active: true,
+    createdAt: new Date().toISOString(),
+  };
+  
+  // Save alert rule (mock implementation)
+  try {
+    // In a real app, this would save to a store
+    console.log('[alert:created]', alertRule);
+    
+    return { 
+      response: `🔔 **Alert Created!**\n\nI'll notify you when ${asset} APR drops below ${fmtPct(minAPY)}.\n\n• Check your **Analytics** tab to see all active alerts\n• You can modify or delete alerts from there`, 
+      shouldContinue: false 
+    };
+  } catch (error) {
+    return { 
+      response: `❌ **Failed to create alert.** Please try again.`, 
+      shouldContinue: false 
+    };
   }
 }
 
