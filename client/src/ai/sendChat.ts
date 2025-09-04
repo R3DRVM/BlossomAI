@@ -28,9 +28,16 @@ interface ChatResponse {
   [key: string]: any;
 }
 
+// In development with proxy -> use relative path
 const getApiBase = () => {
+  if (import.meta.env.DEV && import.meta.env.VITE_DEV_PROXY) {
+    return ''; // so fetch('/api/...') is same-origin via Vite proxy
+  }
+  // else fall back to VITE_API_BASE or default http://localhost:5050
   return import.meta.env.VITE_API_BASE || 'http://localhost:5050';
 };
+
+const API_BASE = getApiBase();
 
 export async function sendChat({ sessionId, message, stream = false }: SendChatOptions): Promise<ChatResponse> {
   const apiBase = getApiBase();
@@ -39,22 +46,32 @@ export async function sendChat({ sessionId, message, stream = false }: SendChatO
     // SSE Stream path
     const url = `${apiBase}/api/demo/chat/stream?sessionId=${encodeURIComponent(sessionId)}&message=${encodeURIComponent(message)}`;
     
+    // Log SSE connection attempt
+    console.log(`sse:connecting ${url}`);
+    
     const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Accept': 'text/event-stream',
         'Cache-Control': 'no-cache',
+        'x-app-layer': 'api',
+        // Add trace ID for debugging in dev
+        ...(import.meta.env.DEV && { 'X-Trace-Id': `sse-${Date.now()}` }),
       },
     });
 
     if (!response.ok) {
+      console.log(`sse:error ${response.status} ${response.statusText}`);
       throw new Error(`SSE failed: HTTP ${response.status}: ${response.statusText}`);
     }
 
     if (!response.body) {
+      console.log(`sse:error no-body`);
       throw new Error('No response body for SSE');
     }
+
+    console.log(`sse:open ${url}`);
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -116,10 +133,16 @@ export async function sendChat({ sessionId, message, stream = false }: SendChatO
     }
   } else {
     // JSON path (default)
-    const response = await fetch(`${apiBase}/api/demo/chat`, {
+    const url = `${apiBase}/api/demo/chat`;
+    console.log(`json:connecting ${url}`);
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-app-layer': 'api',
+        // Add trace ID for debugging in dev
+        ...(import.meta.env.DEV && { 'X-Trace-Id': `json-${Date.now()}` }),
       },
       credentials: 'include',
       body: JSON.stringify({
@@ -129,9 +152,11 @@ export async function sendChat({ sessionId, message, stream = false }: SendChatO
     });
 
     if (!response.ok) {
+      console.log(`json:error ${response.status} ${response.statusText}`);
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
+    console.log(`json:success ${url}`);
     return response.json();
   }
 }

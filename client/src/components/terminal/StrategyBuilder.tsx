@@ -250,7 +250,8 @@ export function StrategyBuilder() {
     const newConnection: Connection = {
       id: Math.random().toString(36).substr(2, 9),
       from: fromId,
-      to: toId
+      to: toId,
+      type: 'data-flow'
     };
     
     setConnections([...connections, newConnection]);
@@ -688,7 +689,7 @@ export function StrategyBuilder() {
                       <span className="font-medium text-sm">{blockType.label}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Move className="h-4 w-4 text-muted-foreground cursor-move" title="Drag to move" />
+                      <Move className="h-4 w-4 text-muted-foreground cursor-move" />
                       <Button
                         variant="ghost"
                         size="icon"
@@ -718,7 +719,7 @@ export function StrategyBuilder() {
                               <SelectValue placeholder={`Select ${config.label}`} />
                             </SelectTrigger>
                             <SelectContent>
-                              {config.options.map((option) => (
+                              {'options' in config && config.options.map((option: string) => (
                                 <SelectItem key={option} value={option}>
                                   {option}
                                 </SelectItem>
@@ -728,7 +729,7 @@ export function StrategyBuilder() {
                         ) : (
                           <Input
                             type="text"
-                            placeholder={config.placeholder}
+                            placeholder={'placeholder' in config ? config.placeholder : ''}
                             value={block.config[field] || ''}
                             onChange={(e) => updateBlockConfig(block.id, field, e.target.value)}
                             className="h-8 text-xs"

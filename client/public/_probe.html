@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8"/>
+<title>FE Probe</title>
+<body>
+  <h1>FE Probe OK</h1>
+  <script>
+    // Try the proxy through FE
+    fetch('/api/demo/health').then(r=>{
+      document.body.insertAdjacentHTML('beforeend', `<p>/api/demo/health → ${r.status}</p>`);
+    }).catch(e=>{
+      document.body.insertAdjacentHTML('beforeend', `<p>/api/demo/health failed: ${e}</p>`);
+    });
+  </script>
+</body>
+
+

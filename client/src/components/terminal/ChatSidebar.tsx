@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useChatStore } from "@/ai/useChatStore";
 import { IntroCard } from "../chat/IntroCard";
 import { ChatHeaderMenu } from "../chat/ChatHeaderMenu";
+import { MicroCTAs } from "../chat/MicroCTAs";
 import { resetChatForUser } from "@/ai/store";
 import { Bot, User, Send, Loader2, Zap, BarChart3, AlertCircle, ArrowRight, Shield } from "lucide-react";
 
@@ -135,7 +136,7 @@ export function ChatSidebar() {
             <Bot className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-lg">BlossomAI</h3>
+            <h3 className="font-semibold text-lg">Blossom</h3>
             <p className="text-xs text-muted-foreground">DeFi Strategy Assistant</p>
           </div>
           <div className="flex items-center space-x-3">
@@ -168,7 +169,7 @@ export function ChatSidebar() {
                   {msg.role === 'assistant' && (
                     <div className="flex items-center space-x-2 mb-2">
                       <Bot className="h-3 w-3 text-primary" />
-                      <span className="text-xs font-medium text-primary">BlossomAI</span>
+                      <span className="text-xs font-medium text-primary">Blossom</span>
                     </div>
                   )}
                   <div className="text-sm whitespace-pre-wrap leading-relaxed">
@@ -178,9 +179,23 @@ export function ChatSidebar() {
                       msg.content
                     )}
                   </div>
+                  {msg.role === 'assistant' && msg.metadata?.microCTAs && (
+                    <MicroCTAs 
+                      ctas={msg.metadata.microCTAs} 
+                      onAction={(action, data) => {
+                        // Handle CTA actions
+                        if (action === 'navigate') {
+                          // This would be handled by the parent component
+                          console.log('Navigate to:', data);
+                        } else if (action === 'toast') {
+                          toast(data);
+                        }
+                      }}
+                    />
+                  )}
                   {msg.role === 'user' && (
                     <div className="text-xs opacity-70 mt-2 text-right">
-                      {formatTime(msg.createdAt)}
+                      {formatTime(new Date(msg.createdAt))}
                     </div>
                   )}
                 </div>
@@ -192,7 +207,7 @@ export function ChatSidebar() {
                 <div className="bg-gradient-to-r from-muted/80 to-muted/60 border border-border/50 rounded-lg p-3">
                   <div className="flex items-center space-x-2 mb-2">
                     <Bot className="h-3 w-3 text-primary" />
-                    <span className="text-xs font-medium text-primary">BlossomAI</span>
+                    <span className="text-xs font-medium text-primary">Blossom</span>
                     <span className="text-xs text-muted-foreground">typing...</span>
                   </div>
                   <div className="flex space-x-1">

@@ -142,7 +142,7 @@ export function YieldOverview() {
                     </Badge>
                   )}
                   <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                    {opportunity.category || 'DeFi'}
+                    {('category' in opportunity ? opportunity.category : 'DeFi') as string}
                   </Badge>
                 </div>
               </CardContent>

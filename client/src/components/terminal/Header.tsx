@@ -4,6 +4,7 @@ import { Logo } from "@/components/ui/logo";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useAlertsBadge } from "@/hooks/useAlertsBadge";
 import { BarChart3, Moon, Sun, Activity, Wallet, Check } from "lucide-react";
 import { Link } from "wouter";
 
@@ -16,6 +17,7 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const alertsUnreadCount = useAlertsBadge();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
 
@@ -24,6 +26,7 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
     { id: "strategies", label: "Strategies" },
     { id: "analytics", label: "Analytics" },
     { id: "portfolio", label: "Portfolio" },
+    ...(import.meta.env.VITE_API_KEYS === '1' ? [{ id: "api-keys", label: "API Keys" }] : []),
   ];
 
   const connectWallet = async () => {
@@ -72,8 +75,14 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
               size="sm"
               onClick={() => onTabChange(tab.id)}
               data-testid={`button-tab-${tab.id}`}
+              className="relative"
             >
               {tab.label}
+              {tab.id === "analytics" && alertsUnreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium">
+                  {alertsUnreadCount > 9 ? '9+' : alertsUnreadCount}
+                </span>
+              )}
             </Button>
           ))}
         </nav>

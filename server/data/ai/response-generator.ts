@@ -89,6 +89,32 @@ export async function generateResponse(intent: ParsedIntent, userMessage: string
       planSummary = `Rebalancing portfolio across ${defaultChain} protocols for optimal yield distribution.`;
       break;
       
+    case 'notify':
+      // For notification requests, we don't need allocations - just confirmation
+      allocations = [];
+      const threshold = apy || 50; // Default to 50% if not specified
+      const checkInterval = userMessage.toLowerCase().includes('5 minutes') ? '5 minutes' : '15 minutes';
+      
+      // Determine if it's a drop or spike alert
+      const isDropAlert = userMessage.toLowerCase().includes('drop') || userMessage.toLowerCase().includes('below');
+      const isSpikeAlert = userMessage.toLowerCase().includes('spike') || userMessage.toLowerCase().includes('above');
+      
+      let alertType, alertCondition;
+      if (isDropAlert) {
+        alertType = 'drops below';
+        alertCondition = `${threshold}%`;
+      } else if (isSpikeAlert) {
+        alertType = 'spikes';
+        alertCondition = `${threshold}% above the 7-day baseline`;
+      } else {
+        // Default to spike if unclear
+        alertType = 'spikes';
+        alertCondition = `${threshold}% above the 7-day baseline`;
+      }
+      
+      planSummary = `✅ Alert configured! I'll monitor ${defaultAssets.join(', ')} APR on ${defaultChain} and notify you when it ${alertType} ${alertCondition}. Checking every ${checkInterval}.`;
+      break;
+      
     case 'list':
     case 'discover':
       allocations = yieldData.data.slice(0, 5).map((yieldItem: YieldOpportunity) => ({
@@ -118,51 +144,90 @@ export async function generateResponse(intent: ParsedIntent, userMessage: string
   
   // Calculate portfolio stats
   const totalValue = defaultAmount;
-  const avgApy = allocations.reduce((sum, alloc) => sum + alloc.estApy, 0) / allocations.length;
-  const avgRisk = allocations.reduce((sum, alloc) => sum + getRiskScore(alloc.riskLabel), 0) / allocations.length;
+  const avgApy = allocations.length > 0 ? allocations.reduce((sum, alloc) => sum + alloc.estApy, 0) / allocations.length : 0;
+  const avgRisk = allocations.length > 0 ? allocations.reduce((sum, alloc) => sum + getRiskScore(alloc.riskLabel), 0) / allocations.length : 0;
   const diversification = Math.min(allocations.length / 3, 1); // 0-1 scale
   
   // Generate triggers
   const triggers: ChatResponse['triggers'] = [];
-  if (apy) {
+  
+  if (action === 'notify') {
+    // For notification requests, create appropriate triggers
+    const threshold = apy || 50;
     triggers.push({
       type: 'apy_drop',
-      condition: `APY drops below ${apy}%`,
-      threshold: apy,
+      condition: `${defaultAssets.join(', ')} APR spikes ${threshold}% above 7d baseline`,
+      threshold: threshold,
     });
-  }
-  
-  if (action === 'rebalance') {
-    triggers.push({
-      type: 'rebalance',
-      condition: 'Weekly portfolio rebalance',
-      threshold: 7,
-    });
+  } else {
+    // For other actions, use existing logic
+    if (apy) {
+      triggers.push({
+        type: 'apy_drop',
+        condition: `APY drops below ${apy}%`,
+        threshold: apy,
+      });
+    }
+    
+    if (action === 'rebalance') {
+      triggers.push({
+        type: 'rebalance',
+        condition: 'Weekly portfolio rebalance',
+        threshold: 7,
+      });
+    }
   }
   
   // Generate strategy
-  const strategy = {
-    id: `strategy-${Date.now()}`,
-    name: `${action.charAt(0).toUpperCase() + action.slice(1)} ${defaultChain} Strategy`,
-    description: `Automated ${action} strategy for ${defaultAssets.join(', ')} on ${defaultChain}`,
-    steps: [
-      {
-        step: 1,
-        action: 'Analyze',
-        details: `Scan ${defaultChain} protocols for optimal yield opportunities`,
-      },
-      {
-        step: 2,
-        action: 'Allocate',
-        details: `Distribute funds across selected protocols based on risk-adjusted returns`,
-      },
-      {
-        step: 3,
-        action: 'Monitor',
-        details: 'Track performance and trigger rebalancing when thresholds are met',
-      },
-    ],
-  };
+  let strategy;
+  
+  if (action === 'notify') {
+    strategy = {
+      id: `alert-${Date.now()}`,
+      name: `${defaultAssets.join(', ')} APR Alert`,
+      description: `Monitor ${defaultAssets.join(', ')} APR on ${defaultChain} for ${apy || 50}% spikes above 7-day baseline`,
+      steps: [
+        {
+          step: 1,
+          action: 'Monitor',
+          details: `Track ${defaultAssets.join(', ')} APR on ${defaultChain} every 5 minutes`,
+        },
+        {
+          step: 2,
+          action: 'Calculate',
+          details: 'Compare current APR to 7-day rolling average baseline',
+        },
+        {
+          step: 3,
+          action: 'Alert',
+          details: `Notify when APR spikes ${apy || 50}% above baseline threshold`,
+        },
+      ],
+    };
+  } else {
+    strategy = {
+      id: `strategy-${Date.now()}`,
+      name: `${action.charAt(0).toUpperCase() + action.slice(1)} ${defaultChain} Strategy`,
+      description: `Automated ${action} strategy for ${defaultAssets.join(', ')} on ${defaultChain}`,
+      steps: [
+        {
+          step: 1,
+          action: 'Analyze',
+          details: `Scan ${defaultChain} protocols for optimal yield opportunities`,
+        },
+        {
+          step: 2,
+          action: 'Allocate',
+          details: `Distribute funds across selected protocols based on risk-adjusted returns`,
+        },
+        {
+          step: 3,
+          action: 'Monitor',
+          details: 'Track performance and trigger rebalancing when thresholds are met',
+        },
+      ],
+    };
+  }
   
   return {
     planSummary,

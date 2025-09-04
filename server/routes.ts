@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { insertYieldOpportunitySchema, insertStrategySchema, insertChatMessageSchema } from "@shared/schema";
 import { dataFacade } from "./data/facade.ts";
 import { env } from "./env.ts";
+import { getLiveBundle } from "./data/live";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -300,6 +301,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Live protocols endpoint
+  app.get('/api/live/protocols', async (req, res) => {
+    try {
+      const { chain, asset } = req.query as { chain?: string; asset?: string };
+      const b = await getLiveBundle();
+      let list = b.protocols;
+      if (chain) list = list.filter(p => p.chain === chain);
+      if (asset) list = list.filter(p => p.asset.toUpperCase() === String(asset).toUpperCase());
+      res.json({ updatedAt: b.updatedAt, protocols: list });
+    } catch {
+      res.status(200).json({ updatedAt: Date.now(), protocols: [] }); // graceful fallback
+    }
+  });
+
+  // Live yields endpoint with protocol filtering
+  app.get('/api/live-yields', async (req, res) => {
+    try {
+      const { chain, protocols } = req.query as { chain?: string; protocols?: string };
+      const b = await getLiveBundle();
+      let list = b.protocols;
+      
+      if (chain) list = list.filter(p => p.chain === chain);
+      
+      if (protocols) {
+        const protocolList = protocols.split(',').map(p => p.trim().toLowerCase());
+        list = list.filter(p => 
+          protocolList.some(proto => p.protocol.toLowerCase().includes(proto))
+        );
+      }
+      
+      res.json({ updatedAt: b.updatedAt, yields: list });
+    } catch {
+      res.status(200).json({ updatedAt: Date.now(), yields: [] }); // graceful fallback
+    }
+  });
+
   // Data API endpoints
   app.get('/api/data/prices', async (req, res) => {
     try {
@@ -370,7 +407,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       if (!message) {
-        return res.status(400).json({ message: "Message parameter required" });
+        res.locals.why403 = 'payload';
+        return res.status(400).json({ 
+          error: 'forbidden',
+          why: 'payload',
+          path: req.path,
+          method: req.method,
+          message: "Message parameter required" 
+        });
       }
       
       // Import here to avoid circular dependencies
@@ -406,6 +450,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // OPTIONS handler for SSE endpoint
+  app.options('/api/demo/chat/stream', (req, res) => {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Vary', 'Origin');
+    }
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'content-type, authorization, x-requested-with');
+    res.status(204).end();
+  });
+
   app.get('/api/demo/chat/stream', async (req, res) => {
     const startTime = Date.now();
     let bytesWritten = 0;
@@ -430,15 +487,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       if (!message) {
-        return res.status(400).json({ message: "Message parameter required" });
+        res.locals.why403 = 'payload';
+        return res.status(400).json({ 
+          error: 'forbidden',
+          why: 'payload',
+          path: req.path,
+          method: req.method,
+          message: "Message parameter required" 
+        });
       }
       
-      // Set SSE headers (CORS headers are already set by middleware)
-      res.writeHead(200, {
+      // Set SSE headers with CORS headers (identical to middleware)
+      const headers: Record<string, string> = {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-      });
+      };
+      
+      // Add CORS headers for SSE (same logic as middleware)
+      const origin = req.headers.origin;
+      if (origin) {
+        headers['Access-Control-Allow-Origin'] = origin;
+        headers['Access-Control-Allow-Credentials'] = 'true';
+        headers['Vary'] = 'Origin';
+      }
+      
+      res.writeHead(200, headers);
       
       const writeData = (data: any) => {
         const line = `data: ${JSON.stringify(data)}\n\n`;
@@ -517,6 +591,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
       timestamp: new Date().toISOString(),
       providers: dataFacade.getProviderStatus(),
     });
+  });
+
+  // 403 debug endpoint (dev only)
+  if (process.env.NODE_ENV !== 'production') {
+    app.get('/api/debug/403s', (req, res) => {
+      try {
+        // Use a simple in-memory store for now
+        const records = (global as any).__error403Records || [];
+        res.json({
+          records,
+          count: records.length,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        res.json({
+          records: [],
+          count: 0,
+          timestamp: new Date().toISOString(),
+          error: 'Failed to load 403 buffer'
+        });
+      }
+    });
+  }
+
+  // CORS diagnostic echo endpoint
+  app.get('/api/cors/echo', (req, res) => {
+    const origin = req.headers.origin as string | undefined;
+    
+    // Reuse the same normalization logic from middleware
+    const normalizeOrigin = (origin: string): string => {
+      try {
+        const url = new URL(origin);
+        return url.origin;
+      } catch {
+        return origin;
+      }
+    };
+    
+    // Helper to check if origin is a loopback address
+    const isLoopbackOrigin = (origin: string): boolean => {
+      try {
+        const url = new URL(origin);
+        const hostname = url.hostname.toLowerCase();
+        return hostname === 'localhost' || 
+               hostname === '127.0.0.1' || 
+               hostname === '[::1]' ||
+               hostname === '::1';
+      } catch {
+        return false;
+      }
+    };
+    
+    const DEV_ALLOWED = [
+      'http://localhost:5000',
+      'http://127.0.0.1:5000',
+      'http://[::1]:5000',
+      'http://localhost:5001',
+      'http://127.0.0.1:5001',
+      'http://[::1]:5001',
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://[::1]:5173',
+    ];
+    
+    const extra = (process.env.ALLOWED_ORIGINS || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    
+    const ALLOWED = new Set([...DEV_ALLOWED, ...extra]);
+    
+    let allowed = false;
+    let matched: string | null = null;
+    
+    if (origin) {
+      const normalizedOrigin = normalizeOrigin(origin);
+      
+      // Check against normalized allowed origins
+      for (const allowedOrigin of Array.from(ALLOWED)) {
+        const normalizedAllowed = normalizeOrigin(allowedOrigin);
+        if (normalizedOrigin === normalizedAllowed) {
+          allowed = true;
+          matched = allowedOrigin;
+          break;
+        }
+      }
+      
+      // Auto-allow any loopback origin in development if flag is set
+      if (!allowed) {
+        const allowAllDevOrigins = (process.env.ALLOW_ALL_DEV_ORIGINS || '1') === '1';
+        const isDev = process.env.NODE_ENV !== 'production';
+        
+        if (allowAllDevOrigins && isDev && isLoopbackOrigin(origin)) {
+          allowed = true;
+          matched = 'loopback';
+        }
+      }
+      
+      // Check regex match
+      if (!allowed && env.allowedOriginRegexPreview) {
+        const regex = new RegExp(env.allowedOriginRegexPreview);
+        if (regex.test(origin)) {
+          allowed = true;
+          matched = 'regex';
+        }
+      }
+    } else {
+      // No origin in dev is allowed
+      allowed = process.env.NODE_ENV !== 'production';
+      matched = 'no-origin-dev';
+    }
+    
+    const echoData = {
+      method: req.method,
+      path: req.path,
+      origin: origin || null,
+      referer: req.headers.referer || null,
+      host: req.headers.host,
+      resolvedOrigin: origin ? normalizeOrigin(origin) : null,
+      allowed,
+      matched
+    };
+    
+    res.json(echoData);
   });
 
   // DEBUG_403: Add debug endpoint for CSRF testing

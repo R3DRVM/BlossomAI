@@ -4,6 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { getActiveUserId } from "@/ai/userUtils";
+import { ensureSeed, debit, getTotalUSD } from "@/bridge/paperCustody";
+import { saveProposedPlan, ProposedPlan } from "@/bridge/proposedPlanStore";
+import { applyPlanById } from "@/bridge/portfolioStore";
+import { debugPositions } from "@/bridge/positionsStore";
+import { parseSize, formatSize } from "@/lib/num";
+import { useLocation } from "wouter";
+import { fetchYields } from "@/lib/yields";
+import { fmtUSD } from "@/lib/format";
 import { 
   TrendingUp, 
   BarChart3, 
@@ -172,10 +182,14 @@ const mockStrategies: Strategy[] = [
 ];
 
 export function Strategies() {
+  const [, navigate] = useLocation();
   const [selectedRisk, setSelectedRisk] = useState<string>("all");
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedStrategy, setExpandedStrategy] = useState<string | null>(null);
+  const [deployAmount, setDeployAmount] = useState("250k");
+  const [deployingStrategy, setDeployingStrategy] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const filteredStrategies = mockStrategies.filter(strategy => {
     const matchesRisk = selectedRisk === "all" || strategy.riskLevel === selectedRisk;
@@ -203,6 +217,257 @@ export function Strategies() {
       return `$${(value / 1000).toFixed(1)}K`;
     }
     return `$${value.toFixed(0)}`;
+  };
+
+  const handleDeploy = async (strategy: Strategy) => {
+    const userId = getActiveUserId() || 'guest';
+    const amount = parseSize(deployAmount) || 0;
+    
+    if (amount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid deployment amount.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDeployingStrategy(strategy.id);
+    
+    try {
+      // Ensure user has seeded balances
+      await ensureSeed(userId);
+      
+      // Check if user has sufficient funds
+      const totalAvailable = getTotalUSD(userId);
+      if (totalAvailable < amount) {
+        toast({
+          title: "Insufficient Funds",
+          description: `Not enough funds. Available: $${totalAvailable.toLocaleString()}, Required: $${amount.toLocaleString()}.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Fetch live yields for the strategy
+      const yields = await fetchYields({ chain: 'solana' });
+      const topProtocols = yields
+        .sort((a, b) => b.tvlUSD - a.tvlUSD)
+        .slice(0, 5); // Top 5 by TVL
+      
+      if (topProtocols.length === 0) {
+        toast({
+          title: "No Live Data Available",
+          description: "Unable to fetch live protocol data. Please try again later.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Create allocations from live data
+      const totalPercentage = 100;
+      const allocations = topProtocols.map((proto, index) => {
+        const percentage = Math.round(totalPercentage / topProtocols.length);
+        return {
+          protocol: proto.protocol,
+          asset: proto.asset,
+          percentage,
+          amount: ((amount || 0) * percentage) / 100,
+          apy: proto.apy
+        };
+      });
+
+      // Create proposed plan using new system
+      const plan: ProposedPlan = {
+        id: crypto.randomUUID(),
+        userId,
+        capitalUSD: amount || 0,
+        asset: 'USDC',
+        chain: 'solana',
+        risk: 'medium',
+        autoRebalance: false,
+        allocations: allocations.map(a => ({
+          protocol: a.protocol,
+          chain: 'solana',
+          asset: 'USDC',
+          apy: a.apy,
+          tvl: 1000000,
+          risk: 'medium',
+          amountUSD: a.amount
+        })),
+        createdAt: new Date().toISOString(),
+        status: 'pending',
+      };
+
+      if (import.meta.env.VITE_DEBUG_CHAT === '1') {
+        console.log('[strategy:deploy]', { userId, amount, allocations: allocations.length, plan: plan.id });
+      }
+
+      saveProposedPlan(plan, userId);
+
+      toast({
+        title: "Plan Created",
+        description: `Proposed plan created for ${fmtUSD(amount)}. Check Analytics to apply.`,
+      });
+      
+      // Navigate to analytics using SPA navigation
+      navigate('/terminal?tab=analytics');
+    } catch (error) {
+      console.error('Failed to create deploy plan:', error);
+      toast({
+        title: "Deploy Failed",
+        description: "Failed to create deployment plan. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeployingStrategy(null);
+    }
+  };
+
+  const handleDeployNow = async (strategy: Strategy) => {
+    const userId = getActiveUserId() || 'guest';
+    const amount = parseSize(deployAmount) || 0;
+    
+    if (amount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid deployment amount.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDeployingStrategy(strategy.id);
+    
+    try {
+      // Ensure user has seeded balances
+      await ensureSeed(userId);
+      
+      // Check if user has sufficient funds
+      const totalAvailable = getTotalUSD(userId);
+      if (totalAvailable < amount) {
+        toast({
+          title: "Insufficient Funds",
+          description: `Not enough funds. Available: $${totalAvailable.toLocaleString()}, Required: $${amount.toLocaleString()}.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Fetch live yields for the strategy
+      const yields = await fetchYields({ chain: 'solana' });
+      const topProtocols = yields
+        .sort((a, b) => b.tvlUSD - a.tvlUSD)
+        .slice(0, 5); // Top 5 by TVL
+      
+      if (topProtocols.length === 0) {
+        toast({
+          title: "No Live Data Available",
+          description: "Unable to fetch live protocol data. Please try again later.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Create allocations from live data
+      const totalPercentage = 100;
+      const allocations = topProtocols.map((proto, index) => {
+        const percentage = Math.round(totalPercentage / topProtocols.length);
+        return {
+          protocol: proto.protocol,
+          chain: 'solana',
+          asset: proto.asset,
+          percentage,
+          amount: ((amount || 0) * percentage) / 100,
+          estApy: proto.apy,
+          tvl: proto.tvlUSD,
+          riskLabel: proto.risk
+        };
+      });
+
+            // Create and apply plan immediately using new system
+      const plan: ProposedPlan = {
+        id: crypto.randomUUID(),
+        userId,
+        capitalUSD: amount || 0,
+        asset: 'USDC',
+        chain: 'solana',
+        risk: 'medium',
+        autoRebalance: false,
+        allocations: allocations.map(a => ({
+          protocol: a.protocol,
+          chain: a.chain,
+          asset: a.asset,
+          apy: a.estApy,
+          tvl: a.tvl,
+          risk: a.riskLabel,
+          amountUSD: a.amount
+        })),
+        createdAt: new Date().toISOString(),
+        status: 'pending',
+      };
+
+      if (import.meta.env.VITE_DEBUG_CHAT === '1') {
+        console.log('[strategy:deploy-now]', { userId, amount, allocations: allocations.length, plan: plan.id });
+        console.log('[strategy:deploy-now] plan details:', plan);
+        console.log('[strategy:deploy-now] allocations:', allocations);
+      }
+
+      await applyPlanById(userId, plan);
+      
+      // Debug positions after deployment
+      debugPositions(userId);
+      
+      // Trigger analytics refresh
+      window.dispatchEvent(new CustomEvent('blossom:plan:applied', { 
+        detail: { userId, planId: plan.id, amount } 
+      }));
+      
+      if (import.meta.env.VITE_DEBUG_CHAT === '1') {
+        console.log('[strategy:deploy-now] completed successfully');
+      }
+
+      toast({
+        title: "Deployed Successfully",
+        description: `Deployed ${fmtUSD(amount)} across ${allocations.length} protocols.`,
+        action: (
+          <div className="flex space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                console.log('Navigating to portfolio...');
+                window.location.href = '/terminal?tab=portfolio';
+              }}
+            >
+              View Positions
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                console.log('Navigating to analytics...');
+                window.location.href = '/terminal?tab=analytics';
+              }}
+            >
+              View Analytics
+            </Button>
+          </div>
+        ),
+      });
+
+      // Navigate to portfolio using SPA navigation
+      navigate('/terminal?tab=portfolio');
+    } catch (error) {
+      console.error('Failed to deploy now:', error);
+      toast({
+        title: "Deploy Failed",
+        description: "Failed to deploy strategy. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeployingStrategy(null);
+    }
   };
 
   return (
@@ -273,12 +538,12 @@ export function Strategies() {
       {/* Strategies Grid */}
       <div className="grid gap-6">
         {filteredStrategies.map((strategy) => (
-          <Card key={strategy.id} className="overflow-hidden">
-            <CardHeader className="pb-4">
+          <Card key={strategy.id} className="overflow-hidden shadow-sm border-border/50">
+            <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <CardTitle className="text-xl">{strategy.name}</CardTitle>
+                  <div className="flex items-center space-x-3 mb-1">
+                    <CardTitle className="text-lg">{strategy.name}</CardTitle>
                     {strategy.isPremium && (
                       <Badge variant="secondary" className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-600 border-yellow-500/30">
                         <Sparkles className="h-3 w-3 mr-1" />
@@ -289,30 +554,30 @@ export function Strategies() {
                       {strategy.riskLevel} Risk
                     </Badge>
                   </div>
-                  <p className="text-muted-foreground mb-3">{strategy.description}</p>
+                  <p className="text-muted-foreground mb-2 text-sm">{strategy.description}</p>
                   
-                                     {/* Key Metrics */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Key Metrics */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-500">{strategy.expectedReturn}%</div>
+                      <div className="text-lg font-bold text-green-500">{strategy.expectedReturn}%</div>
                       <div className="text-xs text-muted-foreground">Expected Return</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-500">{strategy.rating}</div>
+                      <div className="text-lg font-bold text-blue-500">{strategy.rating}</div>
                       <div className="text-xs text-muted-foreground">AI Rating</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-500">{strategy.performance.historicalReturn}%</div>
+                      <div className="text-lg font-bold text-purple-500">{strategy.performance.historicalReturn}%</div>
                       <div className="text-xs text-muted-foreground">Historical Return</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-orange-500">{formatCurrency(strategy.totalValue)}</div>
+                      <div className="text-lg font-bold text-orange-500">{formatCurrency(strategy.totalValue)}</div>
                       <div className="text-xs text-muted-foreground">Total Value</div>
                     </div>
                   </div>
 
                   {/* Risk & TVL Info - Similar to Yield Opportunities */}
-                  <div className="flex items-center justify-between mt-3 p-3 bg-muted/20 rounded-lg">
+                  <div className="flex items-center justify-between mt-2 p-2 bg-muted/20 rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         <Shield className="h-4 w-4 text-muted-foreground" />
@@ -353,6 +618,33 @@ export function Strategies() {
                     <Eye className="h-4 w-4 mr-2" />
                     View Strategy
                   </Button>
+                  <div className="flex items-center space-x-1">
+                    <Input
+                      value={deployAmount}
+                      onChange={(e) => setDeployAmount(e.target.value)}
+                      placeholder="250k"
+                      className="w-20 h-8 text-xs"
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDeploy(strategy)}
+                      disabled={deployingStrategy === strategy.id}
+                      className="bg-pink-500/10 border-pink-500/20 text-pink-600 hover:bg-pink-500/20"
+                    >
+                      <Rocket className="h-3 w-3 mr-1" />
+                      Deploy
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleDeployNow(strategy)}
+                      disabled={deployingStrategy === strategy.id}
+                      className="bg-pink-500 hover:bg-pink-600"
+                    >
+                      <Zap className="h-3 w-3 mr-1" />
+                      Deploy Now
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardHeader>

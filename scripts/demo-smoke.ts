@@ -21,7 +21,7 @@ async function testChat() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': 'http://localhost:3000',
+        'Origin': ALLOWED,
       },
       body: JSON.stringify({
         sessionId: 'smoke-test',

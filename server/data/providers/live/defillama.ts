@@ -1,8 +1,9 @@
-import { TokenPriceProvider, YieldProvider, TVLProvider, PriceResponse, YieldResponse, TVLResponse } from "../../types.ts";
+import { TokenPriceProvider, YieldProvider, TVLProvider, RiskProvider, PriceResponse, YieldResponse, TVLResponse, RiskResponseSchema } from "../../types.ts";
+import { z } from "zod";
 import { normalizeDefiLlamaPrices, normalizeDefiLlamaYields, normalizeDefiLlamaTVL } from "../../normalize.ts";
 import { cache } from "../../cache.ts";
 
-class DefiLlamaProvider implements TokenPriceProvider, YieldProvider, TVLProvider {
+class DefiLlamaProvider implements TokenPriceProvider, YieldProvider, TVLProvider, RiskProvider {
   private baseUrl = "https://api.llama.fi";
   private timeout = 1500;
   private maxRetries = 1;
@@ -187,6 +188,17 @@ class DefiLlamaProvider implements TokenPriceProvider, YieldProvider, TVLProvide
       console.error("DefiLlama TVL fetch failed:", error);
       throw error;
     }
+  }
+
+  async getRiskScores(params: { protocols?: string[] }): Promise<z.infer<typeof RiskResponseSchema>> {
+    // DefiLlama doesn't provide risk scores, so we'll return a mock response
+    // In a real implementation, you might call a different API or use a risk scoring service
+    return {
+      schemaVersion: "v1",
+      provenance: "mock",
+      timestamp: new Date().toISOString(),
+      data: [],
+    };
   }
 }
 

@@ -1,11 +1,10 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import fs from 'node:fs';
+import path from 'path';
 
 export default defineConfig({
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -19,15 +18,20 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    port: 5000,
+    host: '127.0.0.1',
+    port: 5173,
     strictPort: true,
     cors: true,
+    // DO NOT set allowedHosts in dev
     proxy: {
-      '/api': { 
-        target: 'http://localhost:5050', 
-        changeOrigin: true 
-      }
-    }
+      // only /api should proxy; nothing else
+      '/api': {
+        target: 'http://localhost:5050',
+        changeOrigin: true,
+        ws: true,
+        secure: false,
+      },
+    },
   },
   preview: {
     port: 5000,

@@ -99,7 +99,7 @@ export function useAuth() {
       setIsAuthenticated(true);
       
       toast({
-        title: "Welcome to BlossomAI!",
+        title: "Welcome to Blossom!",
         description: `Hello ${username}! You now have access to the full terminal.`,
       });
       

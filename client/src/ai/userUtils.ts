@@ -34,6 +34,16 @@ export function getActiveUserId(): string {
   return 'guest';
 }
 
+// Log active user on boot (once)
+let hasLoggedUser = false;
+export function logActiveUserOnce(): void {
+  if (!hasLoggedUser && import.meta.env.VITE_DEBUG_CHAT === '1') {
+    const userId = getActiveUserId();
+    console.info('[user] active', userId);
+    hasLoggedUser = true;
+  }
+}
+
 export function onUserChange(callback: (userId: string) => void): () => void {
   if (typeof window === 'undefined') {
     return () => {}; // No-op cleanup

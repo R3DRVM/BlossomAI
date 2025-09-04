@@ -16,7 +16,7 @@ export function Logo({ className = "", size = 32 }: LogoProps) {
   return (
     <img 
       src={logoSrc}
-      alt="BlossomAI Logo"
+      alt="Blossom Logo"
       width={size}
       height={size}
       className={className}

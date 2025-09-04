@@ -52,7 +52,7 @@ export default function Auth() {
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Logo size={56} className="flex-shrink-0" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-              BlossomAI
+              Blossom
             </h1>
           </div>
           <h2 className="text-xl font-semibold">Institutional DeFi Terminal</h2>
@@ -68,7 +68,7 @@ export default function Auth() {
               Demo Access
             </CardTitle>
             <CardDescription className="text-center">
-              Enter your username to access the BlossomAI terminal
+              Enter your username to access the Blossom terminal
             </CardDescription>
           </CardHeader>
           <CardContent>

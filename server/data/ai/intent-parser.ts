@@ -62,6 +62,14 @@ export function parseIntent(message: string): ParsedIntent {
     apy = parseFloat(apyMatch[1]);
   }
   
+  // Also look for percentage patterns in different contexts
+  if (!apy) {
+    const percentMatch = lowerMessage.match(/(\d+(?:\.\d+)?)\s*%/);
+    if (percentMatch) {
+      apy = parseFloat(percentMatch[1]);
+    }
+  }
+  
   // Determine action
   let action: ParsedIntent['action'] = 'discover';
   
@@ -69,7 +77,7 @@ export function parseIntent(message: string): ParsedIntent {
     action = 'allocate';
   } else if (lowerMessage.includes('rebalance') || lowerMessage.includes('re-balance')) {
     action = 'rebalance';
-  } else if (lowerMessage.includes('notify') || lowerMessage.includes('alert') || lowerMessage.includes('drop')) {
+  } else if (lowerMessage.includes('notify') || lowerMessage.includes('alert') || lowerMessage.includes('drop') || lowerMessage.includes('spike') || lowerMessage.includes('set up')) {
     action = 'notify';
   } else if (lowerMessage.includes('list') || lowerMessage.includes('show') || lowerMessage.includes('find')) {
     action = 'list';
