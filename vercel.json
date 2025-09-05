@@ -1,13 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && mkdir -p api && echo '#!/usr/bin/env node' > api/index.js && cat dist/index.js >> api/index.js && chmod +x api/index.js",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
   "framework": "vite",
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.js"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
