@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -79,6 +79,71 @@ interface PerformanceMetrics {
   maxDrawdown: number;
   volatility: number;
   winRate: number;
+}
+
+// Create realistic allocations based on strategy type
+function createStrategyAllocations(strategy: Strategy, protocols: any[], amount: number) {
+  let allocations: any[] = [];
+  
+  if (strategy.name === "AI-Optimized Yield Aggregator") {
+    // Balanced approach with slight preference for higher APY
+    const weights = [0.25, 0.22, 0.20, 0.18, 0.15]; // Decreasing weights
+    allocations = protocols.slice(0, 5).map((proto, index) => ({
+      protocol: proto.protocol,
+      asset: proto.asset,
+      percentage: Math.round(weights[index] * 100),
+      amount: Math.round((amount * weights[index])),
+      apy: proto.apy,
+      chain: 'solana',
+      estApy: proto.apy,
+      tvl: proto.tvlUSD,
+      riskLabel: proto.risk
+    }));
+  } else if (strategy.name === "Conservative Stable Yield") {
+    // Focus on established, lower-risk protocols
+    const weights = [0.40, 0.30, 0.20, 0.10]; // Heavy focus on top 2
+    allocations = protocols.slice(0, 4).map((proto, index) => ({
+      protocol: proto.protocol,
+      asset: proto.asset,
+      percentage: Math.round(weights[index] * 100),
+      amount: Math.round((amount * weights[index])),
+      apy: proto.apy,
+      chain: 'solana',
+      estApy: proto.apy,
+      tvl: proto.tvlUSD,
+      riskLabel: proto.risk
+    }));
+  } else if (strategy.name === "High-Performance DeFi Rotation") {
+    // Aggressive allocation favoring emerging protocols
+    const weights = [0.30, 0.25, 0.20, 0.15, 0.10]; // More even distribution
+    allocations = protocols.slice(0, 5).map((proto, index) => ({
+      protocol: proto.protocol,
+      asset: proto.asset,
+      percentage: Math.round(weights[index] * 100),
+      amount: Math.round((amount * weights[index])),
+      apy: proto.apy,
+      chain: 'solana',
+      estApy: proto.apy,
+      tvl: proto.tvlUSD,
+      riskLabel: proto.risk
+    }));
+  } else {
+    // Default: equal distribution
+    const percentage = Math.round(100 / Math.min(protocols.length, 5));
+    allocations = protocols.slice(0, 5).map((proto, index) => ({
+      protocol: proto.protocol,
+      asset: proto.asset,
+      percentage,
+      amount: Math.round((amount * percentage) / 100),
+      apy: proto.apy,
+      chain: 'solana',
+      estApy: proto.apy,
+      tvl: proto.tvlUSD,
+      riskLabel: proto.risk
+    }));
+  }
+  
+  return allocations;
 }
 
 const mockStrategies: Strategy[] = [
@@ -189,7 +254,41 @@ export function Strategies() {
   const [expandedStrategy, setExpandedStrategy] = useState<string | null>(null);
   const [deployAmount, setDeployAmount] = useState("250k");
   const [deployingStrategy, setDeployingStrategy] = useState<string | null>(null);
+  const [activeInstance, setActiveInstance] = useState<any>(null);
   const { toast } = useToast();
+
+  // Load active instance on component mount and listen for changes
+  useEffect(() => {
+    const loadActiveInstance = () => {
+      const instances = JSON.parse(localStorage.getItem('blossom-prime-instances') || '[]');
+      const active = instances.find((instance: any) => instance.isActive);
+      setActiveInstance(active);
+    };
+
+    // Load initially
+    loadActiveInstance();
+
+    // Listen for storage changes (when instance is created from chat)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'blossom-prime-instances') {
+        loadActiveInstance();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Also listen for custom events (for same-tab updates)
+    const handleInstanceUpdate = () => {
+      loadActiveInstance();
+    };
+
+    window.addEventListener('blossom:instance-created', handleInstanceUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('blossom:instance-created', handleInstanceUpdate);
+    };
+  }, []);
 
   const filteredStrategies = mockStrategies.filter(strategy => {
     const matchesRisk = selectedRisk === "all" || strategy.riskLevel === selectedRisk;
@@ -264,22 +363,21 @@ export function Strategies() {
         return;
       }
       
-      // Create allocations from live data
-      const totalPercentage = 100;
-      const allocations = topProtocols.map((proto, index) => {
-        const percentage = Math.round(totalPercentage / topProtocols.length);
-        return {
-          protocol: proto.protocol,
-          asset: proto.asset,
-          percentage,
-          amount: ((amount || 0) * percentage) / 100,
-          apy: proto.apy
-        };
-      });
+      // Create allocations from live data based on strategy type
+      const allocations = createStrategyAllocations(strategy, topProtocols, amount || 0);
+      
+      if (!allocations || allocations.length === 0) {
+        toast({
+          title: "No Allocations Created",
+          description: "Failed to create strategy allocations. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       // Create proposed plan using new system
       const plan: ProposedPlan = {
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID ? crypto.randomUUID() : `plan-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         userId,
         capitalUSD: amount || 0,
         asset: 'USDC',
@@ -369,25 +467,21 @@ export function Strategies() {
         return;
       }
       
-      // Create allocations from live data
-      const totalPercentage = 100;
-      const allocations = topProtocols.map((proto, index) => {
-        const percentage = Math.round(totalPercentage / topProtocols.length);
-        return {
-          protocol: proto.protocol,
-          chain: 'solana',
-          asset: proto.asset,
-          percentage,
-          amount: ((amount || 0) * percentage) / 100,
-          estApy: proto.apy,
-          tvl: proto.tvlUSD,
-          riskLabel: proto.risk
-        };
-      });
+      // Create allocations from live data based on strategy type
+      const allocations = createStrategyAllocations(strategy, topProtocols, amount || 0);
+      
+      if (!allocations || allocations.length === 0) {
+        toast({
+          title: "No Allocations Created",
+          description: "Failed to create strategy allocations. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-            // Create and apply plan immediately using new system
+      // Create and apply plan immediately using new system
       const plan: ProposedPlan = {
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID ? crypto.randomUUID() : `plan-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         userId,
         capitalUSD: amount || 0,
         asset: 'USDC',
@@ -413,18 +507,23 @@ export function Strategies() {
         console.log('[strategy:deploy-now] allocations:', allocations);
       }
 
-      await applyPlanById(userId, plan);
-      
-      // Debug positions after deployment
-      debugPositions(userId);
-      
-      // Trigger analytics refresh
-      window.dispatchEvent(new CustomEvent('blossom:plan:applied', { 
-        detail: { userId, planId: plan.id, amount } 
-      }));
-      
-      if (import.meta.env.VITE_DEBUG_CHAT === '1') {
-        console.log('[strategy:deploy-now] completed successfully');
+      try {
+        await applyPlanById(userId, plan);
+        
+        // Debug positions after deployment
+        debugPositions(userId);
+        
+        // Trigger analytics refresh
+        window.dispatchEvent(new CustomEvent('blossom:plan:applied', { 
+          detail: { userId, planId: plan.id, amount } 
+        }));
+        
+        if (import.meta.env.VITE_DEBUG_CHAT === '1') {
+          console.log('[strategy:deploy-now] completed successfully');
+        }
+      } catch (applyError) {
+        console.error('[strategy:deploy-now] applyPlanById failed:', applyError);
+        throw new Error(`Failed to apply plan: ${applyError.message}`);
       }
 
       toast({
@@ -494,6 +593,39 @@ export function Strategies() {
             </Button>
           </div>
         </div>
+
+        {/* Active Instance Banner */}
+        {activeInstance && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">{activeInstance.name.charAt(0)}</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-blue-900">Instance {activeInstance.name}</h3>
+                  <p className="text-sm text-blue-700">
+                    Whitelisted: {activeInstance.whitelistProtocols.join(', ')}
+                  </p>
+                </div>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  // Clear the active instance
+                  const instances = JSON.parse(localStorage.getItem('blossom-prime-instances') || '[]');
+                  const updatedInstances = instances.map((inst: any) => ({ ...inst, isActive: false }));
+                  localStorage.setItem('blossom-prime-instances', JSON.stringify(updatedInstances));
+                  setActiveInstance(null);
+                }}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                Clear Instance
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Filters and Search */}
         <div className="flex items-center space-x-4">
@@ -601,36 +733,37 @@ export function Strategies() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1.5">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setExpandedStrategy(expandedStrategy === strategy.id ? null : strategy.id)}
+                    className="h-7 px-2 text-xs"
                   >
                     {expandedStrategy === strategy.id ? (
-                      <ChevronUp className="h-4 w-4" />
+                      <ChevronUp className="h-3 w-3" />
                     ) : (
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="h-3 w-3" />
                     )}
-                    Details
+                    <span className="ml-1">Details</span>
                   </Button>
-                  <Button size="sm">
-                    <Eye className="h-4 w-4 mr-2" />
-                    View Strategy
+                  <Button size="sm" className="h-7 px-2 text-xs">
+                    <Eye className="h-3 w-3 mr-1" />
+                    View
                   </Button>
                   <div className="flex items-center space-x-1">
                     <Input
                       value={deployAmount}
                       onChange={(e) => setDeployAmount(e.target.value)}
                       placeholder="250k"
-                      className="w-20 h-8 text-xs"
+                      className="w-16 h-7 text-xs px-2"
                     />
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleDeploy(strategy)}
                       disabled={deployingStrategy === strategy.id}
-                      className="bg-pink-500/10 border-pink-500/20 text-pink-600 hover:bg-pink-500/20"
+                      className="h-7 px-2 text-xs bg-pink-500/10 border-pink-500/20 text-pink-600 hover:bg-pink-500/20"
                     >
                       <Rocket className="h-3 w-3 mr-1" />
                       Deploy
@@ -639,7 +772,7 @@ export function Strategies() {
                       size="sm"
                       onClick={() => handleDeployNow(strategy)}
                       disabled={deployingStrategy === strategy.id}
-                      className="bg-pink-500 hover:bg-pink-600"
+                      className="h-7 px-2 text-xs bg-pink-500 hover:bg-pink-600"
                     >
                       <Zap className="h-3 w-3 mr-1" />
                       Deploy Now
@@ -651,59 +784,59 @@ export function Strategies() {
 
             {/* Expanded Details */}
             {expandedStrategy === strategy.id && (
-              <CardContent className="pt-0 border-t border-border/20">
-                <div className="grid md:grid-cols-2 gap-6">
+              <CardContent className="pt-2 border-t border-border/20">
+                <div className="grid md:grid-cols-2 gap-4">
                   {/* Protocols Breakdown */}
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-semibold flex items-center">
-                        <BarChart3 className="h-4 w-4 mr-2" />
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-sm flex items-center">
+                        <BarChart3 className="h-3 w-3 mr-1" />
                         Protocol Allocation
                       </h4>
-                      <div className="text-sm text-muted-foreground">
-                        Total Protocol TVL: {formatCurrency(strategy.protocols.reduce((sum, p) => sum + p.tvl, 0))}
+                      <div className="text-xs text-muted-foreground">
+                        TVL: {formatCurrency(strategy.protocols.reduce((sum, p) => sum + p.tvl, 0))}
                       </div>
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {strategy.protocols.map((protocol, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <div className="text-2xl">{protocol.icon}</div>
+                        <div key={index} className="flex items-center justify-between p-2 bg-muted/20 rounded-md">
+                          <div className="flex items-center space-x-2">
+                            <div className="text-lg">{protocol.icon}</div>
                             <div>
-                              <div className="font-medium">{protocol.name}</div>
-                              <div className="text-sm text-muted-foreground">
+                              <div className="font-medium text-sm">{protocol.name}</div>
+                              <div className="text-xs text-muted-foreground">
                                 TVL: {formatCurrency(protocol.tvl)}
                               </div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-medium">{protocol.allocation}%</div>
-                            <div className="text-sm text-green-500">{protocol.apy}% APY</div>
+                            <div className="font-medium text-sm">{protocol.allocation}%</div>
+                            <div className="text-xs text-green-500">{protocol.apy}% APY</div>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                                                      {/* Assets Breakdown */}
+                  {/* Assets Breakdown */}
                   <div>
-                    <h4 className="font-semibold mb-3 flex items-center">
-                      <Coins className="h-4 w-4 mr-2" />
+                    <h4 className="font-medium text-sm mb-2 flex items-center">
+                      <Coins className="h-3 w-3 mr-1" />
                       Asset Composition
                     </h4>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {strategy.assets.map((asset, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <div className={`w-3 h-3 rounded-full ${asset.color}`}></div>
+                        <div key={index} className="flex items-center justify-between p-2 bg-muted/20 rounded-md">
+                          <div className="flex items-center space-x-2">
+                            <div className={`w-2.5 h-2.5 rounded-full ${asset.color}`}></div>
                             <div>
-                              <div className="font-medium">{asset.symbol}</div>
-                              <div className="text-sm text-muted-foreground">{asset.name}</div>
+                              <div className="font-medium text-sm">{asset.symbol}</div>
+                              <div className="text-xs text-muted-foreground">{asset.name}</div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-medium">{asset.allocation}%</div>
-                            <div className={`text-sm ${asset.change24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            <div className="font-medium text-sm">{asset.allocation}%</div>
+                            <div className={`text-xs ${asset.change24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                               {asset.change24h >= 0 ? '+' : ''}{asset.change24h}%
                             </div>
                           </div>
@@ -714,30 +847,30 @@ export function Strategies() {
 
                   {/* Performance Metrics */}
                   <div className="md:col-span-2">
-                    <h4 className="font-semibold mb-3 flex items-center">
-                      <Target className="h-4 w-4 mr-2" />
+                    <h4 className="font-medium text-sm mb-2 flex items-center">
+                      <Target className="h-3 w-3 mr-1" />
                       Performance Metrics
                     </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                      <div className="text-center p-3 bg-muted/20 rounded-lg">
-                        <div className="text-lg font-bold text-green-500">{strategy.performance.sharpeRatio}</div>
-                        <div className="text-xs text-muted-foreground">Sharpe Ratio</div>
+                    <div className="grid grid-cols-5 gap-2">
+                      <div className="text-center p-2 bg-muted/20 rounded-md">
+                        <div className="text-sm font-bold text-green-500">{strategy.performance.sharpeRatio}</div>
+                        <div className="text-xs text-muted-foreground">Sharpe</div>
                       </div>
-                      <div className="text-center p-3 bg-muted/20 rounded-lg">
-                        <div className="text-lg font-bold text-red-500">{strategy.performance.maxDrawdown}%</div>
-                        <div className="text-xs text-muted-foreground">Max Drawdown</div>
+                      <div className="text-center p-2 bg-muted/20 rounded-md">
+                        <div className="text-sm font-bold text-red-500">{strategy.performance.maxDrawdown}%</div>
+                        <div className="text-xs text-muted-foreground">Max DD</div>
                       </div>
-                      <div className="text-center p-3 bg-muted/20 rounded-lg">
-                        <div className="text-lg font-bold text-blue-500">{strategy.performance.volatility}%</div>
+                      <div className="text-center p-2 bg-muted/20 rounded-md">
+                        <div className="text-sm font-bold text-blue-500">{strategy.performance.volatility}%</div>
                         <div className="text-xs text-muted-foreground">Volatility</div>
                       </div>
-                      <div className="text-center p-3 bg-muted/20 rounded-lg">
-                        <div className="text-lg font-bold text-purple-500">{strategy.performance.winRate}%</div>
+                      <div className="text-center p-2 bg-muted/20 rounded-md">
+                        <div className="text-sm font-bold text-purple-500">{strategy.performance.winRate}%</div>
                         <div className="text-xs text-muted-foreground">Win Rate</div>
                       </div>
-                      <div className="text-center p-3 bg-muted/20 rounded-lg">
-                        <div className="text-lg font-bold text-orange-500">{strategy.timeHorizon}</div>
-                        <div className="text-xs text-muted-foreground">Time Horizon</div>
+                      <div className="text-center p-2 bg-muted/20 rounded-md">
+                        <div className="text-sm font-bold text-orange-500">{strategy.timeHorizon}</div>
+                        <div className="text-xs text-muted-foreground">Horizon</div>
                       </div>
                     </div>
                   </div>
@@ -745,18 +878,17 @@ export function Strategies() {
                   {/* Auto-Rebalancing Info */}
                   {strategy.autoRebalance && (
                     <div className="md:col-span-2">
-                      <h4 className="font-semibold mb-3 flex items-center">
-                        <ArrowUpDown className="h-4 w-4 mr-2" />
+                      <h4 className="font-medium text-sm mb-2 flex items-center">
+                        <ArrowUpDown className="h-3 w-3 mr-1" />
                         Auto-Rebalancing
                       </h4>
-                      <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <span className="font-medium text-blue-600">Frequency: {strategy.rebalanceFrequency}</span>
+                      <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                          <span className="font-medium text-blue-600 text-sm">Frequency: {strategy.rebalanceFrequency}</span>
                         </div>
-                        <p className="text-sm text-blue-600/80">
-                          This strategy automatically rebalances your portfolio to maintain optimal allocations 
-                          and capture the best yield opportunities across protocols.
+                        <p className="text-xs text-blue-600/80">
+                          Automatically rebalances portfolio to maintain optimal allocations and capture best yield opportunities.
                         </p>
                       </div>
                     </div>
@@ -764,9 +896,9 @@ export function Strategies() {
 
                   {/* Tags */}
                   <div className="md:col-span-2">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1">
                       {strategy.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge key={index} variant="outline" className="text-xs px-2 py-0.5">
                           {tag}
                         </Badge>
                       ))}

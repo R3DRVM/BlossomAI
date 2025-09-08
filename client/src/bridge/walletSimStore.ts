@@ -231,7 +231,7 @@ class WalletSimStore {
       // Use existing price feed if available, otherwise fallback
       const mockPrices: Record<string, number> = {
         'USDC': 1,
-        'SOL': 100  // Fallback price
+        'SOL': 95.50  // Updated to match priceFeed
       };
       return total + (balance.amount * (mockPrices[balance.asset] || 0));
     }, 0);

@@ -176,19 +176,30 @@ export function ChatSidebar() {
                     {msg.kind === 'welcome' && msg.role === 'assistant' ? (
                       <IntroCard onSendMessage={sendMessage} />
                     ) : (
-                      msg.content
+                      <span dangerouslySetInnerHTML={{ 
+                        __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      }} />
                     )}
                   </div>
                   {msg.role === 'assistant' && msg.metadata?.microCTAs && (
                     <MicroCTAs 
                       ctas={msg.metadata.microCTAs} 
-                      onAction={(action, data) => {
+                      onAction={async (action, data) => {
                         // Handle CTA actions
                         if (action === 'navigate') {
                           // This would be handled by the parent component
                           console.log('Navigate to:', data);
                         } else if (action === 'toast') {
                           toast(data);
+                        } else if (action === 'execute') {
+                          // Execute the plan
+                          await sendMessage("yes, let's deploy");
+                        } else if (action === 'adjust') {
+                          // Adjust the plan
+                          await sendMessage("let's adjust the amount");
+                        } else if (action === 'cancel') {
+                          // Cancel the plan
+                          await sendMessage("cancel");
                         }
                       }}
                     />

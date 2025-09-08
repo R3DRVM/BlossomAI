@@ -95,6 +95,21 @@ export function MicroCTAs({ ctas, onAction }: MicroCTAsProps) {
           // Start comparison
           onAction?.('compare', cta.data);
           break;
+          
+        case 'execute':
+          // Execute the plan
+          onAction?.('execute', cta.data);
+          break;
+          
+        case 'adjust':
+          // Adjust the plan
+          onAction?.('adjust', cta.data);
+          break;
+          
+        case 'cancel':
+          // Cancel the plan
+          onAction?.('cancel', cta.data);
+          break;
       }
     } catch (error) {
       console.error('CTA action failed:', error);
