@@ -7,11 +7,11 @@ interface LogoProps {
   size?: number;
 }
 
-export function Logo({ className = "", size = 32 }: LogoProps) {
+export function Logo({ className = "", size = 48 }: LogoProps) {
   const { theme } = useTheme();
   
-  // Use imported logos based on theme
-  const logoSrc = theme === "dark" ? blossomDark : blossomLight;
+  // Use pink logo for both dark and light modes
+  const logoSrc = blossomLight;
 
   return (
     <img 
