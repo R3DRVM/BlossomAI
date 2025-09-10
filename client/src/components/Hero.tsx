@@ -34,7 +34,7 @@ export function Hero() {
             variants={heroTextItem}
             className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
           >
-            <span className="text-white dark:text-white light:text-white pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl">Deploy millions, intelligently.</span>
+            <span className="text-white dark:text-white light:gradient-text">Deploy millions, intelligently.</span>
           </motion.h1>
 
           {/* Subline - one concise sentence */}
