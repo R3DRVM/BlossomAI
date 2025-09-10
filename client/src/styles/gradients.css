@@ -3,9 +3,9 @@
 /* Light mode semantic text tokens */
 .light,
 :root[data-theme="light"] {
-  --text-primary: #1A1D23;    /* headlines, key numbers */
-  --text-secondary: #2A2F3A;  /* body copy */
-  --text-muted: #6B7280;      /* captions, helper text */
+  --text-primary: #E91E63;    /* headlines, key numbers - pink */
+  --text-secondary: #C2185B;  /* body copy - darker pink */
+  --text-muted: #AD1457;      /* captions, helper text - muted pink */
   --text-inverse: #FFFFFF;    /* on gradient buttons only */
 }
 
@@ -172,7 +172,7 @@
 }
 
 .light .metric-numeral-gradient {
-  background: linear-gradient(135deg, #9B2EFF 0%, #E92F86 100%);
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -180,7 +180,7 @@
 }
 
 .light .trend-positive {
-  color: #0E9F6E !important;
+  color: #E91E63 !important;
 }
 
 /* Enhanced pink outline for white text in light mode */
