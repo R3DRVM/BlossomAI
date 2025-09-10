@@ -159,6 +159,23 @@
   color: var(--text-secondary) !important;
 }
 
+/* More specific overrides for light mode */
+.light .text-white {
+  color: var(--text-primary) !important;
+}
+
+.light .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.light .text-gray-700 {
+  color: var(--text-secondary) !important;
+}
+
+.light .text-gray-600 {
+  color: var(--text-muted) !important;
+}
+
 /* High-contrast metric numerals for light mode */
 .light .metric-numeral {
   color: var(--text-primary);
