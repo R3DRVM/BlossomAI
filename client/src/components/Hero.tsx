@@ -34,13 +34,13 @@ export function Hero() {
             variants={heroTextItem}
             className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
           >
-            <span className="text-white dark:text-white light:text-gray-900 light:pink-outline">Deploy millions, intelligently.</span>
+            <span className="text-white dark:text-white light:text-gray-900 light:pink-outline light:bg-black/10 light:px-4 light:py-2 light:rounded-lg">Deploy millions, intelligently.</span>
           </motion.h1>
 
           {/* Subline - one concise sentence */}
           <motion.p
             variants={heroTextItem}
-            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-700 max-w-3xl mx-auto leading-relaxed font-light"
+            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-700 light:bg-black/5 light:px-4 light:py-2 light:rounded-lg max-w-3xl mx-auto leading-relaxed font-light"
           >
             AI insights, unified execution, and institutional risk for DeFi yield.
           </motion.p>

@@ -106,12 +106,24 @@
 
 /* Enhanced pink outline for white text in light mode */
 .pink-outline {
-  -webkit-text-stroke: 1px rgba(255, 79, 160, 0.8);
-  text-stroke: 1px rgba(255, 79, 160, 0.8);
+  -webkit-text-stroke: 2px rgba(255, 79, 160, 1);
+  text-stroke: 2px rgba(255, 79, 160, 1);
   text-shadow: 
-    0 0 2px rgba(255, 79, 160, 0.6),
-    0 0 4px rgba(255, 79, 160, 0.4),
-    0 0 6px rgba(255, 79, 160, 0.3);
+    0 0 4px rgba(255, 79, 160, 0.8),
+    0 0 8px rgba(255, 79, 160, 0.6),
+    0 0 12px rgba(255, 79, 160, 0.4),
+    0 0 16px rgba(255, 79, 160, 0.3);
+}
+
+/* Extra strong outline for section headings */
+.pink-outline-strong {
+  -webkit-text-stroke: 3px rgba(255, 79, 160, 1);
+  text-stroke: 3px rgba(255, 79, 160, 1);
+  text-shadow: 
+    0 0 6px rgba(255, 79, 160, 0.9),
+    0 0 12px rgba(255, 79, 160, 0.7),
+    0 0 18px rgba(255, 79, 160, 0.5),
+    0 0 24px rgba(255, 79, 160, 0.3);
 }
 
 /* Floating elements */

@@ -14,7 +14,7 @@ export function SplitProblem() {
             viewport={{ once: true, margin: "-100px" }}
             className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong mb-8">
               Fragmented DeFi
             </h2>
             <div className="scattered-dots p-8 rounded-2xl bg-red-500/5 dark:bg-red-500/5 light:bg-red-50 border border-red-500/20 dark:border-red-500/20 light:border-red-200">
@@ -37,7 +37,7 @@ export function SplitProblem() {
             viewport={{ once: true, margin: "-100px" }}
             className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong mb-8">
               <span className="gradient-text">Blossom Unified AI</span>
             </h2>
             <div className="glass-stack p-8">
