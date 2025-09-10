@@ -104,6 +104,14 @@
   background-clip: text;
 }
 
+/* Ensure gradient text works in light mode */
+.light .gradient-text {
+  background: linear-gradient(135deg, #ff4fa0 0%, #b794f6 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
 
 /* Floating elements */
 .floating-glow {

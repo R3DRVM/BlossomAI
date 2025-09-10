@@ -25,7 +25,7 @@ export default function Landing() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Logo size={48} className="flex-shrink-0" />
-              <span className="text-xl font-bold gradient-text light:pink-outline">
+              <span className="text-xl font-bold gradient-text">
                 Blossom
               </span>
             </div>
