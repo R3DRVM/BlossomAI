@@ -25,7 +25,7 @@ export default function Landing() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Logo size={48} className="flex-shrink-0" />
-              <span className="text-xl font-bold gradient-text light:text-primary">
+              <span className="text-xl font-bold gradient-text light:pink-outline">
                 Blossom
               </span>
             </div>
@@ -33,7 +33,7 @@ export default function Landing() {
               <ThemeToggle />
               <button 
                 onClick={() => setLocation('/terminal')} 
-                className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white light:text-inverse rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-glow focus:ring-4 focus:ring-pink-200 light:focus:ring-pink-200"
+                className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-glow"
                 data-testid="button-login"
               >
                 Access Terminal
@@ -62,9 +62,9 @@ export default function Landing() {
               <div className="w-6 h-6 bg-gradient-to-br from-pink-500 to-purple-600 rounded">
                 <div className="h-4 w-4 text-white m-1 flex items-center justify-center text-xs font-bold">B</div>
               </div>
-              <span className="font-medium text-white dark:text-white light:text-primary">Blossom</span>
+              <span className="font-medium text-white dark:text-white light:text-gray-900 light:pink-outline">Blossom</span>
             </div>
-            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-muted">
+            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600">
               © 2025 Blossom. All rights reserved.
             </p>
           </div>

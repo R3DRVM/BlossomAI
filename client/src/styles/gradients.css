@@ -1,14 +1,5 @@
 /* Blossom Landing Page - Unified Premium Design */
 
-/* Light mode semantic text tokens */
-.light,
-:root[data-theme="light"] {
-  --text-primary: #F06292;    /* headlines, key numbers - lighter pink */
-  --text-secondary: #E91E63;  /* body copy - medium pink */
-  --text-muted: #C2185B;      /* captions, helper text - darker pink */
-  --text-inverse: #FFFFFF;    /* on gradient buttons only */
-}
-
 /* Unified background foundation - Dark Mode */
 .bg-unified {
   background: 
@@ -57,23 +48,12 @@
   background-image: 
     linear-gradient(135deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
     linear-gradient(45deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-  opacity: 0.03;
 }
 
 .light .bg-unified::after {
   background: 
-    radial-gradient(600px 600px at 10% 10%, rgba(255, 79, 160, 0.14) 0%, transparent 50%),
-    radial-gradient(600px 600px at 90% 90%, rgba(180, 102, 255, 0.16) 0%, transparent 50%);
-  mix-blend-mode: multiply;
-  filter: blur(100px);
-  opacity: 0.18;
-}
-
-/* Content-safe overlay for light mode text blocks */
-.light .content-overlay {
-  background: linear-gradient(0deg, rgba(255,255,255,0.86), rgba(255,255,255,0.86));
-  position: relative;
-  z-index: 5;
+    radial-gradient(600px 600px at 10% 10%, rgba(255, 79, 160, 0.03) 0%, transparent 50%),
+    radial-gradient(600px 600px at 90% 90%, rgba(180, 102, 255, 0.03) 0%, transparent 50%);
 }
 
 /* Soft grain texture */
@@ -105,17 +85,15 @@
 
 /* Light Mode Glass Cards */
 .light .glass-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(15, 18, 34, 0.08);
-  box-shadow: 0 1px 2px rgba(15, 18, 34, 0.06), 0 8px 24px rgba(15, 18, 34, 0.06);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .light .glass-card:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(15, 18, 34, 0.12);
-  box-shadow: 0 4px 8px rgba(15, 18, 34, 0.08), 0 12px 30px rgba(15, 18, 34, 0.10);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* Gradient text treatment */
@@ -124,63 +102,6 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-/* Light mode text utility classes */
-.light .text-primary {
-  color: var(--text-primary) !important;
-}
-
-.light .text-secondary {
-  color: var(--text-secondary) !important;
-}
-
-.light .text-muted {
-  color: var(--text-muted) !important;
-}
-
-.light .text-inverse {
-  color: var(--text-inverse) !important;
-}
-
-/* Light mode text color overrides */
-.light .text-white {
-  color: var(--text-primary) !important;
-}
-
-.light .text-gray-900 {
-  color: var(--text-primary) !important;
-}
-
-.light .text-gray-700 {
-  color: var(--text-secondary) !important;
-}
-
-.light .text-gray-600 {
-  color: var(--text-muted) !important;
-}
-
-.light .text-gray-500 {
-  color: var(--text-muted) !important;
-}
-
-/* High-contrast metric numerals for light mode */
-.light .metric-numeral {
-  color: var(--text-primary);
-  font-weight: 700;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.08);
-}
-
-.light .metric-numeral-gradient {
-  background: linear-gradient(135deg, #F06292 0%, #E91E63 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.08);
-}
-
-.light .trend-positive {
-  color: #F06292 !important;
 }
 
 /* Enhanced pink outline for white text in light mode */
@@ -302,8 +223,7 @@
 /* Light Mode Navigation */
 .light .sticky-nav {
   background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(15, 18, 34, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* CTA aura effect - Dark Mode */

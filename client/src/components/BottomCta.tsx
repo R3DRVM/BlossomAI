@@ -21,15 +21,12 @@ export function BottomCta() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="space-y-8 relative"
+          className="space-y-8"
         >
-          {/* Content overlay for light mode */}
-          <div className="light:content-overlay light:absolute light:inset-0 light:rounded-2xl light:-m-4 light:z-0"></div>
-          
-          <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-primary relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-black light:pink-outline-strong light:bg-white/90 light:px-6 light:py-3 light:rounded-xl">
             Ready to deploy with Blossom?
           </h2>
-          <p className="text-xl text-gray-400 dark:text-gray-400 light:text-muted max-w-2xl mx-auto relative z-10">
+          <p className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-700 max-w-2xl mx-auto">
             Join institutional investors using AI-driven aggregation and unified risk.
           </p>
           <motion.div
@@ -41,7 +38,7 @@ export function BottomCta() {
             <Button
               size="lg"
               onClick={() => setLocation('/terminal')}
-              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white light:text-inverse px-12 py-5 text-lg font-semibold transition-all duration-300 focus:ring-4 focus:ring-pink-200 light:focus:ring-pink-200 relative z-10"
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-12 py-5 text-lg font-semibold transition-all duration-300"
             >
               Access Terminal Now
               <ArrowRight className="ml-2 h-5 w-5" />
