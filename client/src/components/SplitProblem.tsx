@@ -22,7 +22,7 @@ export function SplitProblem() {
                 <div className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-gray-300 dark:text-gray-300 light:text-gray-700 text-lg leading-relaxed">
-                    <strong className="text-white dark:text-white light:text-gray-900 light:[text-shadow:0_0_1px_rgba(255,79,160,0.3),0_0_2px_rgba(255,79,160,0.2)]">Fragmented DeFi:</strong> Scattered protocols, manual research, and compliance drag.
+                    <strong className="text-white dark:text-white light:text-gray-900 light:pink-outline">Fragmented DeFi:</strong> Scattered protocols, manual research, and compliance drag.
                   </p>
                 </div>
               </div>
@@ -45,7 +45,7 @@ export function SplitProblem() {
                 <div className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-gray-300 dark:text-gray-300 light:text-gray-700 text-lg leading-relaxed">
-                    <strong className="text-white dark:text-white light:text-gray-900 light:[text-shadow:0_0_1px_rgba(255,79,160,0.3),0_0_2px_rgba(255,79,160,0.2)]">Blossom Unified AI:</strong> One aggregator to discover, execute, and manage with institutional control.
+                    <strong className="text-white dark:text-white light:text-gray-900 light:pink-outline">Blossom Unified AI:</strong> One aggregator to discover, execute, and manage with institutional control.
                   </p>
                 </div>
               </div>

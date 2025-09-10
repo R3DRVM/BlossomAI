@@ -25,7 +25,7 @@ export default function Landing() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Logo size={48} className="flex-shrink-0" />
-              <span className="text-xl font-bold gradient-text light:[text-shadow:0_0_1px_rgba(255,79,160,0.3),0_0_2px_rgba(255,79,160,0.2)]">
+              <span className="text-xl font-bold gradient-text light:pink-outline">
                 Blossom
               </span>
             </div>
@@ -62,7 +62,7 @@ export default function Landing() {
               <div className="w-6 h-6 bg-gradient-to-br from-pink-500 to-purple-600 rounded">
                 <div className="h-4 w-4 text-white m-1 flex items-center justify-center text-xs font-bold">B</div>
               </div>
-              <span className="font-medium text-white dark:text-white light:text-gray-900 light:[text-shadow:0_0_1px_rgba(255,79,160,0.3),0_0_2px_rgba(255,79,160,0.2)]">Blossom</span>
+              <span className="font-medium text-white dark:text-white light:text-gray-900 light:pink-outline">Blossom</span>
             </div>
             <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600">
               © 2025 Blossom. All rights reserved.

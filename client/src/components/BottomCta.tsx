@@ -23,7 +23,7 @@ export function BottomCta() {
           viewport={{ once: true, margin: "-100px" }}
           className="space-y-8"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:[text-shadow:0_0_1px_rgba(255,79,160,0.3),0_0_2px_rgba(255,79,160,0.2)]">
+          <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline">
             Ready to deploy with Blossom?
           </h2>
           <p className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-600 max-w-2xl mx-auto">
