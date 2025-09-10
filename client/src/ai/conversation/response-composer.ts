@@ -28,7 +28,7 @@ export interface ComposedResponse {
 
 export interface MicroCTA {
   label: string;
-  action: 'simulate' | 'apply' | 'analytics' | 'alert' | 'portfolio' | 'undo' | 'deploy' | 'find' | 'compare';
+  action: 'simulate' | 'apply' | 'analytics' | 'alert' | 'portfolio' | 'undo' | 'deploy' | 'find' | 'compare' | 'execute' | 'adjust' | 'cancel';
   data?: any;
 }
 
@@ -211,6 +211,14 @@ function generateMicroCTAs(intent: any, currentPlan?: ChatPlan, previousPlan?: C
   return ctas;
 }
 
+export function generateConfirmationCTAs(): MicroCTA[] {
+  return [
+    { label: 'Execute', action: 'execute', data: { type: 'confirm' } },
+    { label: 'Adjust', action: 'adjust', data: { type: 'modify' } },
+    { label: 'Cancel', action: 'cancel', data: { type: 'abort' } }
+  ];
+}
+
 function formatAllocationsTable(allocations: any[]): string {
   if (!allocations || allocations.length === 0) return "No allocations found.";
   
@@ -258,6 +266,7 @@ function formatComparison(comparison: any): string {
          `TVL: $${p1.tvl}M vs $${p2.tvl}M\n` +
          `Risk: ${p1.risk} vs ${p2.risk}`;
 }
+
 
 
 

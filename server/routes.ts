@@ -318,11 +318,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Live yields endpoint with protocol filtering
   app.get('/api/live-yields', async (req, res) => {
     try {
+      console.log('[routes] /api/live-yields called');
       const { chain, protocols } = req.query as { chain?: string; protocols?: string };
+      console.log('[routes] Query params:', { chain, protocols });
       const b = await getLiveBundle();
+      console.log('[routes] Got live bundle with', b.protocols.length, 'protocols');
       let list = b.protocols;
       
-      if (chain) list = list.filter(p => p.chain === chain);
+      if (chain) {
+        console.log('[routes] Filtering by chain:', chain);
+        list = list.filter(p => p.chain === chain);
+        console.log('[routes] After chain filtering:', list.length, 'protocols');
+      }
       
       if (protocols) {
         const protocolList = protocols.split(',').map(p => p.trim().toLowerCase());
@@ -331,6 +338,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
       }
       
+      console.log('[routes] Returning', list.length, 'yields');
       res.json({ updatedAt: b.updatedAt, yields: list });
     } catch {
       res.status(200).json({ updatedAt: Date.now(), yields: [] }); // graceful fallback

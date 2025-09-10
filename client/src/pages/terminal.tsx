@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/terminal/Header";
 import { YieldOverview } from "@/components/terminal/YieldOverview";
 import { StrategyBuilder } from "@/components/terminal/StrategyBuilder";
@@ -159,39 +161,101 @@ export default function Terminal() {
           {activeTab === "portfolio" && (
             <div className="col-span-2">
               <div className="min-h-screen bg-background p-6">
-                {/* Header */}
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-                        Portfolio Management
-                      </h1>
-                      <p className="text-muted-foreground mt-2">
-                        Monitor your DeFi positions and capital allocation in real-time
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Wallet className="h-4 w-4 mr-2" />
-                        Export CSV
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Share
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                                 {/* Header */}
+                 <div className="mb-4">
+                   <div className="flex items-center justify-between mb-2">
+                     <div>
+                       <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
+                         Portfolio Management
+                       </h1>
+                       <p className="text-muted-foreground text-sm">
+                         Monitor your DeFi positions and capital allocation in real-time
+                       </p>
+                     </div>
+                     <div className="flex items-center space-x-1.5">
+                       <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                         <Wallet className="h-3 w-3 mr-1" />
+                         Export CSV
+                       </Button>
+                       <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                         <Share2 className="h-3 w-3 mr-1" />
+                         Share
+                       </Button>
+                     </div>
+                   </div>
+                 </div>
 
-                {/* Portfolio Overview */}
-                <div className="mb-8">
-                  <SnapshotCard />
+                                 {/* Portfolio Overview */}
+                 <div className="mb-4">
+                   <SnapshotCard />
+                 </div>
+
+                 {/* API Management Section */}
+                 <div className="mb-4">
+                                     <Card className="w-full shadow-sm border-border/50">
+                     <CardHeader className="pb-2">
+                       <div className="flex items-center justify-between">
+                         <div className="flex items-center space-x-2">
+                           <div className="p-1.5 bg-blue-500/10 rounded-md">
+                             <svg className="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                             </svg>
+                           </div>
+                           <div>
+                             <CardTitle className="text-base">API Management</CardTitle>
+                             <p className="text-xs text-muted-foreground">
+                               Manage your Blossom API keys for institutional integration
+                             </p>
+                           </div>
+                         </div>
+                         <div className="flex items-center space-x-1.5">
+                           <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20 text-xs px-2 py-0.5">
+                             Professional
+                           </Badge>
+                           <Button 
+                             variant="outline" 
+                             size="sm"
+                             className="h-6 px-2 text-xs"
+                             onClick={() => window.location.href = '/terminal?tab=institution'}
+                           >
+                             Manage Keys
+                           </Button>
+                         </div>
+                       </div>
+                     </CardHeader>
+                     <CardContent className="pt-0">
+                       <div className="grid md:grid-cols-3 gap-3">
+                         <div className="text-center p-2 bg-muted/20 rounded-md">
+                           <div className="text-base font-bold text-blue-500">3</div>
+                           <div className="text-xs text-muted-foreground">Active Keys</div>
+                         </div>
+                         <div className="text-center p-2 bg-muted/20 rounded-md">
+                           <div className="text-base font-bold text-green-500">1.2M</div>
+                           <div className="text-xs text-muted-foreground">API Calls/Month</div>
+                         </div>
+                         <div className="text-center p-2 bg-muted/20 rounded-md">
+                           <div className="text-base font-bold text-purple-500">99.9%</div>
+                           <div className="text-xs text-muted-foreground">Uptime</div>
+                         </div>
+                       </div>
+                       <div className="mt-3 p-2 bg-blue-500/5 border border-blue-500/20 rounded-md">
+                         <div className="flex items-center space-x-1.5 mb-1">
+                           <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                           <span className="text-xs font-medium text-blue-600">Integration Ready</span>
+                         </div>
+                         <p className="text-xs text-blue-600/80">
+                           Connect your trading desk with real-time yield data, automated deployments, and risk monitoring.
+                         </p>
+                       </div>
+                     </CardContent>
+                   </Card>
                 </div>
                 
-                {/* Positions Table */}
-                <div className="space-y-6">
-                  <PositionsTable />
-                </div>
+                                 {/* Positions Table */}
+                 <div className="space-y-4">
+                   <PositionsTable />
+                 </div>
               </div>
             </div>
           )}

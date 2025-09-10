@@ -293,27 +293,17 @@ export const downloadSnapshotCSV = (snapshot: PlanSnapshot): void => {
 export async function applyPlanById(userId: string, plan: ProposedPlan) {
   console.log('[applyPlanById:start]', { userId, planId: plan.id, status: plan.status, capitalUSD: plan.capitalUSD });
   
-  // Re-fetch the plan to ensure we have the latest status
-  const freshPlan = getProposedPlan(userId);
-  console.log('[applyPlanById:freshPlan]', { 
-    exists: !!freshPlan, 
-    id: freshPlan?.id, 
-    status: freshPlan?.status,
-    originalId: plan.id,
-    originalStatus: plan.status
-  });
-  
-  if (!freshPlan || freshPlan.id !== plan.id) {
-    throw new Error('Plan not found or ID mismatch');
+  // Validate the plan directly
+  if (!plan || !plan.id) {
+    throw new Error('Invalid plan provided');
   }
   
-  if (freshPlan.status !== 'pending') {
+  if (plan.status !== 'pending') {
     console.error('[applyPlanById:statusError]', { 
-      freshStatus: freshPlan.status, 
-      originalStatus: plan.status,
-      planId: freshPlan.id 
+      status: plan.status,
+      planId: plan.id 
     });
-    throw new Error(`Plan status is "${freshPlan.status}" but should be "pending"`);
+    throw new Error(`Plan status is "${plan.status}" but should be "pending"`);
   }
   
   if (plan.capitalUSD <= 0) throw new Error('Invalid size');

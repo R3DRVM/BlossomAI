@@ -202,31 +202,31 @@ export function SnapshotCard({ className = '' }: SnapshotCardProps) {
   
   return (
     <Card className={`shadow-sm border-border/50 w-full ${className}`}>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold flex items-center space-x-2">
-            <Wallet className="h-5 w-5 text-green-500" />
+          <CardTitle className="text-base font-semibold flex items-center space-x-1.5">
+            <Wallet className="h-4 w-4 text-green-500" />
             <span>Portfolio Snapshot</span>
           </CardTitle>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-xs px-2 py-0.5">
             {positions.length} positions
           </Badge>
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {/* KPI Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-background rounded-lg border p-2">
-            <div className="text-xs text-muted-foreground mb-1">Total Capital</div>
-            <div className="text-base font-semibold text-green-600">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-background rounded-lg border p-1.5">
+            <div className="text-xs text-muted-foreground mb-0.5">Total Capital</div>
+            <div className="text-sm font-semibold text-green-600">
               {fmtUSD(totalAvailableCapital)}
             </div>
           </div>
           
-          <div className="bg-background rounded-lg border p-2">
-            <div className="text-xs text-muted-foreground mb-1">Weighted APY</div>
-            <div className="text-base font-semibold text-green-600">
+          <div className="bg-background rounded-lg border p-1.5">
+            <div className="text-xs text-muted-foreground mb-0.5">Weighted APY</div>
+            <div className="text-sm font-semibold text-green-600">
               {fmtPct(positions.length > 0 ? 
                 positions.reduce((sum, p) => sum + toNum(p.baseAPY, 0), 0) / positions.length * 100 
                 : 0)}
@@ -235,10 +235,10 @@ export function SnapshotCard({ className = '' }: SnapshotCardProps) {
         </div>
         
         {/* Capital Breakdown */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-background rounded-lg border p-2">
-            <div className="text-xs text-muted-foreground mb-1">Cash Available</div>
-            <div className="text-base font-semibold text-blue-600">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-background rounded-lg border p-1.5">
+            <div className="text-xs text-muted-foreground mb-0.5">Cash Available</div>
+            <div className="text-sm font-semibold text-blue-600">
               {fmtUSD(cashUSD)}
             </div>
             <div className="text-xs text-muted-foreground">
@@ -246,9 +246,9 @@ export function SnapshotCard({ className = '' }: SnapshotCardProps) {
             </div>
           </div>
           
-          <div className="bg-background rounded-lg border p-2">
-            <div className="text-xs text-muted-foreground mb-1">Deployed</div>
-            <div className="text-base font-semibold text-purple-600">
+          <div className="bg-background rounded-lg border p-1.5">
+            <div className="text-xs text-muted-foreground mb-0.5">Deployed</div>
+            <div className="text-sm font-semibold text-purple-600">
               {fmtUSD(totalPositionsUSD)}
             </div>
             <div className="text-xs text-muted-foreground">
@@ -258,16 +258,16 @@ export function SnapshotCard({ className = '' }: SnapshotCardProps) {
         </div>
         
         {/* Position Summary */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-background rounded-lg border p-2">
-            <div className="text-xs text-muted-foreground mb-1">Active Positions</div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-background rounded-lg border p-1.5">
+            <div className="text-xs text-muted-foreground mb-0.5">Active Positions</div>
             <div className="text-sm font-medium text-green-600">
               {positions.length} positions
             </div>
           </div>
           
-          <div className="bg-background rounded-lg border p-2">
-            <div className="text-xs text-muted-foreground mb-1">Protocols</div>
+          <div className="bg-background rounded-lg border p-1.5">
+            <div className="text-xs text-muted-foreground mb-0.5">Protocols</div>
             <div className="text-sm font-medium text-blue-600">
               {new Set(positions.map(p => p.protocol)).size} protocols
             </div>
@@ -275,36 +275,36 @@ export function SnapshotCard({ className = '' }: SnapshotCardProps) {
         </div>
         
         {/* Mini Charts */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <MiniDonutChart
             data={protocolChartData}
             title="Protocols"
-            size={100}
+            size={80}
           />
           
           <MiniDonutChart
             data={chainChartData}
             title="Chains"
-            size={100}
+            size={80}
           />
         </div>
         
         {/* Badges */}
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="secondary" className="text-xs">
+        <div className="flex flex-wrap gap-1.5">
+          <Badge variant="secondary" className="text-xs px-2 py-0.5">
             <Building2 className="h-3 w-3 mr-1" />
             {positions.length} protocols
           </Badge>
           
           {positions.length > 0 && (
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs px-2 py-0.5">
               <Timer className="h-3 w-3 mr-1" />
               Active positions
             </Badge>
           )}
           
           {positions.length === 0 && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs px-2 py-0.5">
               <Shield className="h-3 w-3 mr-1" />
               No positions yet
             </Badge>

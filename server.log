@@ -1,0 +1,694 @@
+
+> rest-express@1.0.0 dev
+> concurrently -k "npm:dev:server" "npm:dev:web"
+
+[dev:server] 
+[dev:server] > rest-express@1.0.0 dev:server
+[dev:server] > tsx server/index.ts
+[dev:server] 
+[dev:web] 
+[dev:web] > rest-express@1.0.0 dev:web
+[dev:web] > vite --port 5173
+[dev:web] 
+[dev:web] 
+[dev:web]   VITE v5.4.19  ready in 89 ms
+[dev:web] 
+[dev:web]   ➜  Local:   http://127.0.0.1:5173/
+[dev:web] Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+[dev:web]   npx update-browserslist-db@latest
+[dev:web]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[dev:server] ⚠️  No DATABASE_URL set - running in demo mode without database
+[dev:server] [server] DEV= true ALLOW_ALL= true PORT= 5050
+[dev:server] 🔧 Environment Configuration:
+[dev:server]    NODE_ENV: development
+[dev:server]    VERCEL_ENV: not set
+[dev:server]    Port: 5050
+[dev:server]    CORS Origins: 2 configured
+[dev:server]    Preview Regex: set
+[dev:server]    Demo AI: enabled
+[dev:server]    AI Stream: enabled
+[dev:server]    Live Data: Prices=true, Yields=true, TVL=true, Risk=false
+[dev:server]    API Base: http://localhost:5050
+[dev:server] 
+[dev:server] WebSocket server temporarily disabled for stability
+[dev:server] 1:31:46 AM [vite] Setting up Vite development middleware...
+[dev:server] 1:31:46 AM [vite] Vite middleware applied successfully
+[dev:server] 1:31:46 AM [vite] Vite setup complete
+[dev:server] 1:31:46 AM [express] 🚀 Server running on http://localhost:5050
+[dev:server] 1:31:46 AM [express] 📱 Development mode: development
+[dev:server] 1:31:46 AM [express] 🔧 API endpoints available at http://localhost:5050/api/*
+[dev:server] 1:31:46 AM [express] 🌐 CORS allowed origins: http://localhost:5000, http://localhost:5173
+[dev:server] [routes] /api/live-yields called
+[dev:server] [routes] Query params: { chain: 'solana', protocols: undefined }
+[dev:server] [getLiveBundle] Called at 2025-09-05T08:31:57.552Z
+[dev:server] [live:fetchLlamaPools] Fetching from DefiLlama API...
+[dev:server] [live:fetchLlamaPools] Received 18919 pools from DefiLlama
+[dev:server] [live:normalize] Processing 18919 pools for 16 protocols
+[dev:server] [live:normalize] HYDRO (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping HYDRO - no candidates found
+[dev:server] [live:normalize] Helix (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix - no candidates found
+[dev:server] [live:normalize] Neptune Finance (neptune): found 0 candidates
+[dev:server] [live:normalize] Skipping Neptune Finance - no candidates found
+[dev:server] [live:normalize] Hydro Lending (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping Hydro Lending - no candidates found
+[dev:server] [live:normalize] Helix Spot (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix Spot - no candidates found
+[dev:server] [live:normalize] Mito Finance (mito): found 0 candidates
+[dev:server] [live:normalize] Skipping Mito Finance - no candidates found
+[dev:server] [live:normalize] Dojoswap (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap - no candidates found
+[dev:server] [live:normalize] Dojoswap LSD (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap LSD - no candidates found
+[dev:server] [live:normalize] Jito (Liquid Staking) (jito): found 1 candidates
+[dev:server] [live:normalize] Processing Jito (Liquid Staking) with 1 candidates...
+[dev:server] [live:normalize] Jito (Liquid Staking) - final filtered candidates: 1
+[dev:server] [live:normalize] Jito (Liquid Staking) top pool: jito-liquid-staking - JITOSOL - 6.7% APY - $3,066,756,382 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jito (liquid staking):solana:SOL',
+[dev:server]   protocol: 'Jito (Liquid Staking)',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.7,
+[dev:server]   tvlUSD: 3066756382,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Marinade Liquid Staking (marinade): found 1 candidates
+[dev:server] [live:normalize] Processing Marinade Liquid Staking with 1 candidates...
+[dev:server] [live:normalize] Marinade Liquid Staking - final filtered candidates: 1
+[dev:server] [live:normalize] Marinade Liquid Staking top pool: marinade-liquid-staking - MSOL - 7.54618% APY - $955,009,809 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'marinade liquid staking:solana:SOL',
+[dev:server]   protocol: 'Marinade Liquid Staking',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.54618,
+[dev:server]   tvlUSD: 955009809,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Jupiter Staked SOL (jupiter): found 1 candidates
+[dev:server] [live:normalize] Processing Jupiter Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Jupiter Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Jupiter Staked SOL top pool: jupiter-staked-sol - JUPSOL - 7.21728% APY - $1,215,548,451 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jupiter staked sol:solana:SOL',
+[dev:server]   protocol: 'Jupiter Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.21728,
+[dev:server]   tvlUSD: 1215548451,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Kamino Lend (kamino): found 225 candidates
+[dev:server] [live:normalize] Processing Kamino Lend with 225 candidates...
+[dev:server] [live:normalize] Kamino Lend - final filtered candidates: 1
+[dev:server] [live:normalize] Kamino Lend top pool: kamino-lend - USDC - 3.40284% APY - $115,991,758 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'kamino lend:solana:USDC',
+[dev:server]   protocol: 'Kamino Lend',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'USDC',
+[dev:server]   apy: 3.40284,
+[dev:server]   tvlUSD: 115991758,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Orca DEX (orca): found 416 candidates
+[dev:server] [live:normalize] Processing Orca DEX with 416 candidates...
+[dev:server] [live:normalize] Orca DEX - final filtered candidates: 257
+[dev:server] [live:normalize] Orca DEX top pool: orca-dex - SOL-USDC - 59.33047% APY - $32,526,289 TVL
+[dev:server] [live:normalize] Error processing Orca DEX: ReferenceError: Cannot access 'asset' before initialization
+[dev:server]     at normalize (/Users/redrum/Documents/BlossomAI/server/data/live.ts:115:81)
+[dev:server]     at <anonymous> (/Users/redrum/Documents/BlossomAI/server/data/live.ts:156:25)
+[dev:server]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[dev:server]     at async <anonymous> (/Users/redrum/Documents/BlossomAI/server/routes.ts:324:17)
+[dev:server] [live:normalize] Binance Staked SOL (binance): found 1 candidates
+[dev:server] [live:normalize] Processing Binance Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Binance Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Binance Staked SOL top pool: binance-staked-sol - BNSOL - 5.51084% APY - $2,363,090,231 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'binance staked sol:solana:SOL',
+[dev:server]   protocol: 'Binance Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.51084,
+[dev:server]   tvlUSD: 2363090231,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Bybit Staked SOL (bybit): found 1 candidates
+[dev:server] [live:normalize] Processing Bybit Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Bybit Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Bybit Staked SOL top pool: bybit-staked-sol - BBSOL - 6.27% APY - $435,468,965 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'bybit staked sol:solana:SOL',
+[dev:server]   protocol: 'Bybit Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.27,
+[dev:server]   tvlUSD: 435468965,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Lido (lido): found 0 candidates
+[dev:server] [live:normalize] Skipping Lido - no candidates found
+[dev:server] [live:normalize] Returning 6 protocols
+[dev:server] [routes] Got live bundle with 6 protocols
+[dev:server] [routes] Filtering by chain: solana
+[dev:server] [routes] After chain filtering: 6 protocols
+[dev:server] [routes] Returning 6 yields
+[dev:server] GET /api/live-yields 200 - 594ms
+[dev:server] [REQ] GET /api/live-yields 200 595ms origin=none host=localhost:5050 traceId=trace-1757061117551-71lf0fovf
+[dev:server] 1:31:58 AM [express] GET /api/live-yields 200 in 594ms :: {"updatedAt":1757061118145,"yields":[{"id"...
+[dev:server] [routes] /api/live-yields called
+[dev:server] [routes] Query params: { chain: 'solana', protocols: undefined }
+[dev:server] [getLiveBundle] Called at 2025-09-05T08:32:20.227Z
+[dev:server] [live:fetchLlamaPools] Fetching from DefiLlama API...
+[dev:server] [live:fetchLlamaPools] Received 18919 pools from DefiLlama
+[dev:server] [live:normalize] Processing 18919 pools for 16 protocols
+[dev:server] [live:normalize] HYDRO (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping HYDRO - no candidates found
+[dev:server] [live:normalize] Helix (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix - no candidates found
+[dev:server] [live:normalize] Neptune Finance (neptune): found 0 candidates
+[dev:server] [live:normalize] Skipping Neptune Finance - no candidates found
+[dev:server] [live:normalize] Hydro Lending (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping Hydro Lending - no candidates found
+[dev:server] [live:normalize] Helix Spot (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix Spot - no candidates found
+[dev:server] [live:normalize] Mito Finance (mito): found 0 candidates
+[dev:server] [live:normalize] Skipping Mito Finance - no candidates found
+[dev:server] [live:normalize] Dojoswap (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap - no candidates found
+[dev:server] [live:normalize] Dojoswap LSD (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap LSD - no candidates found
+[dev:server] [live:normalize] Jito (Liquid Staking) (jito): found 1 candidates
+[dev:server] [live:normalize] Processing Jito (Liquid Staking) with 1 candidates...
+[dev:server] [live:normalize] Jito (Liquid Staking) - final filtered candidates: 1
+[dev:server] [live:normalize] Jito (Liquid Staking) top pool: jito-liquid-staking - JITOSOL - 6.7% APY - $3,066,756,382 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jito (liquid staking):solana:SOL',
+[dev:server]   protocol: 'Jito (Liquid Staking)',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.7,
+[dev:server]   tvlUSD: 3066756382,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Marinade Liquid Staking (marinade): found 1 candidates
+[dev:server] [live:normalize] Processing Marinade Liquid Staking with 1 candidates...
+[dev:server] [live:normalize] Marinade Liquid Staking - final filtered candidates: 1
+[dev:server] [live:normalize] Marinade Liquid Staking top pool: marinade-liquid-staking - MSOL - 7.54618% APY - $955,009,809 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'marinade liquid staking:solana:SOL',
+[dev:server]   protocol: 'Marinade Liquid Staking',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.54618,
+[dev:server]   tvlUSD: 955009809,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Jupiter Staked SOL (jupiter): found 1 candidates
+[dev:server] [live:normalize] Processing Jupiter Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Jupiter Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Jupiter Staked SOL top pool: jupiter-staked-sol - JUPSOL - 7.21728% APY - $1,215,548,451 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jupiter staked sol:solana:SOL',
+[dev:server]   protocol: 'Jupiter Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.21728,
+[dev:server]   tvlUSD: 1215548451,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Kamino Lend (kamino): found 225 candidates
+[dev:server] [live:normalize] Processing Kamino Lend with 225 candidates...
+[dev:server] [live:normalize] Kamino Lend - final filtered candidates: 1
+[dev:server] [live:normalize] Kamino Lend top pool: kamino-lend - USDC - 3.40284% APY - $115,991,758 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'kamino lend:solana:USDC',
+[dev:server]   protocol: 'Kamino Lend',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'USDC',
+[dev:server]   apy: 3.40284,
+[dev:server]   tvlUSD: 115991758,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Orca DEX (orca): found 416 candidates
+[dev:server] [live:normalize] Processing Orca DEX with 416 candidates...
+[dev:server] [live:normalize] Orca DEX - final filtered candidates: 257
+[dev:server] [live:normalize] Orca DEX top pool: orca-dex - SOL-USDC - 59.33047% APY - $32,526,289 TVL
+[dev:server] [live:normalize] Error processing Orca DEX: ReferenceError: Cannot access 'asset' before initialization
+[dev:server]     at normalize (/Users/redrum/Documents/BlossomAI/server/data/live.ts:115:81)
+[dev:server]     at <anonymous> (/Users/redrum/Documents/BlossomAI/server/data/live.ts:156:25)
+[dev:server]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[dev:server]     at async <anonymous> (/Users/redrum/Documents/BlossomAI/server/routes.ts:324:17)
+[dev:server] [live:normalize] Binance Staked SOL (binance): found 1 candidates
+[dev:server] [live:normalize] Processing Binance Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Binance Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Binance Staked SOL top pool: binance-staked-sol - BNSOL - 5.51084% APY - $2,363,090,231 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'binance staked sol:solana:SOL',
+[dev:server]   protocol: 'Binance Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.51084,
+[dev:server]   tvlUSD: 2363090231,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Bybit Staked SOL (bybit): found 1 candidates
+[dev:server] [live:normalize] Processing Bybit Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Bybit Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Bybit Staked SOL top pool: bybit-staked-sol - BBSOL - 6.27% APY - $435,468,965 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'bybit staked sol:solana:SOL',
+[dev:server]   protocol: 'Bybit Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.27,
+[dev:server]   tvlUSD: 435468965,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Lido (lido): found 0 candidates
+[dev:server] [live:normalize] Skipping Lido - no candidates found
+[dev:server] [live:normalize] Returning 6 protocols
+[dev:server] [routes] Got live bundle with 6 protocols
+[dev:server] [routes] Filtering by chain: solana
+[dev:server] [routes] After chain filtering: 6 protocols
+[dev:server] [routes] Returning 6 yields
+[dev:server] GET /api/live-yields 200 - 433ms
+[dev:server] [REQ] GET /api/live-yields 200 432ms origin=none host=localhost:5050 traceId=trace-1757061140226-zazxfhl2w
+[dev:server] 1:32:20 AM [express] GET /api/live-yields 200 in 432ms :: {"updatedAt":1757061140659,"yields":[{"id"...
+[dev:web] 5:14:12 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:14:17 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:14:26 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:14:35 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:17:47 PM [vite] page reload src/ai/userUtils.ts
+[dev:web] 5:33:43 PM [vite] page reload src/lib/liveClient.ts
+[dev:web] 5:33:55 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:00 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:05 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:11 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:34 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:40 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:41 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:34:51 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:35:53 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:server] [routes] /api/live-yields called
+[dev:server] [routes] Query params: { chain: 'solana', protocols: undefined }
+[dev:server] [getLiveBundle] Called at 2025-09-06T00:36:11.450Z
+[dev:server] [live:fetchLlamaPools] Fetching from DefiLlama API...
+[dev:server] [live:fetchLlamaPools] Received 19016 pools from DefiLlama
+[dev:server] [live:normalize] Processing 19016 pools for 16 protocols
+[dev:server] [live:normalize] HYDRO (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping HYDRO - no candidates found
+[dev:server] [live:normalize] Helix (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix - no candidates found
+[dev:server] [live:normalize] Neptune Finance (neptune): found 0 candidates
+[dev:server] [live:normalize] Skipping Neptune Finance - no candidates found
+[dev:server] [live:normalize] Hydro Lending (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping Hydro Lending - no candidates found
+[dev:server] [live:normalize] Helix Spot (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix Spot - no candidates found
+[dev:server] [live:normalize] Mito Finance (mito): found 0 candidates
+[dev:server] [live:normalize] Skipping Mito Finance - no candidates found
+[dev:server] [live:normalize] Dojoswap (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap - no candidates found
+[dev:server] [live:normalize] Dojoswap LSD (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap LSD - no candidates found
+[dev:server] [live:normalize] Jito (Liquid Staking) (jito): found 1 candidates
+[dev:server] [live:normalize] Processing Jito (Liquid Staking) with 1 candidates...
+[dev:server] [live:normalize] Jito (Liquid Staking) - final filtered candidates: 1
+[dev:server] [live:normalize] Jito (Liquid Staking) top pool: jito-liquid-staking - JITOSOL - 6.7% APY - $3,007,221,227 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jito (liquid staking):solana:SOL',
+[dev:server]   protocol: 'Jito (Liquid Staking)',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.7,
+[dev:server]   tvlUSD: 3007221227,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Marinade Liquid Staking (marinade): found 1 candidates
+[dev:server] [live:normalize] Processing Marinade Liquid Staking with 1 candidates...
+[dev:server] [live:normalize] Marinade Liquid Staking - final filtered candidates: 1
+[dev:server] [live:normalize] Marinade Liquid Staking top pool: marinade-liquid-staking - MSOL - 5.44638% APY - $934,341,523 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'marinade liquid staking:solana:SOL',
+[dev:server]   protocol: 'Marinade Liquid Staking',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.44638,
+[dev:server]   tvlUSD: 934341523,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Jupiter Staked SOL (jupiter): found 1 candidates
+[dev:server] [live:normalize] Processing Jupiter Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Jupiter Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Jupiter Staked SOL top pool: jupiter-staked-sol - JUPSOL - 7.21728% APY - $1,188,092,272 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jupiter staked sol:solana:SOL',
+[dev:server]   protocol: 'Jupiter Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.21728,
+[dev:server]   tvlUSD: 1188092272,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Kamino Lend (kamino): found 225 candidates
+[dev:server] [live:normalize] Processing Kamino Lend with 225 candidates...
+[dev:server] [live:normalize] Kamino Lend - final filtered candidates: 1
+[dev:server] [live:normalize] Kamino Lend top pool: kamino-lend - USDC - 11.54473% APY - $15,887,986 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'kamino lend:solana:USDC',
+[dev:server]   protocol: 'Kamino Lend',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'USDC',
+[dev:server]   apy: 11.54473,
+[dev:server]   tvlUSD: 15887986,
+[dev:server]   risk: 'high',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Orca DEX (orca): found 416 candidates
+[dev:server] [live:normalize] Processing Orca DEX with 416 candidates...
+[dev:server] [live:normalize] Orca DEX - final filtered candidates: 257
+[dev:server] [live:normalize] Orca DEX top pool: orca-dex - SOL-USDC - 59.33047% APY - $32,526,289 TVL
+[dev:server] [live:normalize] Error processing Orca DEX: ReferenceError: Cannot access 'asset' before initialization
+[dev:server]     at normalize (/Users/redrum/Documents/BlossomAI/server/data/live.ts:115:81)
+[dev:server]     at <anonymous> (/Users/redrum/Documents/BlossomAI/server/data/live.ts:156:25)
+[dev:server]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[dev:server]     at async <anonymous> (/Users/redrum/Documents/BlossomAI/server/routes.ts:324:17)
+[dev:server] [live:normalize] Binance Staked SOL (binance): found 1 candidates
+[dev:server] [live:normalize] Processing Binance Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Binance Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Binance Staked SOL top pool: binance-staked-sol - BNSOL - 5.51084% APY - $2,313,558,718 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'binance staked sol:solana:SOL',
+[dev:server]   protocol: 'Binance Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.51084,
+[dev:server]   tvlUSD: 2313558718,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Bybit Staked SOL (bybit): found 1 candidates
+[dev:server] [live:normalize] Processing Bybit Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Bybit Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Bybit Staked SOL top pool: bybit-staked-sol - BBSOL - 6.27% APY - $426,563,191 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'bybit staked sol:solana:SOL',
+[dev:server]   protocol: 'Bybit Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.27,
+[dev:server]   tvlUSD: 426563191,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Lido (lido): found 0 candidates
+[dev:server] [live:normalize] Skipping Lido - no candidates found
+[dev:server] [live:normalize] Returning 6 protocols
+[dev:server] [routes] Got live bundle with 6 protocols
+[dev:server] [routes] Filtering by chain: solana
+[dev:server] [routes] After chain filtering: 6 protocols
+[dev:server] [routes] Returning 6 yields
+[dev:server] GET /api/live-yields 200 - 630ms
+[dev:server] [REQ] GET /api/live-yields 200 630ms origin=none host=localhost:5050 traceId=trace-1757118971449-bbdxeptgg
+[dev:server] 5:36:12 PM [express] GET /api/live-yields 200 in 629ms :: {"updatedAt":1757118972079,"yields":[{"id"...
+[dev:server] [routes] /api/live-yields called
+[dev:server] [routes] Query params: { chain: 'solana', protocols: undefined }
+[dev:server] [getLiveBundle] Called at 2025-09-06T00:36:29.499Z
+[dev:server] [live:fetchLlamaPools] Fetching from DefiLlama API...
+[dev:server] [live:fetchLlamaPools] Received 19016 pools from DefiLlama
+[dev:server] [live:normalize] Processing 19016 pools for 16 protocols
+[dev:server] [live:normalize] HYDRO (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping HYDRO - no candidates found
+[dev:server] [live:normalize] Helix (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix - no candidates found
+[dev:server] [live:normalize] Neptune Finance (neptune): found 0 candidates
+[dev:server] [live:normalize] Skipping Neptune Finance - no candidates found
+[dev:server] [live:normalize] Hydro Lending (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping Hydro Lending - no candidates found
+[dev:server] [live:normalize] Helix Spot (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix Spot - no candidates found
+[dev:server] [live:normalize] Mito Finance (mito): found 0 candidates
+[dev:server] [live:normalize] Skipping Mito Finance - no candidates found
+[dev:server] [live:normalize] Dojoswap (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap - no candidates found
+[dev:server] [live:normalize] Dojoswap LSD (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap LSD - no candidates found
+[dev:server] [live:normalize] Jito (Liquid Staking) (jito): found 1 candidates
+[dev:server] [live:normalize] Processing Jito (Liquid Staking) with 1 candidates...
+[dev:server] [live:normalize] Jito (Liquid Staking) - final filtered candidates: 1
+[dev:server] [live:normalize] Jito (Liquid Staking) top pool: jito-liquid-staking - JITOSOL - 6.7% APY - $3,007,221,227 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jito (liquid staking):solana:SOL',
+[dev:server]   protocol: 'Jito (Liquid Staking)',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.7,
+[dev:server]   tvlUSD: 3007221227,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Marinade Liquid Staking (marinade): found 1 candidates
+[dev:server] [live:normalize] Processing Marinade Liquid Staking with 1 candidates...
+[dev:server] [live:normalize] Marinade Liquid Staking - final filtered candidates: 1
+[dev:server] [live:normalize] Marinade Liquid Staking top pool: marinade-liquid-staking - MSOL - 5.44638% APY - $934,341,523 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'marinade liquid staking:solana:SOL',
+[dev:server]   protocol: 'Marinade Liquid Staking',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.44638,
+[dev:server]   tvlUSD: 934341523,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Jupiter Staked SOL (jupiter): found 1 candidates
+[dev:server] [live:normalize] Processing Jupiter Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Jupiter Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Jupiter Staked SOL top pool: jupiter-staked-sol - JUPSOL - 7.21728% APY - $1,188,092,272 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jupiter staked sol:solana:SOL',
+[dev:server]   protocol: 'Jupiter Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.21728,
+[dev:server]   tvlUSD: 1188092272,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Kamino Lend (kamino): found 225 candidates
+[dev:server] [live:normalize] Processing Kamino Lend with 225 candidates...
+[dev:server] [live:normalize] Kamino Lend - final filtered candidates: 1
+[dev:server] [live:normalize] Kamino Lend top pool: kamino-lend - USDC - 11.54473% APY - $15,887,986 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'kamino lend:solana:USDC',
+[dev:server]   protocol: 'Kamino Lend',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'USDC',
+[dev:server]   apy: 11.54473,
+[dev:server]   tvlUSD: 15887986,
+[dev:server]   risk: 'high',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Orca DEX (orca): found 416 candidates
+[dev:server] [live:normalize] Processing Orca DEX with 416 candidates...
+[dev:server] [live:normalize] Orca DEX - final filtered candidates: 257
+[dev:server] [live:normalize] Orca DEX top pool: orca-dex - SOL-USDC - 59.33047% APY - $32,526,289 TVL
+[dev:server] [live:normalize] Error processing Orca DEX: ReferenceError: Cannot access 'asset' before initialization
+[dev:server]     at normalize (/Users/redrum/Documents/BlossomAI/server/data/live.ts:115:81)
+[dev:server]     at <anonymous> (/Users/redrum/Documents/BlossomAI/server/data/live.ts:156:25)
+[dev:server]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[dev:server]     at async <anonymous> (/Users/redrum/Documents/BlossomAI/server/routes.ts:324:17)
+[dev:server] [live:normalize] Binance Staked SOL (binance): found 1 candidates
+[dev:server] [live:normalize] Processing Binance Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Binance Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Binance Staked SOL top pool: binance-staked-sol - BNSOL - 5.51084% APY - $2,313,558,718 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'binance staked sol:solana:SOL',
+[dev:server]   protocol: 'Binance Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.51084,
+[dev:server]   tvlUSD: 2313558718,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Bybit Staked SOL (bybit): found 1 candidates
+[dev:server] [live:normalize] Processing Bybit Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Bybit Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Bybit Staked SOL top pool: bybit-staked-sol - BBSOL - 6.27% APY - $426,563,191 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'bybit staked sol:solana:SOL',
+[dev:server]   protocol: 'Bybit Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.27,
+[dev:server]   tvlUSD: 426563191,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Lido (lido): found 0 candidates
+[dev:server] [live:normalize] Skipping Lido - no candidates found
+[dev:server] [live:normalize] Returning 6 protocols
+[dev:server] [routes] Got live bundle with 6 protocols
+[dev:server] [routes] Filtering by chain: solana
+[dev:server] [routes] After chain filtering: 6 protocols
+[dev:server] [routes] Returning 6 yields
+[dev:server] GET /api/live-yields 200 - 752ms
+[dev:server] [REQ] GET /api/live-yields 200 753ms origin=none host=localhost:5050 traceId=trace-1757118989498-obtutv98y
+[dev:server] 5:36:30 PM [express] GET /api/live-yields 200 in 753ms :: {"updatedAt":1757118990250,"yields":[{"id"...
+[dev:web] 5:37:13 PM [vite] page reload src/bridge/primeInstanceStore.ts
+[dev:web] 5:37:13 PM [vite] page reload src/ai/slotExtractor.ts
+[dev:web] 5:37:13 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:37:13 PM [vite] page reload src/ai/defiDeskHandlers.ts
+[dev:web] 5:37:13 PM [vite] page reload src/lib/liveClient.ts
+[dev:web] 5:37:13 PM [vite] page reload src/ai/userUtils.ts
+[dev:web] 5:37:13 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:server] [routes] /api/live-yields called
+[dev:server] [routes] Query params: { chain: 'solana', protocols: undefined }
+[dev:server] [getLiveBundle] Called at 2025-09-06T00:53:49.024Z
+[dev:server] [live:fetchLlamaPools] Fetching from DefiLlama API...
+[dev:server] [live:fetchLlamaPools] Received 19016 pools from DefiLlama
+[dev:server] [live:normalize] Processing 19016 pools for 16 protocols
+[dev:server] [live:normalize] HYDRO (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping HYDRO - no candidates found
+[dev:server] [live:normalize] Helix (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix - no candidates found
+[dev:server] [live:normalize] Neptune Finance (neptune): found 0 candidates
+[dev:server] [live:normalize] Skipping Neptune Finance - no candidates found
+[dev:server] [live:normalize] Hydro Lending (hydro): found 0 candidates
+[dev:server] [live:normalize] Skipping Hydro Lending - no candidates found
+[dev:server] [live:normalize] Helix Spot (helix): found 0 candidates
+[dev:server] [live:normalize] Skipping Helix Spot - no candidates found
+[dev:server] [live:normalize] Mito Finance (mito): found 0 candidates
+[dev:server] [live:normalize] Skipping Mito Finance - no candidates found
+[dev:server] [live:normalize] Dojoswap (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap - no candidates found
+[dev:server] [live:normalize] Dojoswap LSD (dojo): found 0 candidates
+[dev:server] [live:normalize] Skipping Dojoswap LSD - no candidates found
+[dev:server] [live:normalize] Jito (Liquid Staking) (jito): found 1 candidates
+[dev:server] [live:normalize] Processing Jito (Liquid Staking) with 1 candidates...
+[dev:server] [live:normalize] Jito (Liquid Staking) - final filtered candidates: 1
+[dev:server] [live:normalize] Jito (Liquid Staking) top pool: jito-liquid-staking - JITOSOL - 6.7% APY - $3,007,221,227 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jito (liquid staking):solana:SOL',
+[dev:server]   protocol: 'Jito (Liquid Staking)',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.7,
+[dev:server]   tvlUSD: 3007221227,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Marinade Liquid Staking (marinade): found 1 candidates
+[dev:server] [live:normalize] Processing Marinade Liquid Staking with 1 candidates...
+[dev:server] [live:normalize] Marinade Liquid Staking - final filtered candidates: 1
+[dev:server] [live:normalize] Marinade Liquid Staking top pool: marinade-liquid-staking - MSOL - 5.44638% APY - $934,341,523 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'marinade liquid staking:solana:SOL',
+[dev:server]   protocol: 'Marinade Liquid Staking',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.44638,
+[dev:server]   tvlUSD: 934341523,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Jupiter Staked SOL (jupiter): found 1 candidates
+[dev:server] [live:normalize] Processing Jupiter Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Jupiter Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Jupiter Staked SOL top pool: jupiter-staked-sol - JUPSOL - 7.21728% APY - $1,188,092,272 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'jupiter staked sol:solana:SOL',
+[dev:server]   protocol: 'Jupiter Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 7.21728,
+[dev:server]   tvlUSD: 1188092272,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Kamino Lend (kamino): found 225 candidates
+[dev:server] [live:normalize] Processing Kamino Lend with 225 candidates...
+[dev:server] [live:normalize] Kamino Lend - final filtered candidates: 1
+[dev:server] [live:normalize] Kamino Lend top pool: kamino-lend - USDC - 11.54473% APY - $15,887,986 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'kamino lend:solana:USDC',
+[dev:server]   protocol: 'Kamino Lend',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'USDC',
+[dev:server]   apy: 11.54473,
+[dev:server]   tvlUSD: 15887986,
+[dev:server]   risk: 'high',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Orca DEX (orca): found 416 candidates
+[dev:server] [live:normalize] Processing Orca DEX with 416 candidates...
+[dev:server] [live:normalize] Orca DEX - final filtered candidates: 257
+[dev:server] [live:normalize] Orca DEX top pool: orca-dex - SOL-USDC - 59.33047% APY - $32,526,289 TVL
+[dev:server] [live:normalize] Error processing Orca DEX: ReferenceError: Cannot access 'asset' before initialization
+[dev:server]     at normalize (/Users/redrum/Documents/BlossomAI/server/data/live.ts:115:81)
+[dev:server]     at <anonymous> (/Users/redrum/Documents/BlossomAI/server/data/live.ts:156:25)
+[dev:server]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[dev:server]     at async <anonymous> (/Users/redrum/Documents/BlossomAI/server/routes.ts:324:17)
+[dev:server] [live:normalize] Binance Staked SOL (binance): found 1 candidates
+[dev:server] [live:normalize] Processing Binance Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Binance Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Binance Staked SOL top pool: binance-staked-sol - BNSOL - 5.51084% APY - $2,313,558,718 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'binance staked sol:solana:SOL',
+[dev:server]   protocol: 'Binance Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 5.51084,
+[dev:server]   tvlUSD: 2313558718,
+[dev:server]   risk: 'low',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Bybit Staked SOL (bybit): found 1 candidates
+[dev:server] [live:normalize] Processing Bybit Staked SOL with 1 candidates...
+[dev:server] [live:normalize] Bybit Staked SOL - final filtered candidates: 1
+[dev:server] [live:normalize] Bybit Staked SOL top pool: bybit-staked-sol - BBSOL - 6.27% APY - $426,563,191 TVL
+[dev:server] [live:normalize] Adding protocol: {
+[dev:server]   id: 'bybit staked sol:solana:SOL',
+[dev:server]   protocol: 'Bybit Staked SOL',
+[dev:server]   chain: 'solana',
+[dev:server]   asset: 'SOL',
+[dev:server]   apy: 6.27,
+[dev:server]   tvlUSD: 426563191,
+[dev:server]   risk: 'medium',
+[dev:server]   url: undefined
+[dev:server] }
+[dev:server] [live:normalize] Lido (lido): found 0 candidates
+[dev:server] [live:normalize] Skipping Lido - no candidates found
+[dev:server] [live:normalize] Returning 6 protocols
+[dev:server] [routes] Got live bundle with 6 protocols
+[dev:server] [routes] Filtering by chain: solana
+[dev:server] [routes] After chain filtering: 6 protocols
+[dev:server] [routes] Returning 6 yields
+[dev:server] GET /api/live-yields 200 - 622ms
+[dev:server] [REQ] GET /api/live-yields 200 622ms origin=none host=localhost:5050 traceId=trace-1757120029023-jv12o0lgj
+[dev:server] 5:53:49 PM [express] GET /api/live-yields 200 in 622ms :: {"updatedAt":1757120029645,"yields":[{"id"...
+[dev:web] 5:54:23 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:54:32 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:54:39 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] 5:54:45 PM [vite] hmr update /src/index.css, /src/components/terminal/ChatSidebar.tsx
+[dev:web] npm run dev:web exited with code 0
+--> Sending SIGTERM to other processes..
+[dev:server] npm run dev:server exited with code 143

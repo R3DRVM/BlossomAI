@@ -11,6 +11,19 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        // Brand colors
+        brand: {
+          pink: "#ff4fa0",
+          purple: "#7353ff",
+          bg: "radial-gradient(1200px 600px at 10% -10%, #22243a 0%, #0e1117 35%, #0b0c12 70%)",
+          card: "rgba(255,255,255,0.04)",
+          border: "rgba(255,255,255,0.08)",
+        },
+        text: {
+          primary: "#ffffff",
+          muted: "#a8b0bf",
+        },
+        // Legacy colors for compatibility
         background: "var(--background)",
         foreground: "var(--foreground)",
         card: {
@@ -115,6 +128,11 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float": "float 12s ease-in-out infinite",
+      },
+      boxShadow: {
+        "glow": "0 0 80px rgba(255,79,160,.18)",
+        "glow-purple": "0 0 80px rgba(115,83,255,.18)",
       },
     },
   },

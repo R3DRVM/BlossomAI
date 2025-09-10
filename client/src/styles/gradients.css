@@ -1,0 +1,73 @@
+/* Blossom Landing Page Gradients and Animations */
+
+.bg-blossom {
+  background: radial-gradient(1200px 600px at 10% -10%, #22243a 0%, #0e1117 35%, #0b0c12 70%);
+}
+
+.bg-orb {
+  position: relative;
+}
+
+.bg-orb::before,
+.bg-orb::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: float 12s ease-in-out infinite;
+}
+
+.bg-orb::before {
+  top: -120px;
+  left: -80px;
+  background: #ff4fa0;
+  animation-delay: 0s;
+}
+
+.bg-orb::after {
+  bottom: -140px;
+  right: -100px;
+  background: #7353ff;
+  animation-delay: 6s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Glass card effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Subtle grid background */
+.bg-grid {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .bg-orb::before,
+  .bg-orb::after {
+    animation: none;
+  }
+  
+  .animate-float {
+    animation: none;
+  }
+}

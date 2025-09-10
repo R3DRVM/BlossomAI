@@ -1,12 +1,12 @@
 import type { LiveBundle } from '@/types/live';
 
-export async function fetchLiveProtocols(params?: { chain?: string; asset?: string }): Promise<LiveBundle> {
+export async function fetchLiveProtocols(chain?: string): Promise<any[]> {
   const q = new URLSearchParams();
-  if (params?.chain) q.set('chain', params.chain);
-  if (params?.asset) q.set('asset', params.asset);
-  const r = await fetch(`/api/live/protocols${q.toString() ? `?${q}` : ''}`, { credentials: 'include' });
+  if (chain) q.set('chain', chain);
+  const r = await fetch(`/api/live-yields${q.toString() ? `?${q}` : ''}`, { credentials: 'include' });
   if (!r.ok) throw new Error('live_http');
-  return await r.json();
+  const data = await r.json();
+  return data.yields || [];
 }
 
 

@@ -138,15 +138,15 @@ export function PositionsTable({ className = '' }: PositionsTableProps) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return (
       <Card className={`shadow-sm border-border/50 ${className}`}>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold flex items-center space-x-2">
-            <TableIcon className="h-5 w-5 text-blue-500" />
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold flex items-center space-x-1.5">
+            <TableIcon className="h-4 w-4 text-blue-500" />
             <span>Positions</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <TableIcon className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+        <CardContent className="py-4">
+          <div className="text-center py-6">
+            <TableIcon className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
             <p className="text-sm text-muted-foreground">No active positions</p>
           </div>
         </CardContent>
@@ -156,10 +156,10 @@ export function PositionsTable({ className = '' }: PositionsTableProps) {
   
   return (
     <Card className={`shadow-sm border-border/50 w-full ${className}`}>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold flex items-center space-x-2">
-            <TableIcon className="h-5 w-5 text-blue-500" />
+          <CardTitle className="text-base font-semibold flex items-center space-x-1.5">
+            <TableIcon className="h-4 w-4 text-blue-500" />
             <span>Positions</span>
           </CardTitle>
           
@@ -168,12 +168,12 @@ export function PositionsTable({ className = '' }: PositionsTableProps) {
             size="sm"
             onClick={handleExportCSV}
             disabled={isExporting}
-            className="text-xs"
+            className="h-6 px-2 text-xs"
           >
             {isExporting ? (
-              <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin mr-2" />
+              <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin mr-1" />
             ) : (
-              <Download className="h-3 w-3 mr-2" />
+              <Download className="h-3 w-3 mr-1" />
             )}
             Export CSV
           </Button>
@@ -184,80 +184,80 @@ export function PositionsTable({ className = '' }: PositionsTableProps) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="text-xs">
-                <TableHead className="w-[120px]">Protocol</TableHead>
-                <TableHead className="w-[100px]">Chain</TableHead>
-                <TableHead className="w-[80px]">Asset</TableHead>
-                <TableHead className="w-[80px] text-right">Alloc %</TableHead>
-                <TableHead className="w-[100px] text-right">Amount (USD)</TableHead>
-                <TableHead className="w-[80px] text-right">Base APY</TableHead>
-                <TableHead className="w-[80px] text-right">Emissions APY</TableHead>
-                <TableHead className="w-[80px] text-right">Net APY</TableHead>
-                <TableHead className="w-[100px] text-right">TVL at Entry</TableHead>
-                <TableHead className="w-[100px] text-right">30d Vol</TableHead>
-                <TableHead className="w-[80px]">Risk</TableHead>
-                <TableHead className="w-[80px] text-right">Fees (bps)</TableHead>
-                <TableHead className="w-[120px] text-right">Entry Time</TableHead>
+              <TableRow className="text-xs h-8">
+                <TableHead className="w-[120px] py-1">Protocol</TableHead>
+                <TableHead className="w-[100px] py-1">Chain</TableHead>
+                <TableHead className="w-[80px] py-1">Asset</TableHead>
+                <TableHead className="w-[80px] text-right py-1">Alloc %</TableHead>
+                <TableHead className="w-[100px] text-right py-1">Amount (USD)</TableHead>
+                <TableHead className="w-[80px] text-right py-1">Base APY</TableHead>
+                <TableHead className="w-[80px] text-right py-1">Emissions APY</TableHead>
+                <TableHead className="w-[80px] text-right py-1">Net APY</TableHead>
+                <TableHead className="w-[100px] text-right py-1">TVL at Entry</TableHead>
+                <TableHead className="w-[100px] text-right py-1">30d Vol</TableHead>
+                <TableHead className="w-[80px] py-1">Risk</TableHead>
+                <TableHead className="w-[80px] text-right py-1">Fees (bps)</TableHead>
+                <TableHead className="w-[120px] text-right py-1">Entry Time</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((position) => {
                 try {
                   return (
-                    <TableRow key={position.id} className="text-xs">
-                  <TableCell className="font-medium">
+                    <TableRow key={position.id} className="text-xs h-8">
+                  <TableCell className="font-medium py-1">
                     <div className="truncate max-w-[120px]" title={position.protocol}>
                       {position.protocol}
                     </div>
                   </TableCell>
                   
-                  <TableCell>
+                  <TableCell className="py-1">
                     <Badge variant="outline" className="text-xs capitalize">
                       {position.chain}
                     </Badge>
                   </TableCell>
                   
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium py-1">
                     {position.asset}
                   </TableCell>
                   
-                  <TableCell className="text-right font-medium">
+                  <TableCell className="text-right font-medium py-1">
                     {fmtPct((position.amountUSD / Math.max(totalPositionsUSD, 1)) * 100)}
                   </TableCell>
                   
-                  <TableCell className="text-right font-medium">
+                  <TableCell className="text-right font-medium py-1">
                     {fmtUSD(position.amountUSD)}
                   </TableCell>
                   
-                  <TableCell className="text-right">
+                  <TableCell className="text-right py-1">
                     {fmtPct(position.baseAPY)}
                   </TableCell>
                   
-                  <TableCell className="text-right">
+                  <TableCell className="text-right py-1">
                     —
                   </TableCell>
                   
-                  <TableCell className="text-right font-medium text-green-600">
+                  <TableCell className="text-right font-medium text-green-600 py-1">
                     {fmtPct(position.baseAPY)}
                   </TableCell>
                   
-                  <TableCell className="text-right">
+                  <TableCell className="text-right py-1">
                     —
                   </TableCell>
                   
-                  <TableCell className="text-right">
+                  <TableCell className="text-right py-1">
                     —
                   </TableCell>
                   
-                  <TableCell>
+                  <TableCell className="py-1">
                     <RiskBadge risk={position.risk || 'medium'} />
                   </TableCell>
                   
-                  <TableCell className="text-right">
+                  <TableCell className="text-right py-1">
                     —
                   </TableCell>
                   
-                  <TableCell className="text-right text-muted-foreground">
+                  <TableCell className="text-right text-muted-foreground py-1">
                     {position.entryTime ? new Date(position.entryTime).toLocaleDateString() : '—'}
                   </TableCell>
                 </TableRow>
@@ -274,7 +274,7 @@ export function PositionsTable({ className = '' }: PositionsTableProps) {
         </div>
         
         {/* Summary Footer */}
-        <div className="border-t bg-muted/20 px-6 py-3">
+        <div className="border-t bg-muted/20 px-4 py-2">
           <div className="flex justify-between items-center text-xs text-muted-foreground">
             <span>
               {rows.length} positions • 
@@ -284,7 +284,6 @@ export function PositionsTable({ className = '' }: PositionsTableProps) {
                 : 0)}
             </span>
             <span>
-              {rows.length} positions • 
               {new Date().toLocaleDateString()}
             </span>
           </div>

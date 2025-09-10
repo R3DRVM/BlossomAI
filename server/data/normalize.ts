@@ -17,21 +17,44 @@ export function normalizeDefiLlamaPrices(rawData: any): TokenPrice[] {
 export function normalizeDefiLlamaYields(rawData: any): YieldOpportunity[] {
   if (!Array.isArray(rawData)) return [];
   
-  return rawData.map((item: any) => ({
-    id: item.pool || item.id || `yield-${Date.now()}`,
-    name: item.name || item.pool || 'Unknown',
-    protocol: item.protocol || 'Unknown',
-    chain: item.chain || 'ethereum',
-    apy: parseFloat(item.apy) || parseFloat(item.apr) || 0,
-    tvl: parseFloat(item.tvlUsd) || parseFloat(item.tvl) || 0,
-    riskScore: calculateRiskScore(item),
-    assets: Array.isArray(item.underlyingTokens) 
-      ? item.underlyingTokens.map((t: any) => t.symbol || t)
-      : [item.symbol || 'Unknown'],
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }));
+  return rawData.map((item: any) => {
+    // DefiLlama returns APY as a decimal (0.0644 = 6.44%)
+    // We need to convert it to percentage for display
+    let apy = parseFloat(item.apy) || parseFloat(item.apr) || 0;
+    
+    // Debug logging for APY values
+    if (apy > 100) {
+      console.log(`[normalize] High APY detected: ${apy}% for ${item.protocol} - ${item.name}`);
+    }
+    
+    // If APY is already in percentage format (> 1), keep it as is
+    // If APY is in decimal format (< 1), convert to percentage
+    if (apy > 0 && apy < 1) {
+      apy = apy * 100;
+    }
+    
+    // Cap APY at 1000% to filter out unrealistic values
+    if (apy > 1000) {
+      console.log(`[normalize] Capping unrealistic APY: ${apy}% for ${item.protocol} - ${item.name}`);
+      apy = 0; // Set to 0 for unrealistic values
+    }
+    
+    return {
+      id: item.pool || item.id || `yield-${Date.now()}`,
+      name: item.name || item.pool || 'Unknown',
+      protocol: item.protocol || 'Unknown',
+      chain: item.chain || 'ethereum',
+      apy: apy,
+      tvl: parseFloat(item.tvlUsd) || parseFloat(item.tvl) || 0,
+      riskScore: calculateRiskScore(item),
+      assets: Array.isArray(item.underlyingTokens) 
+        ? item.underlyingTokens.map((t: any) => t.symbol || t)
+        : [item.symbol || 'Unknown'],
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  });
 }
 
 // DefiLlama TVL normalization

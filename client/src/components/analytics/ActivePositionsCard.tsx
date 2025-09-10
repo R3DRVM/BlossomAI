@@ -135,7 +135,7 @@ export function ActivePositionsCard({ className = '' }: ActivePositionsCardProps
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Avg APY:</span>
             <span className="font-medium text-green-600">{fmtPct(allPositions.length > 0 ? 
-              allPositions.reduce((sum, p) => sum + toNum(p.baseAPY, 0), 0) / allPositions.length * 100 
+              allPositions.reduce((sum, p) => sum + toNum(p.baseAPY, 0), 0) / allPositions.length
               : 0)}</span>
           </div>
         </div>

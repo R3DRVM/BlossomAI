@@ -6,11 +6,11 @@ interface IntroCardProps {
 }
 
 const defaultChips = [
-  { text: "Deploy USDC for highest APY", icon: TrendingUp },
-  { text: "Auto-rebalance 50% SOL across top 3 TVL", icon: Sparkles },
-  { text: "Notify me if USDC APR < 7%", icon: Bell },
-  { text: "Largest yield sources on Solana by TVL", icon: TrendingUp },
-  { text: "Yield sources for WETH & SOL", icon: Shield },
+  { text: "Auto-deploy idle USDC at 10% yield on Solana", icon: TrendingUp },
+  { text: "Get alerted when farming APRs spike 50% above baseline", icon: Bell },
+  { text: "Create custom instance with vault whitelisting", icon: Shield },
+  { text: "Rebalance to stable yield positions + optimize emissions ROI", icon: Sparkles },
+  { text: "API key management for institutional integration", icon: TrendingUp },
 ];
 
 export function IntroCard({ onSendMessage }: IntroCardProps) {
@@ -59,12 +59,12 @@ export function IntroCard({ onSendMessage }: IntroCardProps) {
       {/* Header */}
       <div className="flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-primary" />
-        <span className="font-medium text-sm">Hello! I'm Blossom, your DeFi Strategy Assistant.</span>
+        <span className="font-medium text-sm">Hello! I'm Blossom, your Institutional DeFi Assistant.</span>
       </div>
 
       {/* Capabilities line */}
       <p className="text-sm text-muted-foreground">
-        I can help you find yields, manage risk, and optimize your DeFi strategy.
+        I specialize in Market Maker, Fund Manager, Prime Broker, and DAO Treasury use cases.
       </p>
 
       {/* Clickable chips */}
@@ -101,9 +101,9 @@ export function IntroCard({ onSendMessage }: IntroCardProps) {
           
           {showMore && (
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              I analyze live data from DeFiLlama, CoinGecko, and other sources to provide real-time yield opportunities, 
-              risk assessments, and portfolio optimization strategies across multiple chains including Ethereum, Solana, 
-              Polygon, and more.
+              I provide institutional-grade DeFi solutions including automated yield deployment, real-time monitoring, 
+              vault whitelisting, treasury optimization, and API integration. I work with live data from DeFiLlama, 
+              CoinGecko, and other sources across Ethereum, Solana, and other major chains.
             </p>
           )}
         </div>
