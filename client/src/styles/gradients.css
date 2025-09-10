@@ -1,6 +1,7 @@
 /* Blossom Landing Page - Unified Premium Design */
 
 /* Light mode semantic text tokens */
+.light,
 :root[data-theme="light"] {
   --text-primary: #1A1D23;    /* headlines, key numbers */
   --text-secondary: #2A2F3A;  /* body copy */
