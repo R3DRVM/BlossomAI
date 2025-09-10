@@ -1,6 +1,6 @@
 /* Blossom Landing Page - Unified Premium Design */
 
-/* Unified background foundation */
+/* Unified background foundation - Dark Mode */
 .bg-unified {
   background: 
     radial-gradient(1400px 800px at 20% -20%, #1a1d2e 0%, #0f1115 40%, #0a0b0f 80%),
@@ -37,6 +37,25 @@
   z-index: 0;
 }
 
+/* Light Mode Background */
+.light .bg-unified {
+  background: 
+    radial-gradient(1400px 800px at 20% -20%, #fafafc 0%, #ffffff 40%, #f8f9fa 80%),
+    linear-gradient(135deg, rgba(255, 79, 160, 0.015) 0%, transparent 50%, rgba(180, 102, 255, 0.015) 100%);
+}
+
+.light .bg-unified::before {
+  background-image: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+}
+
+.light .bg-unified::after {
+  background: 
+    radial-gradient(600px 600px at 10% 10%, rgba(255, 79, 160, 0.03) 0%, transparent 50%),
+    radial-gradient(600px 600px at 90% 90%, rgba(180, 102, 255, 0.03) 0%, transparent 50%);
+}
+
 /* Soft grain texture */
 .bg-grain {
   position: fixed;
@@ -49,7 +68,7 @@
   z-index: 1;
 }
 
-/* Glass card effect */
+/* Glass card effect - Dark Mode */
 .glass-card {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
@@ -62,6 +81,19 @@
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 79, 160, 0.2);
   box-shadow: 0 0 40px rgba(255, 79, 160, 0.1);
+}
+
+/* Light Mode Glass Cards */
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.light .glass-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* Gradient text treatment */
@@ -154,7 +186,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Sticky navigation */
+/* Sticky navigation - Dark Mode */
 .sticky-nav {
   position: fixed;
   top: 0;
@@ -166,7 +198,13 @@
   z-index: 50;
 }
 
-/* CTA aura effect */
+/* Light Mode Navigation */
+.light .sticky-nav {
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* CTA aura effect - Dark Mode */
 .cta-aura {
   position: relative;
 }
@@ -182,6 +220,11 @@
   border-radius: 50%;
   filter: blur(20px);
   z-index: -1;
+}
+
+/* Light Mode CTA Aura */
+.light .cta-aura::before {
+  background: radial-gradient(circle, rgba(255, 79, 160, 0.12) 0%, transparent 70%);
 }
 
 /* Reduced motion support */

@@ -16,12 +16,12 @@ export function Partners() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-gray-900 mb-4">
             Trusted by Leading Organizations
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-400 text-lg">
+          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-500 text-lg">
             Backed by industry leaders and foundation support
           </motion.p>
         </motion.div>

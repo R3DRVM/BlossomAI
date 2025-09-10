@@ -6,27 +6,27 @@ const features = [
   {
     icon: <BarChart3 className="h-8 w-8" />,
     title: "Deploy Capital at Scale",
-    description: "DAOs, quant desks, and family offices execute millions with institutional controls.",
+    description: "Execute millions with institutional controls.",
   },
   {
     icon: <Zap className="h-8 w-8" />,
     title: "AI-Powered Yield Discovery",
-    description: "Conversational strategy building that understands your risk profile.",
+    description: "Conversational strategy building that fits your risk.",
   },
   {
     icon: <Shield className="h-8 w-8" />,
     title: "Compliance-Ready by Design",
-    description: "AML/KYC, custody, and regulatory reporting integrations.",
+    description: "AML/KYC, custody, and reporting integrations.",
   },
   {
     icon: <TrendingUp className="h-8 w-8" />,
     title: "Cross-Chain Liquidity Rails",
-    description: "Unified execution across Solana, Ethereum, Injective, and more.",
+    description: "Unified execution across Solana, Ethereum, and more.",
   },
   {
     icon: <Users className="h-8 w-8" />,
     title: "Foundation Support",
-    description: "Backed by Solana & Injective Foundations; ongoing technical support.",
+    description: "Backed by Solana & Injective; ongoing technical support.",
   },
   {
     icon: <Globe className="h-8 w-8" />,
@@ -44,14 +44,13 @@ export function FeatureGrid() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
-          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 mb-6">
             Built for Institutional Excellence
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Professional-grade tools that combine the best of traditional finance terminals 
-            with cutting-edge DeFi innovation.
+          <motion.p variants={fadeInUp} className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-500 max-w-3xl mx-auto">
+            Professional tools with AI and unified risk.
           </motion.p>
         </motion.div>
 
@@ -82,10 +81,10 @@ export function FeatureGrid() {
                   <div className="w-16 h-16 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 group-hover:from-pink-500/30 group-hover:to-purple-600/30 transition-all duration-300">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-pink-400 transition-colors duration-300 tracking-tight">
+                  <h3 className="text-xl font-bold text-white dark:text-white light:text-gray-900 mb-4 group-hover:text-pink-400 transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300 leading-relaxed">
+                  <p className="text-gray-400 dark:text-gray-400 light:text-gray-600 group-hover:text-gray-300 dark:group-hover:text-gray-300 light:group-hover:text-gray-700 transition-colors duration-300">
                     {feature.description}
                   </p>
                 </div>

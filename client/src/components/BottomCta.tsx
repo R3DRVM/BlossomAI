@@ -21,14 +21,13 @@ export function BottomCta() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="space-y-10"
+          className="space-y-8"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-            Ready to deploy capital with Blossom?
+          <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900">
+            Ready to deploy with Blossom?
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Join institutional investors who trust Blossom for professional-grade 
-            DeFi yield aggregation and risk management.
+          <p className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-500 max-w-2xl mx-auto">
+            Join institutional investors using AI-driven aggregation and unified risk.
           </p>
           <motion.div
             variants={ctaButton}

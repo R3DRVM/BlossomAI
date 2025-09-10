@@ -7,7 +7,7 @@ console.info('[blossom] App mount OK', new Date().toISOString());
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ThemeProvider } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { getActiveUserId, logActiveUserOnce, onUserChange } from "@/ai/userUtils";
 import { ensureSeed } from "@/bridge/paperCustody";
@@ -96,7 +96,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="blossom-ui-theme">
+      <ThemeProvider>
         <TooltipProvider>
           <Toaster />
           <Router />

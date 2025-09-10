@@ -38,13 +38,13 @@ export function Metrics() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-gray-900 mb-4">
             Institutional Metrics
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-400 text-lg">
-            Real-time performance data from our platform
+          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-500 text-lg">
+            Real-time performance highlights.
           </motion.p>
         </motion.div>
 

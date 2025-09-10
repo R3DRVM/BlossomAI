@@ -20,34 +20,29 @@ export function Hero() {
           variants={heroText}
           initial="hidden"
           animate="show"
-          className="space-y-12"
+          className="space-y-10"
         >
           {/* Badge */}
           <motion.div variants={heroTextItem}>
-            <Badge variant="secondary" className="mb-8 text-sm font-medium tracking-wide">
+            <Badge variant="secondary" className="mb-6 text-sm font-medium tracking-wide">
               Institutional DeFi Platform
             </Badge>
           </motion.div>
 
-          {/* Main headline with refined typography */}
+          {/* Main headline - Option A */}
           <motion.h1
             variants={heroTextItem}
             className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
           >
-            <span className="text-white">Blossom is the </span>
-            <span className="gradient-text">institutional aggregator</span>
-            <span className="text-white"> — built for large-scale capital deployment, </span>
-            <span className="gradient-text">powered by AI insights</span>
-            <span className="text-white">, trusted by foundations.</span>
+            <span className="text-white dark:text-white light:text-gray-900">Deploy millions, intelligently.</span>
           </motion.h1>
 
-          {/* Subline with tighter spacing */}
+          {/* Subline - one concise sentence */}
           <motion.p
             variants={heroTextItem}
-            className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light"
+            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-600 max-w-3xl mx-auto leading-relaxed font-light"
           >
-            From treasuries to quant funds to end-users, Blossom unifies the entire yield lifecycle — 
-            discover, execute, and manage DeFi strategies at institutional scale.
+            AI insights, unified execution, and institutional risk for DeFi yield.
           </motion.p>
 
           {/* Social proof */}
@@ -55,43 +50,36 @@ export function Hero() {
             variants={heroTextItem}
             className="pt-6"
           >
-            <p className="text-sm text-gray-400 mb-4 tracking-wide">Backed by</p>
-            <div className="flex items-center justify-center space-x-8 text-gray-400/70">
+            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-500 mb-4 tracking-wide">Backed by</p>
+            <div className="flex items-center justify-center space-x-8 text-gray-400/70 dark:text-gray-400/70 light:text-gray-500/70">
               <div className="text-lg font-semibold tracking-wide">Solana Foundation</div>
-              <div className="w-px h-6 bg-gray-600"></div>
+              <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
               <div className="text-lg font-semibold tracking-wide">Injective Foundation</div>
-              <div className="w-px h-6 bg-gray-600"></div>
+              <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
               <div className="text-lg font-semibold tracking-wide">Leading DeFi Builders</div>
             </div>
           </motion.div>
 
-          {/* CTAs with aura effect */}
+          {/* Single centered CTA */}
           <motion.div
             variants={heroTextItem}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12"
+            className="pt-10"
           >
             <motion.div
               variants={ctaButton}
               initial="rest"
               whileHover="hover"
-              className="cta-aura"
+              className="cta-aura inline-block"
             >
               <Button
                 size="lg"
                 onClick={() => setLocation('/terminal')}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-10 py-4 text-lg font-semibold transition-all duration-300"
+                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-12 py-5 text-lg font-semibold transition-all duration-300"
               >
-                Get Started
+                Access Terminal
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </motion.div>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-gray-600 text-white hover:bg-white/5 hover:border-pink-500/50 px-10 py-4 text-lg font-semibold transition-all duration-300 backdrop-blur-sm"
-            >
-              View Demo
-            </Button>
           </motion.div>
         </motion.div>
       </div>

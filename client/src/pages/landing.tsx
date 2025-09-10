@@ -8,6 +8,7 @@ import { FeatureGrid } from "@/components/FeatureGrid";
 import { Partners } from "@/components/Partners";
 import { BottomCta } from "@/components/BottomCta";
 import { FloatingChat } from "@/components/FloatingChat";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import "@/styles/gradients.css";
 
 export default function Landing() {
@@ -28,14 +29,17 @@ export default function Landing() {
                 Blossom
               </span>
             </div>
-            <button 
-              onClick={() => setLocation('/terminal')} 
-              className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-glow"
-              data-testid="button-login"
-            >
-              Access Terminal
-              <ArrowRight className="ml-2 h-4 w-4 inline" />
-            </button>
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              <button 
+                onClick={() => setLocation('/terminal')} 
+                className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-glow"
+                data-testid="button-login"
+              >
+                Access Terminal
+                <ArrowRight className="ml-2 h-4 w-4 inline" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -51,16 +55,16 @@ export default function Landing() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 py-12 px-6 md:px-10 backdrop-blur-md">
+      <footer className="relative z-10 border-t border-white/10 dark:border-white/10 light:border-gray-200 py-12 px-6 md:px-10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 bg-gradient-to-br from-pink-500 to-purple-600 rounded">
                 <div className="h-4 w-4 text-white m-1 flex items-center justify-center text-xs font-bold">B</div>
               </div>
-              <span className="font-medium text-white">Blossom</span>
+              <span className="font-medium text-white dark:text-white light:text-gray-900">Blossom</span>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-500">
               © 2025 Blossom. All rights reserved.
             </p>
           </div>

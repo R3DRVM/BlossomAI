@@ -3,72 +3,61 @@ import { slideInLeft, slideInRight } from "@/lib/motion";
 
 export function SplitProblem() {
   return (
-    <section className="py-32 md:py-40 px-6 md:px-10">
+    <section className="py-28 md:py-36 px-6 md:px-10">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          {/* Left side - Fragmented DeFi with scattered dots */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left side - Fragmented DeFi */}
           <motion.div
             variants={slideInLeft}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
-            className="space-y-8"
+            className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 mb-8">
               Fragmented DeFi
             </h2>
-            <div className="scattered-dots p-8 rounded-2xl bg-red-500/5 border border-red-500/20">
-              <div className="space-y-6">
+            <div className="scattered-dots p-8 rounded-2xl bg-red-500/5 dark:bg-red-500/5 light:bg-red-50 border border-red-500/20 dark:border-red-500/20 light:border-red-200">
+              <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-300 text-lg leading-relaxed">
-                    <strong className="text-white">Current State:</strong> Scattered protocols, 
-                    manual research, complex risk assessment, and compliance headaches.
+                  <p className="text-gray-300 dark:text-gray-300 light:text-gray-600 text-lg leading-relaxed">
+                    <strong className="text-white dark:text-white light:text-gray-900">Fragmented DeFi:</strong> Scattered protocols, manual research, and compliance drag.
                   </p>
-                </div>
-                <div className="text-sm text-gray-400 italic">
-                  Chaos, inefficiency, and missed opportunities
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Right side - Blossom Solution with glass stack */}
+          {/* Right side - Blossom Solution */}
           <motion.div
             variants={slideInRight}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
-            className="space-y-8"
+            className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 mb-8">
               <span className="gradient-text">Blossom Unified AI</span>
             </h2>
             <div className="glass-stack p-8">
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-300 text-lg leading-relaxed">
-                    <strong className="text-white">Blossom Solution:</strong> Unified AI aggregator 
-                    that discovers, executes, and manages strategies at institutional scale.
+                  <p className="text-gray-300 dark:text-gray-300 light:text-gray-600 text-lg leading-relaxed">
+                    <strong className="text-white dark:text-white light:text-gray-900">Blossom Unified AI:</strong> One aggregator to discover, execute, and manage with institutional control.
                   </p>
-                </div>
-                <div className="text-sm text-gray-400 italic">
-                  Order, efficiency, and institutional-grade execution
                 </div>
               </div>
             </div>
             
-            {/* Revenue model callout */}
-            <div className="glass-card p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-white mb-4 tracking-tight">
-                $40M+ Annual Fees
-              </h3>
-              <p className="text-gray-300 mb-6 leading-relaxed">
-                Captured by competitors through fragmented DeFi access
-              </p>
-              <div className="text-3xl font-bold gradient-text">
+            {/* Emphasis line below */}
+            <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="text-xl font-bold gradient-text">
                 Blossom = The Institutional Upgrade
+              </div>
+              <div className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-500 mt-2">
+                >$40M annual fees are captured today by fragmented access
               </div>
             </div>
           </motion.div>
