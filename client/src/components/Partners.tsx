@@ -19,10 +19,10 @@ export function Partners() {
           viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-black light:pink-outline-strong light:bg-white/90 light:px-6 light:py-3 light:rounded-xl mb-4">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-white light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-4">
             Trusted by Leading Organizations
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-700 text-lg">
+          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-lg">
             Backed by industry leaders and foundation support
           </motion.p>
         </motion.div>

@@ -40,10 +40,10 @@ export function Metrics() {
           viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-black light:pink-outline-strong light:bg-white/90 light:px-6 light:py-3 light:rounded-xl mb-4">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-white light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-4">
             Institutional Metrics
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-700 text-lg">
+          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-lg">
             Real-time performance highlights.
           </motion.p>
         </motion.div>
@@ -83,7 +83,7 @@ export function Metrics() {
                       duration={2}
                     />
                   </div>
-                   <div className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-700 mb-2 tracking-wide">{metric.label}</div>
+                  <div className="text-sm text-gray-400 mb-2 tracking-wide">{metric.label}</div>
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}

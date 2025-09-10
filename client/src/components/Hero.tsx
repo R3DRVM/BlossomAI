@@ -34,13 +34,13 @@ export function Hero() {
             variants={heroTextItem}
             className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
           >
-            <span className="text-white dark:text-white light:text-black light:pink-outline-strong light:bg-white/90 light:px-6 light:py-3 light:rounded-xl">Deploy millions, intelligently.</span>
+            <span className="text-white dark:text-white light:text-white light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl">Deploy millions, intelligently.</span>
           </motion.h1>
 
           {/* Subline - one concise sentence */}
           <motion.p
             variants={heroTextItem}
-            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-800 light:bg-white/80 light:px-4 light:py-2 light:rounded-lg max-w-3xl mx-auto leading-relaxed font-light"
+            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-700 light:bg-black/10 light:px-4 light:py-2 light:rounded-lg max-w-3xl mx-auto leading-relaxed font-light"
           >
             AI insights, unified execution, and institutional risk for DeFi yield.
           </motion.p>
@@ -50,8 +50,8 @@ export function Hero() {
             variants={heroTextItem}
             className="pt-6"
           >
-            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-700 mb-4 tracking-wide">Backed by</p>
-            <div className="flex items-center justify-center space-x-8 text-gray-400/70 dark:text-gray-400/70 light:text-gray-800">
+            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600 mb-4 tracking-wide">Backed by</p>
+            <div className="flex items-center justify-center space-x-8 text-gray-400/70 dark:text-gray-400/70 light:text-gray-600">
               <div className="text-lg font-semibold tracking-wide">Solana Foundation</div>
               <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
               <div className="text-lg font-semibold tracking-wide">Injective Foundation</div>
