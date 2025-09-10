@@ -44,12 +44,15 @@ export function FeatureGrid() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-16"
+          className="text-center mb-16 relative"
         >
-          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-6">
+          {/* Content overlay for light mode */}
+          <div className="light:content-overlay light:absolute light:inset-0 light:rounded-2xl light:-m-4 light:z-0"></div>
+          
+          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-primary mb-6 relative z-10">
             Built for Institutional Excellence
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-600 max-w-3xl mx-auto">
+          <motion.p variants={fadeInUp} className="text-xl text-gray-400 dark:text-gray-400 light:text-muted max-w-3xl mx-auto relative z-10">
             Professional tools with AI and unified risk.
           </motion.p>
         </motion.div>
@@ -81,10 +84,10 @@ export function FeatureGrid() {
                   <div className="w-16 h-16 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 group-hover:from-pink-500/30 group-hover:to-purple-600/30 transition-all duration-300">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline mb-4 group-hover:text-pink-400 transition-colors duration-300">
+                  <h3 className="text-xl font-bold text-white dark:text-white light:text-primary mb-4 group-hover:text-pink-400 transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 dark:text-gray-400 light:text-gray-700 group-hover:text-gray-300 dark:group-hover:text-gray-300 light:group-hover:text-gray-800 transition-colors duration-300">
+                  <p className="text-gray-400 dark:text-gray-400 light:text-secondary group-hover:text-gray-300 dark:group-hover:text-gray-300 light:group-hover:text-primary transition-colors duration-300">
                     {feature.description}
                   </p>
                 </div>

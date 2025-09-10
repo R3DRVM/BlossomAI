@@ -38,12 +38,15 @@ export function Metrics() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-12"
+          className="text-center mb-12 relative"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-4">
+          {/* Content overlay for light mode */}
+          <div className="light:content-overlay light:absolute light:inset-0 light:rounded-2xl light:-m-4 light:z-0"></div>
+          
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-primary mb-4 relative z-10">
             Institutional Metrics
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-lg">
+          <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-muted text-lg relative z-10">
             Real-time performance highlights.
           </motion.p>
         </motion.div>
@@ -75,7 +78,7 @@ export function Metrics() {
                   variants={counterAnimation}
                   className="relative z-10"
                 >
-                  <div className="text-4xl md:text-5xl font-bold gradient-text mb-3">
+                  <div className="text-4xl md:text-5xl font-bold gradient-text dark:gradient-text light:metric-numeral-gradient mb-3">
                     <AnimatedNumber
                       value={metric.value}
                       prefix={metric.prefix}
@@ -83,12 +86,12 @@ export function Metrics() {
                       duration={2}
                     />
                   </div>
-                  <div className="text-sm text-gray-400 mb-2 tracking-wide">{metric.label}</div>
+                  <div className="text-sm text-gray-400 dark:text-gray-400 light:text-muted mb-2 tracking-wide">{metric.label}</div>
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 2.2, duration: 0.5 }}
-                    className="text-xs text-green-400 font-medium"
+                    className="text-xs text-green-400 dark:text-green-400 light:trend-positive font-medium"
                   >
                     {metric.change}
                   </motion.div>

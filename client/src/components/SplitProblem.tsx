@@ -12,17 +12,20 @@ export function SplitProblem() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
-            className="space-y-6"
+            className="space-y-6 relative"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-8">
+            {/* Content overlay for light mode */}
+            <div className="light:content-overlay light:absolute light:inset-0 light:rounded-2xl light:-m-4 light:z-0"></div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-primary mb-8 relative z-10">
               Fragmented DeFi
             </h2>
-            <div className="scattered-dots p-8 rounded-2xl bg-red-500/5 dark:bg-red-500/5 light:bg-red-50 border border-red-500/20 dark:border-red-500/20 light:border-red-200">
+            <div className="scattered-dots p-8 rounded-2xl bg-red-500/5 dark:bg-red-500/5 light:bg-red-50 border border-red-500/20 dark:border-red-500/20 light:border-red-200 relative z-10">
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-300 dark:text-gray-300 light:text-gray-700 text-lg leading-relaxed">
-                    <strong className="text-white dark:text-white light:text-gray-900 light:pink-outline">Fragmented DeFi:</strong> Scattered protocols, manual research, and compliance drag.
+                  <p className="text-gray-300 dark:text-gray-300 light:text-secondary text-lg leading-relaxed">
+                    <strong className="text-white dark:text-white light:text-primary">Fragmented DeFi:</strong> Scattered protocols, manual research, and compliance drag.
                   </p>
                 </div>
               </div>
@@ -35,28 +38,31 @@ export function SplitProblem() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
-            className="space-y-6"
+            className="space-y-6 relative"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-8">
+            {/* Content overlay for light mode */}
+            <div className="light:content-overlay light:absolute light:inset-0 light:rounded-2xl light:-m-4 light:z-0"></div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-primary mb-8 relative z-10">
               <span className="gradient-text">Blossom Unified AI</span>
             </h2>
-            <div className="glass-stack p-8">
+            <div className="glass-stack p-8 relative z-10">
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-300 dark:text-gray-300 light:text-gray-700 text-lg leading-relaxed">
-                    <strong className="text-white dark:text-white light:text-gray-900 light:pink-outline">Blossom Unified AI:</strong> One aggregator to discover, execute, and manage with institutional control.
+                  <p className="text-gray-300 dark:text-gray-300 light:text-secondary text-lg leading-relaxed">
+                    <strong className="text-white dark:text-white light:text-primary">Blossom Unified AI:</strong> One aggregator to discover, execute, and manage with institutional control.
                   </p>
                 </div>
               </div>
             </div>
             
             {/* Emphasis line below */}
-            <div className="glass-card p-6 rounded-2xl text-center">
+            <div className="glass-card p-6 rounded-2xl text-center relative z-10">
               <div className="text-xl font-bold gradient-text">
                 Blossom = The Institutional Upgrade
               </div>
-              <div className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600 mt-2">
+              <div className="text-sm text-gray-400 dark:text-gray-400 light:text-muted mt-2">
                 &gt;$40M annual fees are captured today by fragmented access
               </div>
             </div>
