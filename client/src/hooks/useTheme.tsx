@@ -51,11 +51,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(resolvedTheme);
     document.documentElement.setAttribute('data-theme', resolvedTheme);
-    
-    // Debug: Log theme changes
-    console.log('Theme changed to:', resolvedTheme);
-    console.log('Document classes:', document.documentElement.className);
-    console.log('Data theme:', document.documentElement.getAttribute('data-theme'));
   }, [resolvedTheme]);
 
   const handleSetTheme = (newTheme: Theme) => {

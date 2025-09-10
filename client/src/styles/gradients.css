@@ -143,23 +143,7 @@
   color: var(--text-inverse) !important;
 }
 
-/* Debug: Force light mode text colors for testing */
-.light h1,
-.light h2,
-.light h3,
-.light h4,
-.light h5,
-.light h6 {
-  color: var(--text-primary) !important;
-}
-
-.light p,
-.light span,
-.light div {
-  color: var(--text-secondary) !important;
-}
-
-/* More specific overrides for light mode */
+/* Light mode text color overrides */
 .light .text-white {
   color: var(--text-primary) !important;
 }
@@ -173,6 +157,10 @@
 }
 
 .light .text-gray-600 {
+  color: var(--text-muted) !important;
+}
+
+.light .text-gray-500 {
   color: var(--text-muted) !important;
 }
 
