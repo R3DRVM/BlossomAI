@@ -62,7 +62,7 @@ export default function Landing() {
               <div className="w-6 h-6 bg-gradient-to-br from-pink-500 to-purple-600 rounded">
                 <div className="h-4 w-4 text-white m-1 flex items-center justify-center text-xs font-bold">B</div>
               </div>
-              <span className="font-medium text-white dark:text-white light:text-gray-900 light:pink-outline">Blossom</span>
+              <span className="font-medium text-white dark:text-white gradient-text">Blossom</span>
             </div>
             <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600">
               © 2025 Blossom. All rights reserved.
