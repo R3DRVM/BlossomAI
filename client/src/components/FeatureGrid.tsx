@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp, cardHover } from "@/lib/motion";
+import { staggerContainer, fadeInUp, glassCardHover, featureCard } from "@/lib/motion";
 import { BarChart3, Zap, Shield, TrendingUp, Users, Globe } from "lucide-react";
 
 const features = [
@@ -37,19 +37,19 @@ const features = [
 
 export function FeatureGrid() {
   return (
-    <section className="py-28 md:py-36 px-6 md:px-10">
+    <section className="py-32 md:py-40 px-6 md:px-10">
       <div className="max-w-7xl mx-auto">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
             Built for Institutional Excellence
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-xl text-text-muted max-w-3xl mx-auto">
+          <motion.p variants={fadeInUp} className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Professional-grade tools that combine the best of traditional finance terminals 
             with cutting-edge DeFi innovation.
           </motion.p>
@@ -65,25 +65,30 @@ export function FeatureGrid() {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              variants={fadeInUp}
+              variants={featureCard}
               whileHover="hover"
               initial="rest"
               animate="rest"
               className="group cursor-pointer"
             >
               <motion.div
-                variants={cardHover}
-                className="glass-card p-8 rounded-2xl h-full border-2 border-transparent group-hover:border-brand-pink/20 transition-all duration-300"
+                variants={glassCardHover}
+                className="glass-card p-8 rounded-2xl h-full relative overflow-hidden"
               >
-                <div className="w-16 h-16 bg-brand-pink/10 rounded-2xl flex items-center justify-center text-brand-pink mb-6 group-hover:bg-brand-pink/20 group-hover:scale-110 transition-all duration-300">
-                  {feature.icon}
+                {/* Gradient border effect */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 group-hover:from-pink-500/30 group-hover:to-purple-600/30 transition-all duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-pink-400 transition-colors duration-300 tracking-tight">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-text-primary mb-4 group-hover:text-brand-pink transition-colors duration-300">
-                  {feature.title}
-                </h3>
-                <p className="text-text-muted group-hover:text-text-primary/80 transition-colors duration-300">
-                  {feature.description}
-                </p>
               </motion.div>
             </motion.div>
           ))}

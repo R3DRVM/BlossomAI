@@ -2,17 +2,17 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
-import { fadeInUp } from "@/lib/motion";
+import { fadeInUp, ctaButton } from "@/lib/motion";
 
 export function BottomCta() {
   const [, setLocation] = useLocation();
 
   return (
-    <section className="py-28 md:py-36 px-6 md:px-10 bg-gradient-to-r from-brand-pink/10 to-brand-purple/10 relative overflow-hidden">
+    <section className="py-32 md:py-40 px-6 md:px-10 relative overflow-hidden">
       {/* Background orbs */}
       <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-brand-pink/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-brand-purple/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "6s" }}></div>
+        <div className="floating-glow pink" />
+        <div className="floating-glow purple" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto text-center">
@@ -21,23 +21,30 @@ export function BottomCta() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="space-y-8"
+          className="space-y-10"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
+          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
             Ready to deploy capital with Blossom?
           </h2>
-          <p className="text-xl text-text-muted max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Join institutional investors who trust Blossom for professional-grade 
             DeFi yield aggregation and risk management.
           </p>
-          <Button
-            size="lg"
-            onClick={() => setLocation('/terminal')}
-            className="bg-brand-pink hover:bg-brand-pink/90 text-white px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-200 hover:shadow-glow"
+          <motion.div
+            variants={ctaButton}
+            initial="rest"
+            whileHover="hover"
+            className="cta-aura inline-block"
           >
-            Access Terminal Now
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+            <Button
+              size="lg"
+              onClick={() => setLocation('/terminal')}
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-12 py-5 text-lg font-semibold transition-all duration-300"
+            >
+              Access Terminal Now
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </section>

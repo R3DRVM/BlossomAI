@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
-import { heroText, heroTextItem } from "@/lib/motion";
+import { heroText, heroTextItem, ctaButton } from "@/lib/motion";
 import { useLocation } from "wouter";
 
 export function Hero() {
@@ -10,11 +10,9 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background with gradient and orbs */}
-      <div className="absolute inset-0 bg-blossom bg-orb" />
-      
-      {/* Subtle grid overlay */}
-      <div className="absolute inset-0 bg-grid opacity-30" />
+      {/* Floating glow elements */}
+      <div className="floating-glow pink" />
+      <div className="floating-glow purple" />
       
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 text-center">
@@ -22,31 +20,31 @@ export function Hero() {
           variants={heroText}
           initial="hidden"
           animate="show"
-          className="space-y-8"
+          className="space-y-12"
         >
           {/* Badge */}
           <motion.div variants={heroTextItem}>
-            <Badge variant="secondary" className="mb-6 text-sm font-medium">
+            <Badge variant="secondary" className="mb-8 text-sm font-medium tracking-wide">
               Institutional DeFi Platform
             </Badge>
           </motion.div>
 
-          {/* Main headline */}
+          {/* Main headline with refined typography */}
           <motion.h1
             variants={heroTextItem}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
           >
-            <span className="text-text-primary">Blossom is the </span>
-            <span className="text-brand-pink">institutional aggregator</span>
-            <span className="text-text-primary"> — built for large-scale capital deployment, </span>
-            <span className="text-brand-pink">powered by AI insights</span>
-            <span className="text-text-primary">, trusted by foundations.</span>
+            <span className="text-white">Blossom is the </span>
+            <span className="gradient-text">institutional aggregator</span>
+            <span className="text-white"> — built for large-scale capital deployment, </span>
+            <span className="gradient-text">powered by AI insights</span>
+            <span className="text-white">, trusted by foundations.</span>
           </motion.h1>
 
-          {/* Subline */}
+          {/* Subline with tighter spacing */}
           <motion.p
             variants={heroTextItem}
-            className="text-xl md:text-2xl text-text-muted max-w-4xl mx-auto leading-relaxed font-light"
+            className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light"
           >
             From treasuries to quant funds to end-users, Blossom unifies the entire yield lifecycle — 
             discover, execute, and manage DeFi strategies at institutional scale.
@@ -55,35 +53,42 @@ export function Hero() {
           {/* Social proof */}
           <motion.div
             variants={heroTextItem}
-            className="pt-4"
+            className="pt-6"
           >
-            <p className="text-sm text-text-muted mb-4">Backed by</p>
-            <div className="flex items-center justify-center space-x-8 text-text-muted/60">
-              <div className="text-lg font-semibold">Solana Foundation</div>
-              <div className="w-px h-6 bg-brand-border"></div>
-              <div className="text-lg font-semibold">Injective Foundation</div>
-              <div className="w-px h-6 bg-brand-border"></div>
-              <div className="text-lg font-semibold">Leading DeFi Builders</div>
+            <p className="text-sm text-gray-400 mb-4 tracking-wide">Backed by</p>
+            <div className="flex items-center justify-center space-x-8 text-gray-400/70">
+              <div className="text-lg font-semibold tracking-wide">Solana Foundation</div>
+              <div className="w-px h-6 bg-gray-600"></div>
+              <div className="text-lg font-semibold tracking-wide">Injective Foundation</div>
+              <div className="w-px h-6 bg-gray-600"></div>
+              <div className="text-lg font-semibold tracking-wide">Leading DeFi Builders</div>
             </div>
           </motion.div>
 
-          {/* CTAs */}
+          {/* CTAs with aura effect */}
           <motion.div
             variants={heroTextItem}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8"
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12"
           >
-            <Button
-              size="lg"
-              onClick={() => setLocation('/terminal')}
-              className="bg-brand-pink hover:bg-brand-pink/90 text-white px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-200 hover:shadow-glow"
+            <motion.div
+              variants={ctaButton}
+              initial="rest"
+              whileHover="hover"
+              className="cta-aura"
             >
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+              <Button
+                size="lg"
+                onClick={() => setLocation('/terminal')}
+                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-10 py-4 text-lg font-semibold transition-all duration-300"
+              >
+                Get Started
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </motion.div>
             <Button
               variant="outline"
               size="lg"
-              className="border-brand-border text-text-primary hover:bg-brand-card hover:border-brand-pink/50 px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-200"
+              className="border-gray-600 text-white hover:bg-white/5 hover:border-pink-500/50 px-10 py-4 text-lg font-semibold transition-all duration-300 backdrop-blur-sm"
             >
               View Demo
             </Button>

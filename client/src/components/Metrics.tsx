@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp } from "@/lib/motion";
+import { staggerContainer, fadeInUp, glassCardHover, counterAnimation } from "@/lib/motion";
 import { AnimatedNumber } from "./AnimatedNumber";
 
 const metrics = [
@@ -31,19 +31,19 @@ const metrics = [
 
 export function Metrics() {
   return (
-    <section className="py-20 px-6 md:px-10 bg-brand-card/30 backdrop-blur-md border-t border-brand-border">
+    <section className="py-24 md:py-32 px-6 md:px-10">
       <div className="max-w-7xl mx-auto">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
             Institutional Metrics
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-text-muted text-lg">
+          <motion.p variants={fadeInUp} className="text-gray-400 text-lg">
             Real-time performance data from our platform
           </motion.p>
         </motion.div>
@@ -59,18 +59,41 @@ export function Metrics() {
             <motion.div
               key={index}
               variants={fadeInUp}
-              className="glass-card p-8 rounded-2xl text-center hover:shadow-glow transition-all duration-300"
+              whileHover="hover"
+              initial="rest"
+              animate="rest"
+              className="group cursor-pointer"
             >
-              <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-brand-pink to-brand-purple bg-clip-text text-transparent mb-2">
-                <AnimatedNumber
-                  value={metric.value}
-                  prefix={metric.prefix}
-                  suffix={metric.suffix}
-                  duration={2}
-                />
-              </div>
-              <div className="text-sm text-text-muted mb-2">{metric.label}</div>
-              <div className="text-xs text-green-400 font-medium">{metric.change}</div>
+              <motion.div
+                variants={glassCardHover}
+                className="glass-card p-8 rounded-2xl text-center relative overflow-hidden"
+              >
+                {/* Gradient border effect */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                <motion.div
+                  variants={counterAnimation}
+                  className="relative z-10"
+                >
+                  <div className="text-4xl md:text-5xl font-bold gradient-text mb-3">
+                    <AnimatedNumber
+                      value={metric.value}
+                      prefix={metric.prefix}
+                      suffix={metric.suffix}
+                      duration={2}
+                    />
+                  </div>
+                  <div className="text-sm text-gray-400 mb-2 tracking-wide">{metric.label}</div>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 2.2, duration: 0.5 }}
+                    className="text-xs text-green-400 font-medium"
+                  >
+                    {metric.change}
+                  </motion.div>
+                </motion.div>
+              </motion.div>
             </motion.div>
           ))}
         </motion.div>
