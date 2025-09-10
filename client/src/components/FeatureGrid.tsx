@@ -49,7 +49,7 @@ export function FeatureGrid() {
           <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 mb-6">
             Built for Institutional Excellence
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-500 max-w-3xl mx-auto">
+          <motion.p variants={fadeInUp} className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-600 max-w-3xl mx-auto">
             Professional tools with AI and unified risk.
           </motion.p>
         </motion.div>
@@ -84,7 +84,7 @@ export function FeatureGrid() {
                   <h3 className="text-xl font-bold text-white dark:text-white light:text-gray-900 mb-4 group-hover:text-pink-400 transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 dark:text-gray-400 light:text-gray-600 group-hover:text-gray-300 dark:group-hover:text-gray-300 light:group-hover:text-gray-700 transition-colors duration-300">
+                  <p className="text-gray-400 dark:text-gray-400 light:text-gray-700 group-hover:text-gray-300 dark:group-hover:text-gray-300 light:group-hover:text-gray-800 transition-colors duration-300">
                     {feature.description}
                   </p>
                 </div>

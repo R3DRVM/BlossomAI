@@ -64,7 +64,7 @@ export default function Landing() {
               </div>
               <span className="font-medium text-white dark:text-white light:text-gray-900">Blossom</span>
             </div>
-            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-500">
+            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600">
               © 2025 Blossom. All rights reserved.
             </p>
           </div>

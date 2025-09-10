@@ -40,7 +40,7 @@ export function Hero() {
           {/* Subline - one concise sentence */}
           <motion.p
             variants={heroTextItem}
-            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-600 max-w-3xl mx-auto leading-relaxed font-light"
+            className="text-xl md:text-2xl text-gray-300 dark:text-gray-300 light:text-gray-700 max-w-3xl mx-auto leading-relaxed font-light"
           >
             AI insights, unified execution, and institutional risk for DeFi yield.
           </motion.p>
@@ -50,8 +50,8 @@ export function Hero() {
             variants={heroTextItem}
             className="pt-6"
           >
-            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-500 mb-4 tracking-wide">Backed by</p>
-            <div className="flex items-center justify-center space-x-8 text-gray-400/70 dark:text-gray-400/70 light:text-gray-500/70">
+            <p className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600 mb-4 tracking-wide">Backed by</p>
+            <div className="flex items-center justify-center space-x-8 text-gray-400/70 dark:text-gray-400/70 light:text-gray-600">
               <div className="text-lg font-semibold tracking-wide">Solana Foundation</div>
               <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
               <div className="text-lg font-semibold tracking-wide">Injective Foundation</div>

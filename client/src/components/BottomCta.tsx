@@ -26,7 +26,7 @@ export function BottomCta() {
           <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900">
             Ready to deploy with Blossom?
           </h2>
-          <p className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-500 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-600 max-w-2xl mx-auto">
             Join institutional investors using AI-driven aggregation and unified risk.
           </p>
           <motion.div
