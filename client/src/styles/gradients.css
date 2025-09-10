@@ -130,6 +130,31 @@
     0 0 72px rgba(255, 79, 160, 0.6);
 }
 
+/* Light mode specific pink outlines */
+.light .pink-outline {
+  -webkit-text-stroke: 3px rgba(255, 79, 160, 1) !important;
+  text-stroke: 3px rgba(255, 79, 160, 1) !important;
+  text-shadow: 
+    0 0 8px rgba(255, 79, 160, 1),
+    0 0 16px rgba(255, 79, 160, 0.9),
+    0 0 24px rgba(255, 79, 160, 0.8),
+    0 0 32px rgba(255, 79, 160, 0.7),
+    0 0 40px rgba(255, 79, 160, 0.6),
+    0 0 48px rgba(255, 79, 160, 0.5) !important;
+}
+
+.light .pink-outline-strong {
+  -webkit-text-stroke: 4px rgba(255, 79, 160, 1) !important;
+  text-stroke: 4px rgba(255, 79, 160, 1) !important;
+  text-shadow: 
+    0 0 12px rgba(255, 79, 160, 1),
+    0 0 24px rgba(255, 79, 160, 1),
+    0 0 36px rgba(255, 79, 160, 0.9),
+    0 0 48px rgba(255, 79, 160, 0.8),
+    0 0 60px rgba(255, 79, 160, 0.7),
+    0 0 72px rgba(255, 79, 160, 0.6) !important;
+}
+
 /* Floating elements */
 .floating-glow {
   position: absolute;
