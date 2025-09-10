@@ -40,7 +40,7 @@ export function Metrics() {
           viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-gray-900 mb-4">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white light:text-gray-900 light:[text-shadow:0_0_1px_rgba(255,79,160,0.3),0_0_2px_rgba(255,79,160,0.2)] mb-4">
             Institutional Metrics
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-lg">
