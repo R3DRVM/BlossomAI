@@ -56,6 +56,8 @@ export function Hero() {
               <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
               <div className="text-lg font-semibold tracking-wide">Injective Foundation</div>
               <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
+              <div className="text-lg font-semibold tracking-wide">ElizaOS</div>
+              <div className="w-px h-6 bg-gray-600 dark:bg-gray-600 light:bg-gray-300"></div>
               <div className="text-lg font-semibold tracking-wide">Leading DeFi Builders</div>
             </div>
           </motion.div>

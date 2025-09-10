@@ -4,6 +4,7 @@ import { staggerContainer, fadeInUp, logoColorize } from "@/lib/motion";
 const partners = [
   { name: "Solana Foundation", logo: "SF", color: "from-purple-500 to-pink-500" },
   { name: "Injective Foundation", logo: "IF", color: "from-blue-500 to-purple-500" },
+  { name: "ElizaOS", logo: "EOS", color: "from-green-500 to-teal-500" },
   { name: "Leading DeFi Builders", logo: "LDB", color: "from-pink-500 to-orange-500" },
 ];
 

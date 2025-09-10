@@ -57,7 +57,7 @@ export function SplitProblem() {
                 Blossom = The Institutional Upgrade
               </div>
               <div className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-500 mt-2">
-                >$40M annual fees are captured today by fragmented access
+                &gt;$40M annual fees are captured today by fragmented access
               </div>
             </div>
           </motion.div>
