@@ -46,7 +46,7 @@ export function FeatureGrid() {
           viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-16"
         >
-          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong mb-6">
+          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white dark:text-white light:text-gray-900 light:pink-outline-strong light:bg-black/20 light:px-6 light:py-3 light:rounded-xl mb-6">
             Built for Institutional Excellence
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-xl text-gray-400 dark:text-gray-400 light:text-gray-600 max-w-3xl mx-auto">

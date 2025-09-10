@@ -115,7 +115,7 @@
     0 0 16px rgba(255, 79, 160, 0.3);
 }
 
-/* Extra strong outline for section headings */
+/* Strong pink outline for major headings */
 .pink-outline-strong {
   -webkit-text-stroke: 3px rgba(255, 79, 160, 1);
   text-stroke: 3px rgba(255, 79, 160, 1);
