@@ -25,6 +25,7 @@ export default function Auth() {
       const result = await signIn(username);
       if (result.success) {
         // Use wouter's setLocation for client-side navigation
+        console.log('[Auth] Navigating to terminal after successful sign-in');
         setLocation('/terminal');
       } else {
         toast({

@@ -110,6 +110,9 @@ export function useAuth() {
       // Debug logging
       console.log('[Auth] Sign-in successful:', { demoUser, isAuthenticated: true });
       
+      // Wait for state to be updated
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
       toast({
         title: "Welcome to Blossom!",
         description: `Hello ${username}! You now have access to the full terminal.`,
