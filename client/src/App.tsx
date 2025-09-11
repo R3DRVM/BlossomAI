@@ -19,8 +19,11 @@ import NotFound from "@/pages/not-found";
 import { DevPanel403 } from "@/dev/DevPanel403";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [, setLocation] = useLocation();
+
+  // Debug logging
+  console.log('[Router] Auth state:', { isAuthenticated, isLoading, user, path: location.pathname });
 
   // Show loading screen while checking authentication
   if (isLoading) {

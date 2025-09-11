@@ -37,11 +37,11 @@ export function useAuth() {
     const checkAuth = () => {
       try {
         const storedUser = localStorage.getItem('blossomai-demo-user');
-        if (storedUser && !user) {
+        if (storedUser) {
           const userData = JSON.parse(storedUser);
           setUser(userData);
           setIsAuthenticated(true);
-        } else if (!storedUser && user) {
+        } else {
           setUser(null);
           setIsAuthenticated(false);
         }
@@ -98,6 +98,9 @@ export function useAuth() {
       setUser(demoUser);
       setIsAuthenticated(true);
       
+      // Debug logging
+      console.log('[Auth] Sign-in successful:', { demoUser, isAuthenticated: true });
+      
       toast({
         title: "Welcome to Blossom!",
         description: `Hello ${username}! You now have access to the full terminal.`,
@@ -105,6 +108,7 @@ export function useAuth() {
       
       return { success: true };
     } catch (error: any) {
+      console.error('[Auth] Sign-in error:', error);
       toast({
         title: "Sign In Failed",
         description: "Please try again.",
