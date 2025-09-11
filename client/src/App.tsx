@@ -38,7 +38,7 @@ function Router() {
   }
 
   return (
-    <Switch>
+    <Switch key={`${isAuthenticated}-${user?.username || 'no-user'}`}>
       {/* Public routes */}
       <Route path="/" component={Landing} />
       <Route path="/landing" component={Landing} />
