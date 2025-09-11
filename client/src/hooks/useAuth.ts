@@ -15,9 +15,12 @@ export function useAuth() {
     try {
       const storedUser = localStorage.getItem('blossomai-demo-user');
       if (storedUser) {
-        return JSON.parse(storedUser);
+        const userData = JSON.parse(storedUser);
+        console.log('[Auth] Initial user from localStorage:', userData);
+        return userData;
       }
     } catch (error) {
+      console.error('[Auth] Error parsing stored user:', error);
       localStorage.removeItem('blossomai-demo-user');
     }
     return null;
@@ -26,7 +29,9 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     try {
-      return localStorage.getItem('blossomai-demo-user') !== null;
+      const hasUser = localStorage.getItem('blossomai-demo-user') !== null;
+      console.log('[Auth] Initial isAuthenticated:', hasUser);
+      return hasUser;
     } catch {
       return false;
     }
@@ -37,15 +42,19 @@ export function useAuth() {
     const checkAuth = () => {
       try {
         const storedUser = localStorage.getItem('blossomai-demo-user');
+        console.log('[Auth] checkAuth - storedUser:', storedUser);
         if (storedUser) {
           const userData = JSON.parse(storedUser);
+          console.log('[Auth] checkAuth - setting user:', userData);
           setUser(userData);
           setIsAuthenticated(true);
         } else {
+          console.log('[Auth] checkAuth - no stored user, clearing state');
           setUser(null);
           setIsAuthenticated(false);
         }
       } catch (error) {
+        console.error('[Auth] checkAuth error:', error);
         localStorage.removeItem('blossomai-demo-user');
         setUser(null);
         setIsAuthenticated(false);
