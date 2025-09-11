@@ -103,15 +103,17 @@ export function useAuth() {
       // Store in localStorage
       localStorage.setItem('blossomai-demo-user', JSON.stringify(demoUser));
       
-      // Update state
+      // Update state synchronously
       setUser(demoUser);
       setIsAuthenticated(true);
       
       // Debug logging
       console.log('[Auth] Sign-in successful:', { demoUser, isAuthenticated: true });
       
-      // Wait for state to be updated
-      await new Promise(resolve => setTimeout(resolve, 0));
+      // Force a re-render by dispatching a custom event
+      window.dispatchEvent(new CustomEvent('blossomai-auth-changed', { 
+        detail: { user: demoUser, isAuthenticated: true } 
+      }));
       
       toast({
         title: "Welcome to Blossom!",

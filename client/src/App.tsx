@@ -1,7 +1,7 @@
 
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 console.info('[blossom] App mount OK', new Date().toISOString());
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -21,9 +21,21 @@ import { DevPanel403 } from "@/dev/DevPanel403";
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const [, setLocation] = useLocation();
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Listen for auth changes to force re-render
+  useEffect(() => {
+    const handleAuthChange = () => {
+      console.log('[Router] Auth change event received, forcing re-render');
+      setForceUpdate(prev => prev + 1);
+    };
+
+    window.addEventListener('blossomai-auth-changed', handleAuthChange);
+    return () => window.removeEventListener('blossomai-auth-changed', handleAuthChange);
+  }, []);
 
   // Debug logging
-  console.log('[Router] Auth state:', { isAuthenticated, isLoading, user, path: location.pathname });
+  console.log('[Router] Auth state:', { isAuthenticated, isLoading, user, path: location.pathname, forceUpdate });
 
   // Show loading screen while checking authentication
   if (isLoading) {
@@ -38,7 +50,7 @@ function Router() {
   }
 
   return (
-    <Switch key={`${isAuthenticated}-${user?.username || 'no-user'}`}>
+    <Switch key={`${isAuthenticated}-${user?.username || 'no-user'}-${forceUpdate}`}>
       {/* Public routes */}
       <Route path="/" component={Landing} />
       <Route path="/landing" component={Landing} />

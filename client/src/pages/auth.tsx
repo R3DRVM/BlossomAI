@@ -24,9 +24,17 @@ export default function Auth() {
     try {
       const result = await signIn(username);
       if (result.success) {
-        // Use wouter's setLocation for client-side navigation
+        // Force navigation using window.location for guaranteed redirect
         console.log('[Auth] Navigating to terminal after successful sign-in');
+        // Try client-side navigation first
         setLocation('/terminal');
+        // Fallback to window.location if client-side navigation fails
+        setTimeout(() => {
+          if (window.location.pathname !== '/terminal') {
+            console.log('[Auth] Client-side navigation failed, using window.location');
+            window.location.href = '/terminal';
+          }
+        }, 100);
       } else {
         toast({
           title: "Sign In Failed",
