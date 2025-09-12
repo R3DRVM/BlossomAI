@@ -67,25 +67,12 @@ export function ChatPreview() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const timerRefs = useRef<Set<NodeJS.Timeout>>(new Set());
   const prefersReducedMotion = useRef(false);
+  const isMountedRef = useRef(true);
 
-  // Check for reduced motion preference and start demo
+  // Check for reduced motion preference
   useEffect(() => {
     prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion.current) {
-      // Show instant messages for reduced motion
-      const scenario = scriptedScenarios[0];
-      setDisplayedUserText(scenario.user);
-      setDisplayedAiText(scenario.ai);
-      setShowResponse(true);
-      setController(prev => ({ ...prev, state: 'showingAI' }));
-    } else {
-      // Start the demo after a short delay
-      const timer = setTimeout(() => {
-        runScenario();
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [runScenario]);
+  }, []);
 
   // Setup intersection observer for visibility
   useEffect(() => {
@@ -99,10 +86,6 @@ export function ChatPreview() {
         
         setController(prev => {
           if (prev.isVisible !== isVisible) {
-            if (isVisible && prev.state === 'idle' && prev.cycleCount < 3) {
-              // Resume or start when visible
-              addTimer(() => runScenario(), 500);
-            }
             return { ...prev, isVisible, isPaused: !isVisible };
           }
           return prev;
@@ -131,9 +114,10 @@ export function ChatPreview() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
-  // Cleanup timers on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
       timerRefs.current.forEach(timer => clearTimeout(timer));
       timerRefs.current.clear();
       if (controller.abortController) {
@@ -143,9 +127,11 @@ export function ChatPreview() {
   }, [controller.abortController]);
 
   const addTimer = useCallback((callback: () => void, delay: number) => {
+    if (!isMountedRef.current) return;
+    
     const timer = setTimeout(() => {
       timerRefs.current.delete(timer);
-      if (!controller.isPaused) {
+      if (!controller.isPaused && isMountedRef.current) {
         callback();
       }
     }, delay);
@@ -159,8 +145,13 @@ export function ChatPreview() {
   }, []);
 
   const runScenario = useCallback(async () => {
+    if (!isMountedRef.current) return;
+    
     setController(prev => {
-      if (prev.state !== 'idle' || prev.cycleCount >= 3) return prev;
+      // Only start if idle and not at max cycles
+      if (prev.state !== 'idle' || prev.cycleCount >= 3) {
+        return prev;
+      }
       
       // Cancel any existing scenario
       if (prev.abortController) {
@@ -175,6 +166,15 @@ export function ChatPreview() {
         setDisplayedUserText(scenario.user);
         setDisplayedAiText(scenario.ai);
         setShowResponse(true);
+        setIsTyping(false);
+        
+        // Auto-advance after showing
+        addTimer(() => {
+          if (isMountedRef.current) {
+            nextScenario();
+          }
+        }, 3000);
+        
         return { 
           ...prev, 
           abortController,
@@ -184,15 +184,16 @@ export function ChatPreview() {
         };
       }
 
-      // Type user message
+      // Clear previous state
       setDisplayedUserText('');
       setDisplayedAiText('');
       setShowResponse(false);
       setIsTyping(false);
 
+      // Start typing user message
       let userIndex = 0;
       const typeUser = () => {
-        if (abortController.signal.aborted) return;
+        if (abortController.signal.aborted || !isMountedRef.current) return;
         if (userIndex < scenario.user.length) {
           setDisplayedUserText(scenario.user.slice(0, userIndex + 1));
           userIndex++;
@@ -200,7 +201,7 @@ export function ChatPreview() {
         } else {
           // Start typing AI after gap
           addTimer(() => {
-            if (abortController.signal.aborted) return;
+            if (abortController.signal.aborted || !isMountedRef.current) return;
             setController(prev => ({ ...prev, state: 'typingAI' }));
             setIsTyping(true);
             typeAI();
@@ -209,10 +210,10 @@ export function ChatPreview() {
       };
 
       const typeAI = () => {
-        if (abortController.signal.aborted) return;
+        if (abortController.signal.aborted || !isMountedRef.current) return;
         let aiIndex = 0;
         const typeAiChar = () => {
-          if (abortController.signal.aborted) return;
+          if (abortController.signal.aborted || !isMountedRef.current) return;
           if (aiIndex < scenario.ai.length) {
             setDisplayedAiText(scenario.ai.slice(0, aiIndex + 1));
             aiIndex++;
@@ -225,7 +226,7 @@ export function ChatPreview() {
             
             // Hold for a bit, then move to next scenario
             addTimer(() => {
-              if (abortController.signal.aborted) return;
+              if (abortController.signal.aborted || !isMountedRef.current) return;
               nextScenario();
             }, CHAT_TIMING.holdAfterAiMs);
           }
@@ -233,12 +234,16 @@ export function ChatPreview() {
         typeAiChar();
       };
 
+      // Start typing user message
       typeUser();
+      
       return { ...prev, abortController, state: 'typingUser' };
     });
   }, [addTimer]);
 
   const nextScenario = useCallback(() => {
+    if (!isMountedRef.current) return;
+    
     setController(prev => {
       const newCycleCount = prev.cycleCount + 1;
       const newState = {
@@ -248,8 +253,8 @@ export function ChatPreview() {
         cycleCount: newCycleCount
       };
       
-      // Start next scenario if not at max cycles
-      if (newCycleCount < 3) {
+      // Start next scenario if not at max cycles and visible
+      if (newCycleCount < 3 && prev.isVisible) {
         addTimer(() => runScenario(), 2000);
       }
       
@@ -266,6 +271,28 @@ export function ChatPreview() {
     }
   };
 
+  // Auto-start when component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isMountedRef.current && controller.state === 'idle' && controller.cycleCount < 3) {
+        runScenario();
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [runScenario, controller.state, controller.cycleCount]);
+
+  // Resume when becoming visible
+  useEffect(() => {
+    if (controller.isVisible && controller.state === 'idle' && controller.cycleCount < 3) {
+      const timer = setTimeout(() => {
+        if (isMountedRef.current) {
+          runScenario();
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [controller.isVisible, controller.state, controller.cycleCount, runScenario]);
 
   return (
     <motion.div
