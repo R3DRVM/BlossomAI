@@ -41,7 +41,7 @@
 .light .bg-unified {
   background: 
     radial-gradient(1400px 800px at 20% -20%, #fafafc 0%, #ffffff 40%, #f8f9fa 80%),
-    linear-gradient(135deg, rgba(255, 79, 160, 0.015) 0%, transparent 50%, rgba(180, 102, 255, 0.015) 100%);
+    linear-gradient(135deg, rgba(255, 90, 175, 0.08) 0%, transparent 50%, rgba(155, 108, 255, 0.08) 100%);
 }
 
 .light .bg-unified::before {
@@ -52,8 +52,8 @@
 
 .light .bg-unified::after {
   background: 
-    radial-gradient(600px 600px at 10% 10%, rgba(255, 79, 160, 0.03) 0%, transparent 50%),
-    radial-gradient(600px 600px at 90% 90%, rgba(180, 102, 255, 0.03) 0%, transparent 50%);
+    radial-gradient(600px 600px at 10% 10%, rgba(255, 90, 175, 0.12) 0%, transparent 50%),
+    radial-gradient(600px 600px at 90% 90%, rgba(155, 108, 255, 0.12) 0%, transparent 50%);
 }
 
 /* Soft grain texture */
@@ -233,7 +233,27 @@
 
 /* Light Mode CTA Aura */
 .light .cta-aura::before {
-  background: radial-gradient(circle, rgba(255, 79, 160, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 90, 175, 0.15) 0%, transparent 70%);
+}
+
+/* Light Mode Glass Cards - Enhanced */
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.light .glass-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* Light Mode Navigation - Enhanced */
+.light .sticky-nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
 }
 
 /* Reduced motion support */

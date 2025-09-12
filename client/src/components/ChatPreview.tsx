@@ -17,21 +17,31 @@ export function ChatPreview() {
 
   useEffect(() => {
     if (isPlaying) {
-      // Start the conversation
-      setIsTyping(true);
-      setDisplayedText("");
-      setShowResponse(false);
-
-      // Show user message immediately
-      setTimeout(() => {
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion
         setIsTyping(false);
-        
-        // Start typing response after 350ms thinking delay
+        setDisplayedText(scriptedConversation.blossom);
+        setShowResponse(true);
+      } else {
+        // Start the conversation with animations
+        setIsTyping(true);
+        setDisplayedText("");
+        setShowResponse(false);
+
+        // Show user message immediately
         setTimeout(() => {
-          setIsTyping(true);
-          typeResponse();
-        }, 350);
-      }, 1000);
+          setIsTyping(false);
+          
+          // Start typing response after 350ms thinking delay
+          setTimeout(() => {
+            setIsTyping(true);
+            typeResponse();
+          }, 350);
+        }, 1000);
+      }
     }
   }, [isPlaying]);
 
