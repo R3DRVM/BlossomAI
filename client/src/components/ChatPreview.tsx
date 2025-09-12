@@ -1,302 +1,181 @@
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { MessageCircle, Play, Pause } from "lucide-react";
 
-// Timing configuration
-const CHAT_TIMING = {
-  userTypeMsPerChar: 15,   // min 10, max 25
-  aiTypeMsPerChar: 18,
-  minGapMs: 300,           // gap between bubbles
-  holdAfterAiMs: 2400,     // dwell time after AI finishes
-  maxCycleMs: 12000        // safety stop per scenario
-};
-
 // Institutional scenarios
-const scriptedScenarios = [
+const scenarios = [
   {
-    id: 'market-maker',
     user: "Deploy $50M with institutional controls.",
     ai: "Route to short-duration MM pools, satellite RWA treasuries (KYC custody), hedge via vol-controlled vaults. Blended APY 9.8–12.4%, 95% daily liquidity."
   },
   {
-    id: 'treasury',
     user: "Target 6–8% APY; T+0 liquidity.",
     ai: "30% USDC staking, 40% LST/LRT ladder, 30% short-duration lending. Real-time risk checks; auto-rebalance on drawdown >1.5%."
   },
   {
-    id: 'quant-desk',
     user: "Cross-chain execution with VaR <2%.",
     ai: "ETH/SOL/INJ split; basis capture + funding arb; cap pool concentration 20%. Live VaR 1.7%; expected slippage <7 bps."
   },
   {
-    id: 'exchanges',
     user: "Idle float $25M—minimize exposure.",
     ai: "Staggered maturities (7/14/30d), insured vault whitelist, automatic unwind on liquidity stress signal."
   }
 ];
 
-type ChatState = 'idle' | 'typingUser' | 'typingAI' | 'showingAI' | 'hold';
-
-interface ChatPreviewController {
-  state: ChatState;
-  currentScenario: number;
-  cycleCount: number;
-  isVisible: boolean;
-  isPaused: boolean;
-  abortController: AbortController | null;
-}
-
 export function ChatPreview() {
   const [, setLocation] = useLocation();
-  const [controller, setController] = useState<ChatPreviewController>({
-    state: 'idle',
-    currentScenario: 0,
-    cycleCount: 0,
-    isVisible: true,
-    isPaused: false,
-    abortController: null
-  });
-  
+  const [currentScenario, setCurrentScenario] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [displayedUserText, setDisplayedUserText] = useState('');
   const [displayedAiText, setDisplayedAiText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
+  const [cycleCount, setCycleCount] = useState(0);
   
-  const containerRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const timerRefs = useRef<Set<NodeJS.Timeout>>(new Set());
-  const prefersReducedMotion = useRef(false);
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
   const isMountedRef = useRef(true);
 
-  // Check for reduced motion preference
-  useEffect(() => {
-    prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }, []);
+  // Clear all timeouts
+  const clearTimeouts = () => {
+    timeoutRefs.current.forEach(timeout => clearTimeout(timeout));
+    timeoutRefs.current = [];
+  };
 
-  // Setup intersection observer for visibility
-  useEffect(() => {
-    if (!containerRef.current) return;
+  // Add timeout with tracking
+  const addTimeout = (callback: () => void, delay: number) => {
+    const timeout = setTimeout(() => {
+      if (isMountedRef.current) {
+        callback();
+      }
+    }, delay);
+    timeoutRefs.current.push(timeout);
+    return timeout;
+  };
 
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        const visibility = entry.intersectionRatio;
-        const isVisible = visibility >= 0.35;
-        
-        setController(prev => {
-          if (prev.isVisible !== isVisible) {
-            return { ...prev, isVisible, isPaused: !isVisible };
-          }
-          return prev;
-        });
-      },
-      { threshold: [0, 0.35, 1] }
-    );
-
-    observerRef.current.observe(containerRef.current);
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+  // Type text character by character
+  const typeText = (text: string, setter: (text: string) => void, speed: number = 20) => {
+    let index = 0;
+    const typeChar = () => {
+      if (index < text.length && isMountedRef.current) {
+        setter(text.slice(0, index + 1));
+        index++;
+        addTimeout(typeChar, speed);
       }
     };
-  }, []);
+    typeChar();
+  };
 
-  // Handle document visibility change
+  // Run a single scenario
+  const runScenario = () => {
+    if (!isMountedRef.current || cycleCount >= 3) return;
+    
+    const scenario = scenarios[currentScenario];
+    
+    // Clear previous state
+    setDisplayedUserText('');
+    setDisplayedAiText('');
+    setShowResponse(false);
+    setIsTyping(false);
+
+    // Check for reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+      // Instant display for reduced motion
+      setDisplayedUserText(scenario.user);
+      setDisplayedAiText(scenario.ai);
+      setShowResponse(true);
+      
+      // Auto-advance after 3 seconds
+      addTimeout(() => {
+        nextScenario();
+      }, 3000);
+      return;
+    }
+
+    // Type user message
+    addTimeout(() => {
+      typeText(scenario.user, setDisplayedUserText, 15);
+      
+      // Start typing AI after user message is done
+      addTimeout(() => {
+        setIsTyping(true);
+        typeText(scenario.ai, (text) => {
+          setDisplayedAiText(text);
+          if (text === scenario.ai) {
+            setIsTyping(false);
+            setShowResponse(true);
+            
+            // Move to next scenario after hold
+            addTimeout(() => {
+              nextScenario();
+            }, 2400);
+          }
+        }, 18);
+      }, scenario.user.length * 15 + 300);
+    }, 500);
+  };
+
+  // Move to next scenario
+  const nextScenario = () => {
+    if (!isMountedRef.current) return;
+    
+    setCurrentScenario(prev => (prev + 1) % scenarios.length);
+    setCycleCount(prev => prev + 1);
+    
+    // Start next scenario if not at max cycles
+    if (cycleCount < 2) {
+      addTimeout(() => {
+        runScenario();
+      }, 2000);
+    }
+  };
+
+  // Start the demo
+  const startDemo = () => {
+    if (isPlaying) return;
+    
+    setIsPlaying(true);
+    setCycleCount(0);
+    setCurrentScenario(0);
+    runScenario();
+  };
+
+  // Toggle play/pause
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      setIsPlaying(false);
+      clearTimeouts();
+    } else {
+      startDemo();
+    }
+  };
+
+  // Auto-start on mount
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      const isHidden = document.hidden;
-      setController(prev => ({ ...prev, isPaused: isHidden }));
-    };
+    addTimeout(() => {
+      if (isMountedRef.current) {
+        startDemo();
+      }
+    }, 1500);
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      isMountedRef.current = false;
+      clearTimeouts();
+    };
   }, []);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       isMountedRef.current = false;
-      timerRefs.current.forEach(timer => clearTimeout(timer));
-      timerRefs.current.clear();
-      if (controller.abortController) {
-        controller.abortController.abort();
-      }
+      clearTimeouts();
     };
-  }, [controller.abortController]);
-
-  const addTimer = useCallback((callback: () => void, delay: number) => {
-    if (!isMountedRef.current) return;
-    
-    const timer = setTimeout(() => {
-      timerRefs.current.delete(timer);
-      if (!controller.isPaused && isMountedRef.current) {
-        callback();
-      }
-    }, delay);
-    timerRefs.current.add(timer);
-    return timer;
-  }, [controller.isPaused]);
-
-  const clearAllTimers = useCallback(() => {
-    timerRefs.current.forEach(timer => clearTimeout(timer));
-    timerRefs.current.clear();
   }, []);
-
-  const runScenario = useCallback(async () => {
-    if (!isMountedRef.current) return;
-    
-    setController(prev => {
-      // Only start if idle and not at max cycles
-      if (prev.state !== 'idle' || prev.cycleCount >= 3) {
-        return prev;
-      }
-      
-      // Cancel any existing scenario
-      if (prev.abortController) {
-        prev.abortController.abort();
-      }
-
-      const abortController = new AbortController();
-      const scenario = scriptedScenarios[prev.currentScenario];
-      
-      if (prefersReducedMotion.current) {
-        // Instant display for reduced motion
-        setDisplayedUserText(scenario.user);
-        setDisplayedAiText(scenario.ai);
-        setShowResponse(true);
-        setIsTyping(false);
-        
-        // Auto-advance after showing
-        addTimer(() => {
-          if (isMountedRef.current) {
-            nextScenario();
-          }
-        }, 3000);
-        
-        return { 
-          ...prev, 
-          abortController,
-          state: 'showingAI',
-          currentScenario: (prev.currentScenario + 1) % scriptedScenarios.length,
-          cycleCount: prev.cycleCount + 1
-        };
-      }
-
-      // Clear previous state
-      setDisplayedUserText('');
-      setDisplayedAiText('');
-      setShowResponse(false);
-      setIsTyping(false);
-
-      // Start typing user message
-      let userIndex = 0;
-      const typeUser = () => {
-        if (abortController.signal.aborted || !isMountedRef.current) return;
-        if (userIndex < scenario.user.length) {
-          setDisplayedUserText(scenario.user.slice(0, userIndex + 1));
-          userIndex++;
-          addTimer(typeUser, CHAT_TIMING.userTypeMsPerChar);
-        } else {
-          // Start typing AI after gap
-          addTimer(() => {
-            if (abortController.signal.aborted || !isMountedRef.current) return;
-            setController(prev => ({ ...prev, state: 'typingAI' }));
-            setIsTyping(true);
-            typeAI();
-          }, CHAT_TIMING.minGapMs);
-        }
-      };
-
-      const typeAI = () => {
-        if (abortController.signal.aborted || !isMountedRef.current) return;
-        let aiIndex = 0;
-        const typeAiChar = () => {
-          if (abortController.signal.aborted || !isMountedRef.current) return;
-          if (aiIndex < scenario.ai.length) {
-            setDisplayedAiText(scenario.ai.slice(0, aiIndex + 1));
-            aiIndex++;
-            addTimer(typeAiChar, CHAT_TIMING.aiTypeMsPerChar);
-          } else {
-            // AI finished typing
-            setIsTyping(false);
-            setShowResponse(true);
-            setController(prev => ({ ...prev, state: 'showingAI' }));
-            
-            // Hold for a bit, then move to next scenario
-            addTimer(() => {
-              if (abortController.signal.aborted || !isMountedRef.current) return;
-              nextScenario();
-            }, CHAT_TIMING.holdAfterAiMs);
-          }
-        };
-        typeAiChar();
-      };
-
-      // Start typing user message
-      typeUser();
-      
-      return { ...prev, abortController, state: 'typingUser' };
-    });
-  }, [addTimer]);
-
-  const nextScenario = useCallback(() => {
-    if (!isMountedRef.current) return;
-    
-    setController(prev => {
-      const newCycleCount = prev.cycleCount + 1;
-      const newState = {
-        ...prev,
-        state: 'idle' as ChatState,
-        currentScenario: (prev.currentScenario + 1) % scriptedScenarios.length,
-        cycleCount: newCycleCount
-      };
-      
-      // Start next scenario if not at max cycles and visible
-      if (newCycleCount < 3 && prev.isVisible) {
-        addTimer(() => runScenario(), 2000);
-      }
-      
-      return newState;
-    });
-  }, [addTimer, runScenario]);
-
-  const togglePlayPause = () => {
-    if (controller.state === 'idle' && controller.cycleCount < 3) {
-      runScenario();
-    } else {
-      clearAllTimers();
-      setController(prev => ({ ...prev, state: 'idle', isPaused: !prev.isPaused }));
-    }
-  };
-
-  // Auto-start when component mounts
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isMountedRef.current && controller.state === 'idle' && controller.cycleCount < 3) {
-        runScenario();
-      }
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, [runScenario, controller.state, controller.cycleCount]);
-
-  // Resume when becoming visible
-  useEffect(() => {
-    if (controller.isVisible && controller.state === 'idle' && controller.cycleCount < 3) {
-      const timer = setTimeout(() => {
-        if (isMountedRef.current) {
-          runScenario();
-        }
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [controller.isVisible, controller.state, controller.cycleCount, runScenario]);
 
   return (
     <motion.div
-      ref={containerRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
@@ -319,8 +198,8 @@ export function ChatPreview() {
                 <span className="px-2 py-1 text-xs font-medium bg-pink-500/20 text-pink-400 rounded-full border border-pink-500/30">
                   simulation
                 </span>
-                {controller.isPaused && (
-                  <span className="px-2 py-1 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full border border-yellow-500/30">
+                {!isPlaying && cycleCount > 0 && (
+                  <span className="px-2 py-1 text-xs font-medium bg-gray-500/20 text-gray-400 rounded-full border border-gray-500/30">
                     paused
                   </span>
                 )}
@@ -332,8 +211,8 @@ export function ChatPreview() {
             onClick={togglePlayPause}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all duration-200"
           >
-            {controller.state === 'idle' ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-            <span>{controller.state === 'idle' ? 'Start Demo' : 'Pause'}</span>
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            <span>{isPlaying ? 'Pause' : 'Start Demo'}</span>
           </button>
         </div>
 
