@@ -70,10 +70,10 @@ export function Hero() {
           >
             <div className="flex items-center justify-center space-x-4">
               <div className="px-4 py-2 bg-white/5 dark:bg-white/5 light:bg-black/5 rounded-full border border-white/10 dark:border-white/10 light:border-black/10">
-                <span className="text-sm font-semibold tracking-wide text-white dark:text-white light:text-black">Eliza Foundation</span>
+                <span className="text-sm font-semibold tracking-wide gradient-text">Eliza Foundation</span>
               </div>
               <div className="px-4 py-2 bg-white/5 dark:bg-white/5 light:bg-black/5 rounded-full border border-white/10 dark:border-white/10 light:border-black/10">
-                <span className="text-sm font-semibold tracking-wide text-white dark:text-white light:text-black">ElizaOS v2</span>
+                <span className="text-sm font-semibold tracking-wide gradient-text">ElizaOS v2</span>
               </div>
             </div>
           </motion.div>
@@ -81,35 +81,40 @@ export function Hero() {
           {/* CTA Section */}
           <motion.div
             variants={heroTextItem}
-            className="pt-10 space-y-4"
+            className="pt-10"
           >
-            <motion.div
-              variants={ctaButton}
-              initial="rest"
-              whileHover="hover"
-              className="cta-aura inline-block"
-            >
-              <Button
-                size="lg"
-                onClick={() => setLocation('/terminal')}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-12 py-5 text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-                style={{
-                  background: 'var(--grad)',
-                  boxShadow: '0 0 20px rgba(255, 90, 175, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                }}
-              >
-                Access Terminal
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </motion.div>
-            
-            <div className="pt-2">
-              <button 
-                onClick={() => setLocation('/strategies')}
-                className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-black transition-colors duration-200 underline decoration-dotted underline-offset-4"
-              >
-                View Institutional Brief
-              </button>
+            <div className="glass p-6 max-w-md mx-auto relative">
+              <div className="shimmer-overlay" />
+              <div className="relative z-10 space-y-4">
+                <motion.div
+                  variants={ctaButton}
+                  initial="rest"
+                  whileHover="hover"
+                  className="cta-aura inline-block"
+                >
+                  <Button
+                    size="lg"
+                    onClick={() => setLocation('/terminal')}
+                    className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-12 py-5 text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                    style={{
+                      background: 'var(--grad)',
+                      boxShadow: '0 0 20px rgba(255, 90, 175, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                    }}
+                  >
+                    Access Terminal
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </motion.div>
+                
+                <div className="pt-2 text-center">
+                  <button 
+                    onClick={() => setLocation('/strategies')}
+                    className="text-sm text-gray-400 dark:text-gray-400 light:text-gray-600 hover:text-white dark:hover:text-white light:hover:text-black transition-colors duration-200 underline decoration-dotted underline-offset-4"
+                  >
+                    View Institutional Brief
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         </motion.div>

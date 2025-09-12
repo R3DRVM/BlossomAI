@@ -44,7 +44,7 @@ export function Metrics() {
           viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-white dark:text-white gradient-text mb-4">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-black gradient-text mb-4">
             Institutional Metrics
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-lg">
@@ -70,9 +70,9 @@ export function Metrics() {
             >
               <motion.div
                 variants={glassCardHover}
-                className="glass-card p-8 rounded-2xl text-center relative overflow-hidden"
+                className="glass p-8 text-center relative overflow-hidden"
               >
-                {/* Gradient border effect */}
+                {/* Gradient border effect on hover */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 <motion.div

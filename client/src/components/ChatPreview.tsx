@@ -72,7 +72,8 @@ export function ChatPreview() {
       transition={{ duration: 0.6, delay: 0.2 }}
       className="max-w-2xl mx-auto mb-16"
     >
-      <div className="glass-card rounded-xl shadow-elev p-6 relative overflow-hidden">
+      <div className="glass rounded-xl p-6 relative overflow-hidden">
+        <div className="shimmer-overlay" />
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
@@ -80,7 +81,7 @@ export function ChatPreview() {
               <MessageCircle className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white dark:text-white light:text-[#0E1116]">
+              <h3 className="text-lg font-semibold gradient-text">
                 Blossom AI Preview
               </h3>
               <div className="flex items-center space-x-2">
@@ -107,7 +108,7 @@ export function ChatPreview() {
           {/* User Message */}
           <div className="flex justify-end">
             <div className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 rounded-2xl rounded-br-md p-4 max-w-xs">
-              <p className="text-sm text-white dark:text-white light:text-[#0E1116]">
+              <p className="text-sm gradient-text">
                 {scriptedConversation.user}
               </p>
             </div>
@@ -127,7 +128,7 @@ export function ChatPreview() {
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm text-white dark:text-white light:text-[#0E1116] whitespace-pre-line">
+                  <p className="text-sm gradient-text whitespace-pre-line">
                     {displayedText}
                   </p>
                   {showResponse && (
@@ -145,12 +146,17 @@ export function ChatPreview() {
 
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-white/10 dark:border-white/10 light:border-black/10">
-          <button
-            onClick={() => setLocation('/terminal')}
-            className="text-sm text-pink-500 hover:text-pink-400 transition-colors duration-200 underline decoration-dotted underline-offset-4"
-          >
-            View a full demo →
-          </button>
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setLocation('/terminal')}
+              className="text-sm text-pink-500 hover:text-pink-400 transition-colors duration-200 underline decoration-dotted underline-offset-4"
+            >
+              View a full demo →
+            </button>
+            <div className="text-xs text-gray-500 dark:text-gray-500 light:text-gray-500">
+              Simulation • Not investment advice
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>

@@ -34,7 +34,7 @@ export function CapitalBand() {
           viewport={{ once: true, margin: "-100px" }}
           className="text-center mb-12"
         >
-          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-black text-white dark:text-white light:text-[#0E1116] mb-4">
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-black gradient-text mb-4">
             Built for Capital
           </motion.h2>
         </motion.div>
@@ -59,9 +59,9 @@ export function CapitalBand() {
               >
                 <motion.div
                   variants={glassCardHover}
-                  className="glass-card p-8 rounded-2xl text-center relative overflow-hidden card-hover"
+                  className="glass p-8 text-center relative overflow-hidden card-hover"
                 >
-                  {/* Gradient border effect */}
+                  {/* Gradient border effect on hover */}
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
                   <div className="relative z-10">
@@ -69,7 +69,7 @@ export function CapitalBand() {
                       <Icon className="w-6 h-6 text-pink-500" />
                     </div>
                     
-                    <h3 className="text-xl font-bold text-white dark:text-white light:text-[#0E1116] mb-3">
+                    <h3 className="text-xl font-bold gradient-text mb-3">
                       {segment.title}
                     </h3>
                     
