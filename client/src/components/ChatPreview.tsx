@@ -1,111 +1,269 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { MessageCircle, Play } from "lucide-react";
+import { MessageCircle, Play, Pause } from "lucide-react";
 
-const scriptedConversations = [
+// Timing configuration
+const CHAT_TIMING = {
+  userTypeMsPerChar: 15,   // min 10, max 25
+  aiTypeMsPerChar: 18,
+  minGapMs: 300,           // gap between bubbles
+  holdAfterAiMs: 2400,     // dwell time after AI finishes
+  maxCycleMs: 12000        // safety stop per scenario
+};
+
+// Institutional scenarios
+const scriptedScenarios = [
   {
-    user: "Deploy $50M with institutional controls. Minimize exposure, maintain liquidity.",
-    blossom: "Allocating across Solana, Ethereum, and Injective.\n• Base: short-duration MM pools (T+0 exit)\n• Satellite: RWA treasuries (KYC custody)\n• Hedge: volatility vaults with max VaR 2.5%\nProjected blended APY: 9.8–12.4%, 95% daily liquidity."
+    id: 'market-maker',
+    user: "Deploy $50M with institutional controls.",
+    ai: "Route to short-duration MM pools, satellite RWA treasuries (KYC custody), hedge via vol-controlled vaults. Blended APY 9.8–12.4%, 95% daily liquidity."
   },
   {
-    user: "Deploy $25M in low-risk strategies across multiple chains.",
-    blossom: "Conservative allocation strategy:\n• 40% USDC staking (Solana/Ethereum)\n• 30% liquid staking derivatives\n• 20% short-duration lending pools\n• 10% treasury bills on-chain\nExpected APY: 6.2–8.1% with 99% capital preservation."
+    id: 'treasury',
+    user: "Target 6–8% APY; T+0 liquidity.",
+    ai: "30% USDC staking, 40% LST/LRT ladder, 30% short-duration lending. Real-time risk checks; auto-rebalance on drawdown >1.5%."
   },
   {
-    user: "Optimize $100M for cross-chain execution with maximum yield.",
-    blossom: "Multi-chain yield optimization:\n• 35% Solana DeFi (highest TVL protocols)\n• 25% Ethereum L2s (Arbitrum, Optimism)\n• 20% Cosmos ecosystem (Osmosis, Stride)\n• 20% emerging chains (Injective, Sei)\nProjected APY: 12.8–16.2% with automated rebalancing."
+    id: 'quant-desk',
+    user: "Cross-chain execution with VaR <2%.",
+    ai: "ETH/SOL/INJ split; basis capture + funding arb; cap pool concentration 20%. Live VaR 1.7%; expected slippage <7 bps."
+  },
+  {
+    id: 'exchanges',
+    user: "Idle float $25M—minimize exposure.",
+    ai: "Staggered maturities (7/14/30d), insured vault whitelist, automatic unwind on liquidity stress signal."
   }
 ];
 
+type ChatState = 'idle' | 'typingUser' | 'typingAI' | 'showingAI' | 'hold';
+
+interface ChatPreviewController {
+  state: ChatState;
+  currentScenario: number;
+  cycleCount: number;
+  isVisible: boolean;
+  isPaused: boolean;
+  abortController: AbortController | null;
+}
+
 export function ChatPreview() {
   const [, setLocation] = useLocation();
+  const [controller, setController] = useState<ChatPreviewController>({
+    state: 'idle',
+    currentScenario: 0,
+    cycleCount: 0,
+    isVisible: true,
+    isPaused: false,
+    abortController: null
+  });
+  
+  const [displayedUserText, setDisplayedUserText] = useState('');
+  const [displayedAiText, setDisplayedAiText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [displayedText, setDisplayedText] = useState("");
   const [showResponse, setShowResponse] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentConversation, setCurrentConversation] = useState(0);
-  const [userMessage, setUserMessage] = useState("");
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const timerRefs = useRef<Set<NodeJS.Timeout>>(new Set());
+  const prefersReducedMotion = useRef(false);
 
-  // Auto-start on component mount
+  // Check for reduced motion preference
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsPlaying(true);
-    }, 2000); // Start after 2 seconds
-
-    return () => clearTimeout(timer);
+    prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion.current) {
+      // Show instant messages for reduced motion
+      const scenario = scriptedScenarios[0];
+      setDisplayedUserText(scenario.user);
+      setDisplayedAiText(scenario.ai);
+      setShowResponse(true);
+      setController(prev => ({ ...prev, state: 'showingAI' }));
+    }
   }, []);
 
+  // Setup intersection observer for visibility
   useEffect(() => {
-    if (isPlaying) {
-      const conversation = scriptedConversations[currentConversation];
-      setUserMessage(conversation.user);
-      
-      // Check for reduced motion preference
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      
-      if (prefersReducedMotion) {
-        // Instant reveal for reduced motion
-        setIsTyping(false);
-        setDisplayedText(conversation.blossom);
-        setShowResponse(true);
+    if (!containerRef.current) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        const visibility = entry.intersectionRatio;
+        const isVisible = visibility >= 0.35;
         
-        // Loop after delay
-        setTimeout(() => {
-          nextConversation();
-        }, 5000);
-      } else {
-        // Start the conversation with animations
-        setIsTyping(true);
-        setDisplayedText("");
-        setShowResponse(false);
+        setController(prev => {
+          if (prev.isVisible !== isVisible) {
+            if (isVisible && prev.state === 'idle' && prev.cycleCount < 3) {
+              // Resume or start when visible
+              setTimeout(() => runScenario(), 500);
+            }
+            return { ...prev, isVisible, isPaused: !isVisible };
+          }
+          return prev;
+        });
+      },
+      { threshold: [0, 0.35, 1] }
+    );
 
-        // Show user message immediately
-        setTimeout(() => {
-          setIsTyping(false);
-          
-          // Start typing response after 350ms thinking delay
-          setTimeout(() => {
-            setIsTyping(true);
-            typeResponse(conversation.blossom);
-          }, 350);
-        }, 1000);
+    observerRef.current.observe(containerRef.current);
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
-    }
-  }, [isPlaying, currentConversation]);
+    };
+  }, []);
 
-  const typeResponse = (text: string) => {
-    let index = 0;
+  // Handle document visibility change
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const isHidden = document.hidden;
+      setController(prev => ({ ...prev, isPaused: isHidden }));
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      timerRefs.current.forEach(timer => clearTimeout(timer));
+      timerRefs.current.clear();
+      if (controller.abortController) {
+        controller.abortController.abort();
+      }
+    };
+  }, [controller.abortController]);
+
+  const addTimer = useCallback((callback: () => void, delay: number) => {
+    const timer = setTimeout(() => {
+      timerRefs.current.delete(timer);
+      if (!controller.isPaused) {
+        callback();
+      }
+    }, delay);
+    timerRefs.current.add(timer);
+    return timer;
+  }, [controller.isPaused]);
+
+  const clearAllTimers = useCallback(() => {
+    timerRefs.current.forEach(timer => clearTimeout(timer));
+    timerRefs.current.clear();
+  }, []);
+
+  const runScenario = useCallback(async () => {
+    if (controller.state !== 'idle' || controller.cycleCount >= 3) return;
     
-    const typeInterval = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText(text.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(typeInterval);
-        setIsTyping(false);
-        setShowResponse(true);
-        
-        // Loop after response is complete
-        setTimeout(() => {
-          nextConversation();
-        }, 4000);
-      }
-    }, 30); // 30ms per character for smooth typing
-  };
+    // Cancel any existing scenario
+    if (controller.abortController) {
+      controller.abortController.abort();
+    }
 
-  const nextConversation = () => {
-    setCurrentConversation((prev) => (prev + 1) % scriptedConversations.length);
+    const abortController = new AbortController();
+    setController(prev => ({ ...prev, abortController, state: 'typingUser' }));
+
+    const scenario = scriptedScenarios[controller.currentScenario];
+    
+    if (prefersReducedMotion.current) {
+      // Instant display for reduced motion
+      setDisplayedUserText(scenario.user);
+      setDisplayedAiText(scenario.ai);
+      setShowResponse(true);
+      setController(prev => ({ 
+        ...prev, 
+        state: 'showingAI',
+        currentScenario: (prev.currentScenario + 1) % scriptedScenarios.length,
+        cycleCount: prev.cycleCount + 1
+      }));
+      return;
+    }
+
+    // Type user message
+    setDisplayedUserText('');
+    setDisplayedAiText('');
     setShowResponse(false);
-    setDisplayedText("");
+    setIsTyping(false);
+
+    let userIndex = 0;
+    const typeUser = () => {
+      if (abortController.signal.aborted) return;
+      if (userIndex < scenario.user.length) {
+        setDisplayedUserText(scenario.user.slice(0, userIndex + 1));
+        userIndex++;
+        addTimer(typeUser, CHAT_TIMING.userTypeMsPerChar);
+      } else {
+        // Start typing AI after gap
+        addTimer(() => {
+          if (abortController.signal.aborted) return;
+          setController(prev => ({ ...prev, state: 'typingAI' }));
+          setIsTyping(true);
+          typeAI();
+        }, CHAT_TIMING.minGapMs);
+      }
+    };
+
+    const typeAI = () => {
+      if (abortController.signal.aborted) return;
+      let aiIndex = 0;
+      const typeAiChar = () => {
+        if (abortController.signal.aborted) return;
+        if (aiIndex < scenario.ai.length) {
+          setDisplayedAiText(scenario.ai.slice(0, aiIndex + 1));
+          aiIndex++;
+          addTimer(typeAiChar, CHAT_TIMING.aiTypeMsPerChar);
+        } else {
+          // AI finished typing
+          setIsTyping(false);
+          setShowResponse(true);
+          setController(prev => ({ ...prev, state: 'showingAI' }));
+          
+          // Hold for a bit, then move to next scenario
+          addTimer(() => {
+            if (abortController.signal.aborted) return;
+            nextScenario();
+          }, CHAT_TIMING.holdAfterAiMs);
+        }
+      };
+      typeAiChar();
+    };
+
+    typeUser();
+  }, [controller.state, controller.currentScenario, controller.cycleCount, addTimer]);
+
+  const nextScenario = useCallback(() => {
+    setController(prev => ({
+      ...prev,
+      state: 'idle',
+      currentScenario: (prev.currentScenario + 1) % scriptedScenarios.length,
+      cycleCount: prev.cycleCount + 1
+    }));
+    
+    // Start next scenario if not at max cycles
+    if (controller.cycleCount < 2) {
+      addTimer(() => runScenario(), 2000);
+    }
+  }, [controller.cycleCount, addTimer, runScenario]);
+
+  const togglePlayPause = () => {
+    if (controller.state === 'idle' && controller.cycleCount < 3) {
+      runScenario();
+    } else {
+      clearAllTimers();
+      setController(prev => ({ ...prev, state: 'idle', isPaused: !prev.isPaused }));
+    }
   };
 
-  const startDemo = () => {
-    setIsPlaying(true);
-  };
+  // Auto-start when component mounts and is visible
+  useEffect(() => {
+    if (controller.isVisible && controller.state === 'idle' && controller.cycleCount < 3) {
+      addTimer(() => runScenario(), 1000);
+    }
+  }, [controller.isVisible, controller.state, controller.cycleCount, addTimer, runScenario]);
 
   return (
     <motion.div
+      ref={containerRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
@@ -113,6 +271,7 @@ export function ChatPreview() {
     >
       <div className="glass rounded-xl p-6 relative overflow-hidden">
         <div className="shimmer-overlay" />
+        
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
@@ -127,35 +286,50 @@ export function ChatPreview() {
                 <span className="px-2 py-1 text-xs font-medium bg-pink-500/20 text-pink-400 rounded-full border border-pink-500/30">
                   simulation
                 </span>
+                {controller.isPaused && (
+                  <span className="px-2 py-1 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full border border-yellow-500/30">
+                    paused
+                  </span>
+                )}
               </div>
             </div>
           </div>
           
-          {!isPlaying && (
-            <button
-              onClick={startDemo}
-              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all duration-200"
-            >
-              <Play className="w-4 h-4" />
-              <span>Start Demo</span>
-            </button>
-          )}
+          <button
+            onClick={togglePlayPause}
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-purple-700 transition-all duration-200"
+          >
+            {controller.state === 'idle' ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+            <span>{controller.state === 'idle' ? 'Start Demo' : 'Pause'}</span>
+          </button>
         </div>
 
         {/* Chat Messages */}
         <div className="space-y-4">
           {/* User Message */}
-          <div className="flex justify-end">
-            <div className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 rounded-2xl rounded-br-md p-4 max-w-xs">
-              <p className="text-sm gradient-text">
-                {userMessage}
-              </p>
-            </div>
-          </div>
+          {displayedUserText && (
+            <motion.div 
+              initial={{ opacity: 0, x: 20, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="flex justify-end"
+            >
+              <div className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 rounded-2xl rounded-br-md p-4 max-w-xs hover:shadow-lg hover:shadow-pink-500/10 transition-all duration-300">
+                <p className="text-sm gradient-text">
+                  {displayedUserText}
+                </p>
+              </div>
+            </motion.div>
+          )}
 
           {/* Blossom Response */}
-          <div className="flex justify-start">
-            <div className="bg-white/5 dark:bg-white/5 light:bg-black/5 rounded-2xl rounded-bl-md p-4 max-w-md">
+          <motion.div 
+            initial={{ opacity: 0, x: -20, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="flex justify-start"
+          >
+            <div className="bg-white/5 dark:bg-white/5 light:bg-black/5 rounded-2xl rounded-bl-md p-4 max-w-md hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
               {isTyping ? (
                 <div className="flex items-center space-x-2">
                   <div className="flex space-x-1">
@@ -168,19 +342,24 @@ export function ChatPreview() {
               ) : (
                 <div>
                   <p className="text-sm gradient-text whitespace-pre-line">
-                    {displayedText}
+                    {displayedAiText}
                   </p>
                   {showResponse && (
-                    <div className="mt-3">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      className="mt-3"
+                    >
                       <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
                         Generated strategy (sample)
                       </span>
-                    </div>
+                    </motion.div>
                   )}
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Footer */}
