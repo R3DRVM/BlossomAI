@@ -94,7 +94,7 @@ export function FeatureGrid() {
                   <div className="w-16 h-16 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 group-hover:from-pink-500/30 group-hover:to-purple-600/30 transition-all duration-300">
                     {feature.icon}
                   </div>
-                   <h3 className="text-xl font-bold gradient-text mb-4 group-hover:text-pink-400 transition-colors duration-300">
+                   <h3 className="text-xl font-black gradient-text mb-4 group-hover:text-pink-400 transition-colors duration-300">
                      {feature.title}
                    </h3>
                   <p className="text-gray-400 dark:text-gray-400 light:text-gray-700 group-hover:text-gray-300 dark:group-hover:text-gray-300 light:group-hover:text-gray-800 transition-colors duration-300">

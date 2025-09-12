@@ -120,7 +120,7 @@ export function ChatPreview() {
               <MessageCircle className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold gradient-text">
+              <h3 className="text-lg font-black gradient-text">
                 Blossom AI Preview
               </h3>
               <div className="flex items-center space-x-2">

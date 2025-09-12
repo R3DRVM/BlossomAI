@@ -44,7 +44,7 @@ export function Hero() {
             variants={heroTextItem}
             className="text-5xl md:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tight"
           >
-            <span className="text-white dark:text-white gradient-text">Deploy millions, intelligently.</span>
+            <span className="gradient-text">Deploy millions, intelligently.</span>
           </motion.h1>
 
           {/* Subhead */}
