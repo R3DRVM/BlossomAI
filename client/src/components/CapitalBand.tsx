@@ -69,7 +69,7 @@ export function CapitalBand() {
                       <Icon className="w-6 h-6 text-pink-500" />
                     </div>
                     
-                    <h3 className="text-xl font-bold gradient-text mb-3">
+                    <h3 className="text-xl font-bold gradient-text mb-3 glass-text">
                       {segment.title}
                     </h3>
                     

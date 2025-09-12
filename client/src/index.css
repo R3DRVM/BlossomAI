@@ -245,6 +245,22 @@
       animation: none;
     }
   }
+  
+  /* High Contrast Text on Glass */
+  .glass-text {
+    color: var(--text-primary-dark);
+  }
+  
+  .light .glass-text {
+    color: #0E1116;
+  }
+  
+  /* Light Mode Glass Background Tint */
+  .light .glass {
+    background: 
+      var(--glass-bg-light),
+      rgba(250, 251, 252, 0.65);
+  }
 }
 
 /* Terminal specific styles */

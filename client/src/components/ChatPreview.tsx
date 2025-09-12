@@ -3,10 +3,20 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { MessageCircle, Play } from "lucide-react";
 
-const scriptedConversation = {
-  user: "Deploy $50M with institutional controls. Minimize exposure, maintain liquidity.",
-  blossom: "Allocating across Solana, Ethereum, and Injective.\n• Base: short-duration MM pools (T+0 exit)\n• Satellite: RWA treasuries (KYC custody)\n• Hedge: volatility vaults with max VaR 2.5%\nProjected blended APY: 9.8–12.4%, 95% daily liquidity."
-};
+const scriptedConversations = [
+  {
+    user: "Deploy $50M with institutional controls. Minimize exposure, maintain liquidity.",
+    blossom: "Allocating across Solana, Ethereum, and Injective.\n• Base: short-duration MM pools (T+0 exit)\n• Satellite: RWA treasuries (KYC custody)\n• Hedge: volatility vaults with max VaR 2.5%\nProjected blended APY: 9.8–12.4%, 95% daily liquidity."
+  },
+  {
+    user: "Deploy $25M in low-risk strategies across multiple chains.",
+    blossom: "Conservative allocation strategy:\n• 40% USDC staking (Solana/Ethereum)\n• 30% liquid staking derivatives\n• 20% short-duration lending pools\n• 10% treasury bills on-chain\nExpected APY: 6.2–8.1% with 99% capital preservation."
+  },
+  {
+    user: "Optimize $100M for cross-chain execution with maximum yield.",
+    blossom: "Multi-chain yield optimization:\n• 35% Solana DeFi (highest TVL protocols)\n• 25% Ethereum L2s (Arbitrum, Optimism)\n• 20% Cosmos ecosystem (Osmosis, Stride)\n• 20% emerging chains (Injective, Sei)\nProjected APY: 12.8–16.2% with automated rebalancing."
+  }
+];
 
 export function ChatPreview() {
   const [, setLocation] = useLocation();
@@ -14,17 +24,36 @@ export function ChatPreview() {
   const [displayedText, setDisplayedText] = useState("");
   const [showResponse, setShowResponse] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentConversation, setCurrentConversation] = useState(0);
+  const [userMessage, setUserMessage] = useState("");
+
+  // Auto-start on component mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPlaying(true);
+    }, 2000); // Start after 2 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (isPlaying) {
+      const conversation = scriptedConversations[currentConversation];
+      setUserMessage(conversation.user);
+      
       // Check for reduced motion preference
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       
       if (prefersReducedMotion) {
         // Instant reveal for reduced motion
         setIsTyping(false);
-        setDisplayedText(scriptedConversation.blossom);
+        setDisplayedText(conversation.blossom);
         setShowResponse(true);
+        
+        // Loop after delay
+        setTimeout(() => {
+          nextConversation();
+        }, 5000);
       } else {
         // Start the conversation with animations
         setIsTyping(true);
@@ -38,15 +67,14 @@ export function ChatPreview() {
           // Start typing response after 350ms thinking delay
           setTimeout(() => {
             setIsTyping(true);
-            typeResponse();
+            typeResponse(conversation.blossom);
           }, 350);
         }, 1000);
       }
     }
-  }, [isPlaying]);
+  }, [isPlaying, currentConversation]);
 
-  const typeResponse = () => {
-    const text = scriptedConversation.blossom;
+  const typeResponse = (text: string) => {
     let index = 0;
     
     const typeInterval = setInterval(() => {
@@ -57,8 +85,19 @@ export function ChatPreview() {
         clearInterval(typeInterval);
         setIsTyping(false);
         setShowResponse(true);
+        
+        // Loop after response is complete
+        setTimeout(() => {
+          nextConversation();
+        }, 4000);
       }
     }, 30); // 30ms per character for smooth typing
+  };
+
+  const nextConversation = () => {
+    setCurrentConversation((prev) => (prev + 1) % scriptedConversations.length);
+    setShowResponse(false);
+    setDisplayedText("");
   };
 
   const startDemo = () => {
@@ -109,7 +148,7 @@ export function ChatPreview() {
           <div className="flex justify-end">
             <div className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 rounded-2xl rounded-br-md p-4 max-w-xs">
               <p className="text-sm gradient-text">
-                {scriptedConversation.user}
+                {userMessage}
               </p>
             </div>
           </div>

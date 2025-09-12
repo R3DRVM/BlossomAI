@@ -79,7 +79,7 @@ export function Metrics() {
                   variants={counterAnimation}
                   className="relative z-10"
                 >
-                  <div className="text-4xl md:text-5xl font-black gradient-text mb-3">
+                  <div className="text-4xl md:text-5xl font-black gradient-text mb-3 glass-text">
                     <AnimatedNumber
                       value={metric.value}
                       prefix={metric.prefix}
