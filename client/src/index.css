@@ -147,8 +147,26 @@
   
   .card-hover:hover {
     @apply -translate-y-0.5;
-    border-width: 2px;
-    border-image: var(--grad) 1;
+    border: 1px solid transparent;
+    background: linear-gradient(var(--glass-bg-dark), var(--glass-bg-dark)) padding-box,
+                var(--grad) border-box;
+    background-clip: padding-box, border-box;
+  }
+  
+  .light .card-hover:hover {
+    background: linear-gradient(var(--glass-bg-light), var(--glass-bg-light)) padding-box,
+                var(--grad) border-box;
+    background-clip: padding-box, border-box;
+  }
+  
+  /* Enhanced Focus States */
+  .glass:focus-within {
+    outline: none;
+    box-shadow: var(--focus-ring), var(--glass-shadow-dark);
+  }
+  
+  .light .glass:focus-within {
+    box-shadow: var(--focus-ring), var(--glass-shadow-light);
   }
   
   /* Light Mode Shadows */
