@@ -4,12 +4,27 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(240 10% 3.9%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(240 10% 3.9%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(240 10% 3.9%);
+  /* Surface Colors - Light Mode */
+  --bg-light: #FAFBFC;
+  --text-primary-light: #0E1116;
+  --text-secondary-light: rgba(14, 17, 22, 0.72);
+  --card-light: #FFFFFF;
+  --border-light: #E8ECF1;
+  
+  /* Brand Gradients */
+  --grad: linear-gradient(90deg, #FF5AAF 0%, #9B6CFF 100%);
+  --grad-soft: radial-gradient(600px 600px at var(--x, 80%) var(--y, 20%), rgba(255, 90, 175, 0.18), rgba(155, 108, 255, 0.14) 45%, transparent 70%);
+  
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(155, 108, 255, 0.35);
+  
+  /* Legacy shadcn variables for compatibility */
+  --background: var(--bg-light);
+  --foreground: var(--text-primary-light);
+  --card: var(--card-light);
+  --card-foreground: var(--text-primary-light);
+  --popover: var(--card-light);
+  --popover-foreground: var(--text-primary-light);
   --primary: hsl(330 81% 60%);
   --primary-foreground: hsl(0 0% 98%);
   --secondary: hsl(320 20% 96%);
@@ -20,8 +35,8 @@
   --accent-foreground: hsl(330 20% 15%);
   --destructive: hsl(0 84.2% 60.2%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(320 15% 88%);
-  --input: hsl(320 15% 88%);
+  --border: var(--border-light);
+  --input: var(--border-light);
   --ring: hsl(330 81% 60%);
   --chart-1: hsl(330 81% 60%);
   --chart-2: hsl(320 70% 65%);
@@ -35,12 +50,20 @@
 }
 
 .dark {
-  --background: hsl(240 10% 3.9%);
-  --foreground: hsl(0 0% 98%);
-  --card: hsl(240 10% 3.9%);
-  --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 10% 3.9%);
-  --popover-foreground: hsl(0 0% 98%);
+  /* Surface Colors - Dark Mode */
+  --bg-dark: #0B0D10;
+  --text-primary-dark: #F4F6F8;
+  --text-secondary-dark: rgba(244, 246, 248, 0.72);
+  --card-dark: #14171C;
+  --border-dark: #1F232B;
+  
+  /* Override legacy variables for dark mode */
+  --background: var(--bg-dark);
+  --foreground: var(--text-primary-dark);
+  --card: var(--card-dark);
+  --card-foreground: var(--text-primary-dark);
+  --popover: var(--card-dark);
+  --popover-foreground: var(--text-primary-dark);
   --primary: hsl(330 81% 60%);
   --primary-foreground: hsl(0 0% 98%);
   --secondary: hsl(330 15% 12%);
@@ -51,8 +74,8 @@
   --accent-foreground: hsl(320 20% 90%);
   --destructive: hsl(0 62.8% 30.6%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(330 15% 20%);
-  --input: hsl(330 15% 20%);
+  --border: var(--border-dark);
+  --input: var(--border-dark);
   --ring: hsl(330 81% 60%);
   --chart-1: hsl(330 81% 60%);
   --chart-2: hsl(320 70% 55%);
@@ -68,6 +91,63 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  /* Enhanced Typography - Light Mode */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-black text-[#0E1116];
+    font-weight: 900;
+  }
+  
+  p, span, div {
+    @apply font-medium;
+    font-weight: 500;
+  }
+  
+  /* Dark Mode Typography */
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-[#F4F6F8];
+  }
+  
+  /* Focus States */
+  *:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  
+  /* Section Spacing */
+  .section-padding {
+    @apply pt-28 pb-24;
+  }
+  
+  .section-padding-mobile {
+    @apply pt-16 pb-14;
+  }
+  
+  /* Grid Spacing */
+  .grid-gap {
+    @apply gap-8;
+  }
+  
+  /* Card Hover Effects */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .card-hover:hover {
+    @apply -translate-y-0.5;
+    border-width: 2px;
+    border-image: var(--grad) 1;
+  }
+  
+  /* Light Mode Shadows */
+  .light .shadow-elev {
+    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Dark Mode Shadows */
+  .dark .shadow-elev {
+    box-shadow: 0 10px 30px rgba(35, 38, 45, 0.10);
   }
 }
 
