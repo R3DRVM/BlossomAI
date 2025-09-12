@@ -2,6 +2,7 @@ import { Logo } from "@/components/ui/logo";
 import { ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { Hero } from "@/components/Hero";
+import { ChatPreview } from "@/components/ChatPreview";
 import { SplitProblem } from "@/components/SplitProblem";
 import { Metrics } from "@/components/Metrics";
 import { CapitalBand } from "@/components/CapitalBand";
@@ -48,6 +49,7 @@ export default function Landing() {
       {/* Main Content */}
       <main className="relative z-10">
         <Hero />
+        <ChatPreview />
         <SplitProblem />
         <Metrics />
         <CapitalBand />
