@@ -18,6 +18,17 @@
   /* Focus Ring */
   --focus-ring: 0 0 0 3px rgba(155, 108, 255, 0.35);
   
+  /* Glass Design Tokens */
+  --glass-bg-dark: rgba(20, 23, 28, 0.45);
+  --glass-bg-light: rgba(255, 255, 255, 0.55);
+  --glass-blur: 14px;
+  --glass-blur-mobile: 10px;
+  --glass-border-dark: rgba(255, 255, 255, 0.22);
+  --glass-border-light: rgba(12, 18, 27, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.35);
+  --glass-shadow-dark: 0 10px 40px rgba(0, 0, 0, 0.28);
+  --glass-shadow-light: 0 14px 36px rgba(35, 38, 45, 0.10);
+  
   /* Legacy shadcn variables for compatibility */
   --background: var(--bg-light);
   --foreground: var(--text-primary-light);
@@ -148,6 +159,91 @@
   /* Dark Mode Shadows */
   .dark .shadow-elev {
     box-shadow: 0 10px 30px rgba(35, 38, 45, 0.10);
+  }
+  
+  /* Glass Utility */
+  .glass {
+    background: var(--glass-bg-dark);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border-dark);
+    border-radius: 1.25rem;
+    box-shadow: var(--glass-shadow-dark);
+    position: relative;
+  }
+  
+  .glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--glass-highlight);
+    border-radius: 1.25rem 1.25rem 0 0;
+    pointer-events: none;
+  }
+  
+  /* Light Mode Glass */
+  .light .glass {
+    background: var(--glass-bg-light);
+    border-color: var(--glass-border-light);
+    box-shadow: var(--glass-shadow-light);
+  }
+  
+  /* Mobile Glass Blur */
+  @media (max-width: 768px) {
+    .glass {
+      backdrop-filter: blur(var(--glass-blur-mobile));
+      -webkit-backdrop-filter: blur(var(--glass-blur-mobile));
+    }
+  }
+  
+  /* Reduced Transparency Support */
+  @media (prefers-reduced-transparency: reduce) {
+    .glass {
+      background: var(--card-dark);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    
+    .light .glass {
+      background: var(--card-light);
+    }
+  }
+  
+  /* Shimmer Overlay */
+  .shimmer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%),
+      radial-gradient(circle at 20% 20%, rgba(255, 90, 175, 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(155, 108, 255, 0.02) 0%, transparent 50%);
+    opacity: 0.03;
+    pointer-events: none;
+    animation: shimmer 18s ease-in-out infinite;
+    will-change: transform;
+    contain: paint;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% {
+      transform: translateX(-2%);
+    }
+    50% {
+      transform: translateX(2%);
+    }
+  }
+  
+  /* Reduced Motion Support for Shimmer */
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer-overlay {
+      animation: none;
+    }
   }
 }
 
