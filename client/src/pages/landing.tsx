@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { Hero } from "@/components/Hero";
 import { SplitProblem } from "@/components/SplitProblem";
 import { Metrics } from "@/components/Metrics";
+import { CapitalBand } from "@/components/CapitalBand";
 import { FeatureGrid } from "@/components/FeatureGrid";
 import { Partners } from "@/components/Partners";
 import { BottomCta } from "@/components/BottomCta";
@@ -49,6 +50,7 @@ export default function Landing() {
         <Hero />
         <SplitProblem />
         <Metrics />
+        <CapitalBand />
         <FeatureGrid />
         <Partners />
         <BottomCta />
