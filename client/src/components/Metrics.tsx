@@ -9,23 +9,27 @@ const metrics = [
     suffix: "B+",
     label: "Total Value Locked",
     change: "+12.3%",
+    sparkline: "M0,20 L20,15 L40,18 L60,12 L80,16 L100,14"
   },
   {
     value: 1247,
     label: "Active Strategies",
     change: "+8.9%",
+    sparkline: "M0,18 L20,12 L40,15 L60,10 L80,14 L100,11"
   },
   {
     value: 14.7,
     suffix: "%",
     label: "Average APY",
     change: "+2.1%",
+    sparkline: "M0,15 L20,18 L40,16 L60,20 L80,17 L100,19"
   },
   {
     value: 7.8,
     suffix: "/10",
     label: "Risk Score",
     change: "+0.3%",
+    sparkline: "M0,12 L20,14 L40,13 L60,11 L80,13 L100,12"
   },
 ];
 
@@ -75,7 +79,7 @@ export function Metrics() {
                   variants={counterAnimation}
                   className="relative z-10"
                 >
-                  <div className="text-4xl md:text-5xl font-bold gradient-text mb-3">
+                  <div className="text-4xl md:text-5xl font-black gradient-text mb-3">
                     <AnimatedNumber
                       value={metric.value}
                       prefix={metric.prefix}
@@ -83,7 +87,26 @@ export function Metrics() {
                       duration={2}
                     />
                   </div>
-                  <div className="text-sm text-gray-400 mb-2 tracking-wide">{metric.label}</div>
+                  <div className="text-sm text-gray-400 mb-3 tracking-wide">{metric.label}</div>
+                  
+                  {/* Sparkline */}
+                  <div className="mb-3 h-8 w-full">
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 100 20"
+                      className="opacity-25"
+                    >
+                      <path
+                        d={metric.sparkline}
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        fill="none"
+                        className="text-pink-500"
+                      />
+                    </svg>
+                  </div>
+                  
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
