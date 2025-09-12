@@ -67,11 +67,11 @@ export function ChatPreview() {
   };
 
   // Run a single scenario
-  const runScenario = () => {
+  const runScenario = (scenarioIndex?: number) => {
     if (!isMountedRef.current || cycleCount >= 3) return;
     
-    const scenario = scenarios[currentScenario];
-    console.log(`Running scenario ${currentScenario + 1}/${scenarios.length}: ${scenario.user}`);
+    const index = scenarioIndex !== undefined ? scenarioIndex : currentScenario;
+    const scenario = scenarios[index];
     
     // Clear previous state
     setDisplayedUserText('');
@@ -124,22 +124,21 @@ export function ChatPreview() {
     
     setCurrentScenario(prev => {
       const next = (prev + 1) % scenarios.length;
-      console.log(`Moving to scenario ${next + 1}/${scenarios.length}`);
-      return next;
-    });
-    
-    setCycleCount(prev => {
-      const newCount = prev + 1;
-      console.log(`Cycle count: ${newCount}/3`);
       
       // Start next scenario if not at max cycles
-      if (newCount < 3) {
-        addTimeout(() => {
-          runScenario();
-        }, 2000);
-      }
+      setCycleCount(cycleCount => {
+        const newCount = cycleCount + 1;
+        
+        if (newCount < 3) {
+          addTimeout(() => {
+            runScenario(next);
+          }, 2000);
+        }
+        
+        return newCount;
+      });
       
-      return newCount;
+      return next;
     });
   };
 
