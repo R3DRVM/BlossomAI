@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm build || npm run build || yarn build",
-  "outputDirectory": "client/dist",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "framework": "vite",
   "routes": [
     { "handle": "filesystem" },
