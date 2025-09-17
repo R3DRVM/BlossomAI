@@ -8,7 +8,7 @@
     "dev:server": "tsx server/index.ts",
     "dev:web": "vite --port 5173",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "vercel-build": "cd client && npm run build",
+    "vercel-build": "cd client && npm ci && npm run build && echo '=== BUILD COMPLETE - CHECKING OUTPUT ===' && echo '=== DIST/INDEX.HTML HEAD ===' && head -20 dist/index.html && echo '=== DIST DIRECTORY STRUCTURE ===' && ls -la dist/ && echo '=== ASSETS DIRECTORY ===' && ls -la dist/assets/ && echo '=== PUBLIC FILES ===' && ls -la dist/*.ico dist/*.png dist/*.webmanifest 2>/dev/null || echo 'Some public files missing'",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push",
