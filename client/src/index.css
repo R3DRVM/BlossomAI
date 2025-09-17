@@ -97,7 +97,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-gray-200 dark:border-gray-800;
   }
 
   body {
@@ -469,4 +469,31 @@
 .workflow-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* iOS Safe Areas and Glass Effects */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-blur: 16px;
+  --glass-border: rgba(255, 255, 255, 0.35);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
 }

@@ -55,6 +55,15 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/landing" component={Landing} />
       
+      {/* Mobile chat route - premium mobile experience */}
+      <Route path="/m">
+        {isAuthenticated ? (
+          <Terminal />
+        ) : (
+          <Auth />
+        )}
+      </Route>
+      
       {/* Protected routes - redirect to auth if not authenticated */}
       <Route path="/terminal">
         {isAuthenticated ? (

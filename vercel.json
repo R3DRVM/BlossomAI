@@ -1,17 +1,9 @@
 {
-  "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "dist/public",
+  "buildCommand": "pnpm build || npm run build || yarn build",
+  "outputDirectory": "client/dist",
+  "framework": "vite",
   "routes": [
-    {
-      "src": "/assets/(.*)",
-      "headers": {
-        "Content-Type": "application/javascript"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }

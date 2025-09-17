@@ -5,6 +5,7 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/',
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -14,25 +15,9 @@ export default defineConfig({
   },
   root: path.resolve(import.meta.dirname, "client"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: 'dist',
+    assetsDir: 'assets',
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        assetFileNames: (assetInfo) => {
-          const info = assetInfo.name.split('.');
-          const ext = info[info.length - 1];
-          if (/\.(css)$/.test(assetInfo.name)) {
-            return `assets/[name]-[hash][extname]`;
-          }
-          if (/\.(js)$/.test(assetInfo.name)) {
-            return `assets/[name]-[hash][extname]`;
-          }
-          return `assets/[name]-[hash][extname]`;
-        },
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-      },
-    },
   },
   server: {
     host: '127.0.0.1',
