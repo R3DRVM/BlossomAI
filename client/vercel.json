@@ -1,0 +1,12 @@
+{
+  "buildCommand": "pnpm i --frozen-lockfile || npm ci || yarn install && pnpm build || npm run build || yarn build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "routes": [
+    { "handle": "filesystem" },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
+    }
+  ]
+}
