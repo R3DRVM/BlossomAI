@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd client && pnpm install --frozen-lockfile || npm ci || yarn install && pnpm build || npm run build || yarn build && echo '=== BUILD COMPLETE - CHECKING OUTPUT ===' && echo '=== DIST/INDEX.HTML HEAD ===' && head -20 dist/index.html && echo '=== DIST DIRECTORY STRUCTURE ===' && ls -la dist/ && echo '=== ASSETS DIRECTORY ===' && ls -la dist/assets/ && echo '=== PUBLIC FILES ===' && ls -la dist/*.ico dist/*.png dist/*.webmanifest 2>/dev/null || echo 'Some public files missing'",
+  "outputDirectory": "client/dist",
+  "framework": "vite",
+  "routes": [
+    { "handle": "filesystem" },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
+    }
+  ]
+}
