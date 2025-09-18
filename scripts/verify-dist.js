@@ -39,6 +39,13 @@ try {
   console.log(`✅ Found ${jsFiles.length} JS file(s) in dist/assets/:`);
   jsFiles.forEach(file => console.log(`   - ${file}`));
   
+  // Print the main JS file SHA for Vercel logs
+  const mainJsFile = jsFiles.find(file => file.startsWith('index-'));
+  if (mainJsFile) {
+    console.log(`\n🔑 Main JS file: /assets/${mainJsFile}`);
+    console.log(`📊 Build fingerprint: ${mainJsFile.split('-')[1]?.split('.')[0] || 'unknown'}`);
+  }
+  
 } catch (error) {
   console.error('❌ dist/assets/ directory not found');
   process.exit(1);
